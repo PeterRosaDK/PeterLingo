@@ -1,0 +1,15 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+coverage/
+.vite/
+*.local
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.idea/
+.vscode/settings.json
+public/assets/cards/.upstream/

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">PeterLingo</title>
+  <rect width="512" height="512" rx="128" fill="#17332d"/>
+  <path d="M114 144c0-20 16-36 36-36h144c70 0 114 36 114 94 0 60-45 98-116 98h-69v104h-109V144Zm109 42v37h63c17 0 27-7 27-19 0-11-10-18-27-18h-63Z" fill="#f9f4e8"/>
+  <circle cx="382" cy="374" r="46" fill="#ffbe64"/>
+  <path d="m361 373 14 14 29-34" fill="none" stroke="#17332d" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
