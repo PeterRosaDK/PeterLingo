@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { Logo } from '../design-system/Logo';
-import { cloudAccessAction } from './cloudAccessAction';
+import { cloudAccessAction, logoutCloudAccessAndReturn } from './cloudAccessAction';
 import { useLearningData, type CloudSyncStatus } from './DataProvider';
 
 const nav = [
@@ -42,12 +42,13 @@ export function AppShell() {
               href="/cdn-cgi/access/logout"
               title="Cloudflare logger også ud af andre Access-beskyttede PeterGPT-apps"
               onClick={(event) => {
+                event.preventDefault();
                 if (
-                  !window.confirm(
+                  window.confirm(
                     'Cloudflare logger dig også ud af andre Access-beskyttede PeterGPT-apps i denne browser. Vil du fortsætte?'
                   )
                 )
-                  event.preventDefault();
+                  void logoutCloudAccessAndReturn();
               }}
             >
               Log ud

@@ -13,7 +13,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   `peterlingo.petergpt.dk`, restricted it to Peter's approved Access identity, and deployed exact
   revision `9622393`; physical authenticated sync and multi-device convergence checks remain.
 - Added a discreet production logout link with an explicit warning that Cloudflare Access cannot
-  log an end user out of only one protected application.
+  log an end user out of only one protected application; logout now returns to PeterLingo instead
+  of leaving the user on Cloudflare's technical response page.
 - Added a visible login action when cloud authentication expires, a dedicated `/login` return
   route, and PWA exclusions that prevent the cached app shell from swallowing Access navigation.
 - Added visible sync/offline/auth states, automatic retry, explicit manual sync, request limits,
