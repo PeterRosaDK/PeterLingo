@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { Logo } from '../design-system/Logo';
+import { cloudAccessAction } from './cloudAccessAction';
 import { useLearningData, type CloudSyncStatus } from './DataProvider';
 
 const nav = [
@@ -21,7 +22,7 @@ const syncLabels: Record<CloudSyncStatus, string> = {
 
 export function AppShell() {
   const { syncStatus } = useLearningData();
-  const showLogout = window.location.hostname === 'peterlingo.petergpt.dk';
+  const accessAction = cloudAccessAction(window.location.hostname, syncStatus);
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -30,9 +31,14 @@ export function AppShell() {
           <span className={`local-badge sync-${syncStatus}`} title="PeterLingo cloudstatus">
             <i /> {syncLabels[syncStatus]}
           </span>
-          {showLogout && (
+          {accessAction === 'login' && (
+            <a className="access-link access-login-link" href="/login">
+              Log ind
+            </a>
+          )}
+          {accessAction === 'logout' && (
             <a
-              className="logout-link"
+              className="access-link access-logout-link"
               href="/cdn-cgi/access/logout"
               title="Cloudflare logger også ud af andre Access-beskyttede PeterGPT-apps"
               onClick={(event) => {

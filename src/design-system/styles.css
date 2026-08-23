@@ -190,17 +190,30 @@ p {
   align-items: center;
   gap: 12px;
 }
-.logout-link {
+.access-link {
   padding: 7px 4px;
   color: var(--ink-soft);
   font-size: 0.76rem;
   text-decoration: none;
   text-underline-offset: 3px;
 }
-.logout-link:hover,
-.logout-link:focus-visible {
+.access-link:hover,
+.access-link:focus-visible {
   color: var(--ink);
   text-decoration: underline;
+}
+.access-login-link {
+  padding: 7px 12px;
+  color: var(--surface);
+  font-weight: 800;
+  border-radius: 999px;
+  background: var(--brand);
+}
+.access-login-link:hover,
+.access-login-link:focus-visible {
+  color: var(--surface);
+  text-decoration: none;
+  background: var(--brand-2);
 }
 .page {
   width: min(1180px, calc(100% - 40px));
