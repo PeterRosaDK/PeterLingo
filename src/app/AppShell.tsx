@@ -31,7 +31,7 @@ export function AppShell() {
           {accessAction === 'login' ? (
             <a
               className={`local-badge local-badge-link sync-${syncStatus}`}
-              href="/login"
+              href="/api/login"
               title="Log ind for at synkronisere med PeterLingo-cloud"
             >
               <i /> {syncLabels[syncStatus]}
@@ -42,7 +42,7 @@ export function AppShell() {
             </span>
           )}
           {accessAction === 'login' && (
-            <a className="access-link access-login-link" href="/login">
+            <a className="access-link access-login-link" href="/api/login">
               Log ind
             </a>
           )}

@@ -6,6 +6,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Added a service-worker update guard that reloads an already installed PWA when a new version
+  takes control, plus a cache-proof `/api/login` recovery route for stale app shells.
 - Locked the active Doomsday and BCS/MBCS step during an exercise, reset answer selection between
   questions, highlighted both the chosen and correct answers, and explained whether the adaptive
   recommendation is due review, the next new step, or the weakest known step.
