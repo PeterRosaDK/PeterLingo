@@ -16,6 +16,13 @@ export class CloudSyncError extends Error {
 
 interface SyncResponse {
   attempts: Attempt[];
+  serverTime?: string;
+}
+
+export interface CloudSyncResult {
+  snapshot: Awaited<ReturnType<LearningRepository['load']>>;
+  cloudAttemptCount: number;
+  serverTime?: string;
 }
 
 export function cloudSyncEnabled(): boolean {
@@ -32,7 +39,11 @@ function parseResponse(value: unknown): SyncResponse {
       'Serveren sendte et ugyldigt synkroniseringssvar.'
     );
   }
-  return { attempts: (value as SyncResponse).attempts.map(parseAttempt) };
+  const candidate = value as SyncResponse;
+  return {
+    attempts: candidate.attempts.map(parseAttempt),
+    ...(typeof candidate.serverTime === 'string' ? { serverTime: candidate.serverTime } : {}),
+  };
 }
 
 export async function synchronizeRepository(
@@ -82,5 +93,9 @@ export async function synchronizeRepository(
   const latestLocal = await repository.load();
   const merged = mergeCloudAttempts(latestLocal, remote.attempts);
   await repository.replace(merged);
-  return merged;
+  return {
+    snapshot: merged,
+    cloudAttemptCount: remote.attempts.length,
+    ...(remote.serverTime ? { serverTime: remote.serverTime } : {}),
+  };
 }

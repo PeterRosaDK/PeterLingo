@@ -6,6 +6,13 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Locked the active Doomsday and BCS/MBCS step during an exercise, reset answer selection between
+  questions, highlighted both the chosen and correct answers, and explained whether the adaptive
+  recommendation is due review, the next new step, or the weakest known step.
+- Added an original three-tone correct-answer cue, animated visual confirmation, and a per-device
+  sound toggle; Pi recall now focuses and selects its numeric field automatically.
+- Made the `Cloudlogin kræves` status itself open the login route and added the server-confirmed
+  cloud attempt count to Settings after successful synchronization.
 - Added offline-first multi-device progress sync: immutable attempts merge through an
   Access-protected Pages Function and D1, while deterministic FSRS/mastery replay prevents one
   device from overwriting another.

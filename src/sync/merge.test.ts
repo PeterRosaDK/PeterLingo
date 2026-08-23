@@ -74,8 +74,9 @@ describe('cloud attempt merge', () => {
       return Response.json({ attempts: [first] });
     };
 
-    const merged = await synchronizeRepository(repository, request);
-    expect(merged.attempts.map((item) => item.id)).toEqual(['first', 'during-request']);
+    const result = await synchronizeRepository(repository, request);
+    expect(result.snapshot.attempts.map((item) => item.id)).toEqual(['first', 'during-request']);
+    expect(result.cloudAttemptCount).toBe(1);
   });
 
   it('rejects malformed cloud data before replacing local state', () => {

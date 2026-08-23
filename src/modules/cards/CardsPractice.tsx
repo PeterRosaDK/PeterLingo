@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react';
 import { useLearningData } from '../../app/DataProvider';
 import { ExerciseShell } from '../../components/ExerciseShell';
 import { createHintProgress, revealNextHint } from '../../learning/hints/hintProgress';
+import { recommendationReasonLabels } from '../../learning/recommendation';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
 import {
   CARDS_SKILLS,
+  cardsRecommendation,
   cardsSkillStatus,
   cardsSkillStrength,
   getCardsSkill,
-  recommendCardsSkill,
   type CardsSkill,
   type CardsSkillId,
 } from './curriculum';
@@ -27,12 +28,14 @@ function CardsExercisePanel({ skill }: { skill: CardsSkill }) {
   );
   const [hints, setHints] = useState(() => createHintProgress(exercise.hints));
   const [feedback, setFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const { record, restartTimer } = useAttemptRecorder(exercise);
   const mastery = snapshot.mastery.find((item) => item.learningUnitId === exercise.learningUnitId);
 
   const answer = async (value: string) => {
     if (feedback) return;
     const correct = value === exercise.parameters.answer;
+    setSelectedAnswer(value);
     setFeedback({
       correct,
       text: correct ? `Korrekt. ${exercise.explanation}` : `Ikke helt. ${exercise.explanation}`,
@@ -59,6 +62,7 @@ function CardsExercisePanel({ skill }: { skill: CardsSkill }) {
     setTargetIndex(nextTarget);
     setHints(createHintProgress(nextExercise.hints));
     setFeedback(null);
+    setSelectedAnswer(null);
     restartTimer();
   };
 
@@ -93,6 +97,16 @@ function CardsExercisePanel({ skill }: { skill: CardsSkill }) {
             <button
               key={choice.value}
               type="button"
+              className={[
+                'answer-choice',
+                feedback && choice.value === exercise.parameters.answer ? 'correct-answer' : '',
+                feedback && selectedAnswer === choice.value && !feedback.correct
+                  ? 'incorrect-answer'
+                  : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              aria-pressed={selectedAnswer === choice.value}
               onClick={() => void answer(choice.value)}
               disabled={Boolean(feedback)}
               aria-label={`Vælg ${choice.label}`}
@@ -107,6 +121,16 @@ function CardsExercisePanel({ skill }: { skill: CardsSkill }) {
             <button
               key={choice.value}
               type="button"
+              className={[
+                'answer-choice',
+                feedback && choice.value === exercise.parameters.answer ? 'correct-answer' : '',
+                feedback && selectedAnswer === choice.value && !feedback.correct
+                  ? 'incorrect-answer'
+                  : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              aria-pressed={selectedAnswer === choice.value}
               onClick={() => void answer(choice.value)}
               disabled={Boolean(feedback)}
             >
@@ -128,21 +152,16 @@ function CardsExercisePanel({ skill }: { skill: CardsSkill }) {
   );
 }
 
-export function CardsPractice() {
-  const { snapshot, ready } = useLearningData();
-  const recommended = recommendCardsSkill(snapshot.mastery, snapshot.scheduledUnits);
-  const [selectedSkillId, setSelectedSkillId] = useState<CardsSkillId | null>(null);
-  const activeSkill = getCardsSkill(selectedSkillId ?? recommended.id);
+function ReadyCardsPractice() {
+  const { snapshot } = useLearningData();
+  const recommendation = cardsRecommendation(snapshot.mastery, snapshot.scheduledUnits);
+  const [selectedSkillId, setSelectedSkillId] = useState<CardsSkillId>(
+    () => recommendation.skill.id
+  );
+  const activeSkill = getCardsSkill(selectedSkillId);
   const learned = CARDS_SKILLS.filter(
     (skill) => (cardsSkillStrength(skill, snapshot.mastery) ?? 0) >= 0.68
   ).length;
-
-  if (!ready)
-    return (
-      <section className="lesson-card" aria-live="polite">
-        Åbner din korttræning …
-      </section>
-    );
 
   return (
     <>
@@ -154,6 +173,14 @@ export function CardsPractice() {
             <p>
               PeterLingo holder regnereglen, baglæns rækkefølge og de to kort-position-forbindelser
               adskilt, så et sikkert svar i én retning ikke skjuler et hul i en anden.
+            </p>
+            <p className="recommendation-explanation" aria-live="polite">
+              <strong>
+                Anbefalet nu: trin {recommendation.skill.number} · {recommendation.skill.shortTitle}
+                .
+              </strong>{' '}
+              {recommendationReasonLabels[recommendation.reason]} Det aktive trin skifter ikke, før
+              du selv vælger et andet.
             </p>
           </div>
           <div
@@ -168,7 +195,7 @@ export function CardsPractice() {
         <div className="curriculum-grid cards-curriculum-grid" aria-label="BCS- og MBCS-trin">
           {CARDS_SKILLS.map((skill) => {
             const isActive = skill.id === activeSkill.id;
-            const isRecommended = skill.id === recommended.id;
+            const isRecommended = skill.id === recommendation.skill.id;
             return (
               <button
                 key={skill.id}
@@ -193,4 +220,15 @@ export function CardsPractice() {
       <CardsExercisePanel key={activeSkill.id} skill={activeSkill} />
     </>
   );
+}
+
+export function CardsPractice() {
+  const { ready } = useLearningData();
+  if (!ready)
+    return (
+      <section className="lesson-card" aria-live="polite">
+        Åbner din korttræning …
+      </section>
+    );
+  return <ReadyCardsPractice />;
 }

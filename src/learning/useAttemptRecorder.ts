@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useLearningData } from '../app/DataProvider';
+import { playCorrectAnswerCue } from '../audio/correctAnswerCue';
 import { createAttempt } from './attempts';
 import { DefaultGradingPolicy } from './fsrs/gradingPolicy';
 import { FsrsScheduler } from './fsrs/scheduler';
@@ -36,6 +37,7 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
       fluentThresholdMs: number;
       parameterOverrides?: Record<string, unknown>;
     }) => {
+      if (correct) void playCorrectAnswerCue(snapshot.settings.feedbackSounds !== false);
       const now = performance.now();
       const responseTimeMs = now - (startedAt.current ?? now);
       const grade = grading.grade({
@@ -78,7 +80,14 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
       void syncNow();
       return attempt;
     },
-    [exercise, refresh, repository, snapshot.scheduledUnits, syncNow]
+    [
+      exercise,
+      refresh,
+      repository,
+      snapshot.scheduledUnits,
+      snapshot.settings.feedbackSounds,
+      syncNow,
+    ]
   );
 
   return { record, restartTimer };

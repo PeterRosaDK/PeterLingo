@@ -16,4 +16,17 @@ describe('JSON portability', () => {
       importLearningData(new InMemoryLearningRepository(), '{"schemaVersion":99}')
     ).rejects.toThrow('Ukendt dataversion');
   });
+
+  it('adds the default feedback sound setting to an older schema-one export', async () => {
+    const source = new InMemoryLearningRepository();
+    const exported = JSON.parse(await exportLearningData(source)) as {
+      settings: { feedbackSounds?: boolean };
+    };
+    delete exported.settings.feedbackSounds;
+    const target = new InMemoryLearningRepository();
+
+    await importLearningData(target, JSON.stringify(exported));
+
+    expect((await target.load()).settings.feedbackSounds).toBe(true);
+  });
 });

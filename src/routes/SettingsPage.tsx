@@ -4,7 +4,8 @@ import { exportLearningData, importLearningData } from '../persistence/dataTrans
 import type { Settings } from '../persistence/types';
 
 export function SettingsPage() {
-  const { snapshot, repository, refresh, syncNow, syncStatus } = useLearningData();
+  const { snapshot, repository, refresh, syncNow, syncStatus, cloudAttemptCount } =
+    useLearningData();
   const fileInput = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<string | null>(null);
   const save = async (settings: Settings) => {
@@ -71,6 +72,17 @@ export function SettingsPage() {
             ))}
           </div>
         </fieldset>
+        <label className="setting-row">
+          <span>
+            <strong>Glad lyd ved rigtige svar</strong>
+            <small>En kort PeterLingo-klang; kan slås fra på denne enhed.</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={settings.feedbackSounds !== false}
+            onChange={(event) => void save({ ...settings, feedbackSounds: event.target.checked })}
+          />
+        </label>
       </section>
       <section className="settings-section">
         <h2>Læring</h2>
@@ -125,6 +137,12 @@ export function SettingsPage() {
           Status: <strong>{syncLabels[syncStatus]}</strong>. Offline arbejde bliver på enheden og
           sendes automatisk, næste gang PeterLingo er online.
         </p>
+        {syncStatus === 'synced' && cloudAttemptCount !== null && (
+          <p className="cloud-confirmation" role="status">
+            <strong>{cloudAttemptCount}</strong> øvelsessvar er bekræftet i den fælles
+            cloudhistorik.
+          </p>
+        )}
         <div className="button-row">
           <button
             className="button secondary"

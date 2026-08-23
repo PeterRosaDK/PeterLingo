@@ -3,6 +3,7 @@ import type { ScheduledLearningUnit } from '../../learning/fsrs/scheduler';
 import type { MasteryRecord } from '../../learning/types';
 import {
   CARDS_SKILLS,
+  cardsRecommendation,
   cardsSkillMatchesUnit,
   cardsSkillStrength,
   recommendCardsSkill,
@@ -51,6 +52,7 @@ describe('BCS/MBCS curriculum', () => {
 
   it('starts at the foundation and prioritizes a due positional unit later', () => {
     expect(recommendCardsSkill([], []).id).toBe('suit-values');
+    expect(cardsRecommendation([], []).reason).toBe('next-new');
     expect(
       recommendCardsSkill(
         [mastery('cards:suit-values', 0.8)],
@@ -58,5 +60,12 @@ describe('BCS/MBCS curriculum', () => {
         new Date('2026-08-23T12:00:00.000Z')
       ).id
     ).toBe('position-to-card');
+    expect(
+      cardsRecommendation(
+        [mastery('cards:suit-values', 0.8)],
+        [due('cards:position-to-card:23')],
+        new Date('2026-08-23T12:00:00.000Z')
+      ).reason
+    ).toBe('due-review');
   });
 });

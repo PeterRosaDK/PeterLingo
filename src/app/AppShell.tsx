@@ -28,9 +28,19 @@ export function AppShell() {
       <header className="topbar">
         <Logo />
         <div className="topbar-actions">
-          <span className={`local-badge sync-${syncStatus}`} title="PeterLingo cloudstatus">
-            <i /> {syncLabels[syncStatus]}
-          </span>
+          {accessAction === 'login' ? (
+            <a
+              className={`local-badge local-badge-link sync-${syncStatus}`}
+              href="/login"
+              title="Log ind for at synkronisere med PeterLingo-cloud"
+            >
+              <i /> {syncLabels[syncStatus]}
+            </a>
+          ) : (
+            <span className={`local-badge sync-${syncStatus}`} title="PeterLingo cloudstatus">
+              <i /> {syncLabels[syncStatus]}
+            </span>
+          )}
           {accessAction === 'login' && (
             <a className="access-link access-login-link" href="/login">
               Log ind

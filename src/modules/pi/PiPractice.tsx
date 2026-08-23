@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLearningData } from '../../app/DataProvider';
 import { ExerciseShell } from '../../components/ExerciseShell';
 import { createHintProgress, revealNextHint } from '../../learning/hints/hintProgress';
@@ -84,7 +84,17 @@ function PiRecallExercise({
   const [hints, setHints] = useState(() => createHintProgress(exercise.hints));
   const [value, setValue] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
+  const answerInput = useRef<HTMLInputElement>(null);
   const { record, restartTimer } = useAttemptRecorder(exercise);
+
+  useEffect(() => {
+    if (studying || feedback) return;
+    const frame = requestAnimationFrame(() => {
+      answerInput.current?.focus();
+      answerInput.current?.select();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [exercise.id, feedback, studying]);
 
   const nextAction = () => {
     if (studyFirst && !isPiAnswer(value, exercise.parameters.answer)) {
@@ -173,6 +183,8 @@ function PiRecallExercise({
         <label>
           Skriv {exercise.parameters.count === 2 ? 'to' : 'fem'} cifre
           <input
+            ref={answerInput}
+            autoFocus
             inputMode="numeric"
             autoComplete="off"
             value={value}

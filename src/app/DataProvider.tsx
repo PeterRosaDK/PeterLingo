@@ -27,6 +27,7 @@ interface DataContextValue {
   snapshot: PeterLingoSnapshot;
   ready: boolean;
   syncStatus: CloudSyncStatus;
+  cloudAttemptCount: number | null;
   refresh(): Promise<void>;
   syncNow(): Promise<void>;
 }
@@ -44,6 +45,7 @@ export function DataProvider({
   const [snapshot, setSnapshot] = useState(createEmptySnapshot);
   const [ready, setReady] = useState(false);
   const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>('local');
+  const [cloudAttemptCount, setCloudAttemptCount] = useState<number | null>(null);
   const syncPromise = useRef<Promise<void> | null>(null);
   const rerunRequested = useRef(false);
 
@@ -64,8 +66,9 @@ export function DataProvider({
 
     setSyncStatus('syncing');
     const operation = synchronizeRepository(repository)
-      .then((merged) => {
-        setSnapshot(merged);
+      .then((result) => {
+        setSnapshot(result.snapshot);
+        setCloudAttemptCount(result.cloudAttemptCount);
         setSyncStatus('synced');
       })
       .catch((error: unknown) => {
@@ -120,8 +123,8 @@ export function DataProvider({
   }, [syncNow]);
 
   const value = useMemo(
-    () => ({ repository, snapshot, ready, syncStatus, refresh, syncNow }),
-    [repository, snapshot, ready, syncStatus, refresh, syncNow]
+    () => ({ repository, snapshot, ready, syncStatus, cloudAttemptCount, refresh, syncNow }),
+    [repository, snapshot, ready, syncStatus, cloudAttemptCount, refresh, syncNow]
   );
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

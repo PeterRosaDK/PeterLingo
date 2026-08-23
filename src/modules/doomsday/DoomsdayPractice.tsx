@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import { useLearningData } from '../../app/DataProvider';
 import { ExerciseShell } from '../../components/ExerciseShell';
 import { createHintProgress, revealNextHint } from '../../learning/hints/hintProgress';
+import { recommendationReasonLabels } from '../../learning/recommendation';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
 import {
   DOOMSDAY_SKILLS,
+  doomsdayRecommendation,
   getDoomsdaySkill,
   masteryLabel,
-  recommendDoomsdaySkill,
   type DoomsdaySkill,
   type DoomsdaySkillId,
 } from './curriculum';
@@ -19,12 +20,14 @@ function DoomsdayExercisePanel({ skill }: { skill: DoomsdaySkill }) {
   const exercise = useMemo(() => createDoomsdayExercise(skill.id, seed), [seed, skill.id]);
   const [hints, setHints] = useState(() => createHintProgress(exercise.hints));
   const [feedback, setFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const { record, restartTimer } = useAttemptRecorder(exercise);
   const mastery = snapshot.mastery.find((item) => item.learningUnitId === skill.learningUnitId);
 
   const answer = async (value: number) => {
     if (feedback) return;
     const correct = value === exercise.parameters.answer;
+    setSelectedAnswer(value);
     setFeedback({
       correct,
       text: correct ? `Korrekt. ${exercise.explanation}` : `Ikke helt. ${exercise.explanation}`,
@@ -44,6 +47,7 @@ function DoomsdayExercisePanel({ skill }: { skill: DoomsdaySkill }) {
     setSeed(nextSeed);
     setHints(createHintProgress(nextExercise.hints));
     setFeedback(null);
+    setSelectedAnswer(null);
     restartTimer();
   };
 
@@ -68,6 +72,16 @@ function DoomsdayExercisePanel({ skill }: { skill: DoomsdaySkill }) {
           <button
             key={`${choice.value}:${choice.label}`}
             type="button"
+            className={[
+              'answer-choice',
+              feedback && choice.value === exercise.parameters.answer ? 'correct-answer' : '',
+              feedback && selectedAnswer === choice.value && !feedback.correct
+                ? 'incorrect-answer'
+                : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            aria-pressed={selectedAnswer === choice.value}
             onClick={() => void answer(choice.value)}
             disabled={Boolean(feedback)}
           >
@@ -88,11 +102,13 @@ function DoomsdayExercisePanel({ skill }: { skill: DoomsdaySkill }) {
   );
 }
 
-export function DoomsdayPractice() {
+function ReadyDoomsdayPractice() {
   const { snapshot } = useLearningData();
-  const recommended = recommendDoomsdaySkill(snapshot.mastery, snapshot.scheduledUnits);
-  const [selectedSkillId, setSelectedSkillId] = useState<DoomsdaySkillId | null>(null);
-  const activeSkill = getDoomsdaySkill(selectedSkillId ?? recommended.id);
+  const recommendation = doomsdayRecommendation(snapshot.mastery, snapshot.scheduledUnits);
+  const [selectedSkillId, setSelectedSkillId] = useState<DoomsdaySkillId>(
+    () => recommendation.skill.id
+  );
+  const activeSkill = getDoomsdaySkill(selectedSkillId);
   const learned = DOOMSDAY_SKILLS.filter((skill) =>
     snapshot.mastery.some(
       (item) => item.learningUnitId === skill.learningUnitId && item.strength >= 0.68
@@ -107,8 +123,15 @@ export function DoomsdayPractice() {
             <p className="eyebrow">Dit læringsforløb</p>
             <h2 id="curriculum-title">Ét sikkert trin ad gangen</h2>
             <p>
-              PeterLingo anbefaler det næste trin ud fra dine tidligere svar. Du kan altid vælge et
-              andet trin selv.
+              PeterLingo anbefaler næste trin ud fra dine tidligere svar. Det aktive trin skifter
+              aldrig midt i en øvelse; du vælger selv, hvornår du går videre.
+            </p>
+            <p className="recommendation-explanation" aria-live="polite">
+              <strong>
+                Anbefalet nu: trin {recommendation.skill.number} · {recommendation.skill.shortTitle}
+                .
+              </strong>{' '}
+              {recommendationReasonLabels[recommendation.reason]}
             </p>
           </div>
           <div className="curriculum-progress" aria-label={`${learned} af 6 trin lært`}>
@@ -123,7 +146,7 @@ export function DoomsdayPractice() {
               (item) => item.learningUnitId === skill.learningUnitId
             );
             const isActive = skill.id === activeSkill.id;
-            const isRecommended = skill.id === recommended.id;
+            const isRecommended = skill.id === recommendation.skill.id;
             return (
               <button
                 key={skill.id}
@@ -148,4 +171,10 @@ export function DoomsdayPractice() {
       <DoomsdayExercisePanel key={activeSkill.id} skill={activeSkill} />
     </>
   );
+}
+
+export function DoomsdayPractice() {
+  const { ready } = useLearningData();
+  if (!ready) return <section className="lesson-card">Finder dit næste Doomsday-trin …</section>;
+  return <ReadyDoomsdayPractice />;
 }

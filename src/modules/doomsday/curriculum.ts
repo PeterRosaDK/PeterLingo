@@ -1,4 +1,5 @@
 import type { ScheduledLearningUnit } from '../../learning/fsrs/scheduler';
+import type { RecommendationReason } from '../../learning/recommendation';
 import { learningStageLabel } from '../../learning/stages';
 import type { MasteryRecord } from '../../learning/types';
 
@@ -18,6 +19,11 @@ export interface DoomsdaySkill {
   shortTitle: string;
   description: string;
   fluentThresholdMs: number;
+}
+
+export interface DoomsdayRecommendation {
+  skill: DoomsdaySkill;
+  reason: RecommendationReason;
 }
 
 export const DOOMSDAY_SKILLS: DoomsdaySkill[] = [
@@ -86,6 +92,14 @@ export function recommendDoomsdaySkill(
   scheduled: ScheduledLearningUnit[],
   now = new Date()
 ): DoomsdaySkill {
+  return doomsdayRecommendation(mastery, scheduled, now).skill;
+}
+
+export function doomsdayRecommendation(
+  mastery: MasteryRecord[],
+  scheduled: ScheduledLearningUnit[],
+  now = new Date()
+): DoomsdayRecommendation {
   const masteryById = new Map(mastery.map((record) => [record.learningUnitId, record]));
   const scheduledById = new Map(scheduled.map((card) => [card.learningUnitId, card]));
   const due = DOOMSDAY_SKILLS.filter((skill) => {
@@ -96,18 +110,18 @@ export function recommendDoomsdaySkill(
       (masteryById.get(a.learningUnitId)?.strength ?? 0) -
         (masteryById.get(b.learningUnitId)?.strength ?? 0) || a.number - b.number
   );
-  if (due[0]) return due[0];
+  if (due[0]) return { skill: due[0], reason: 'due-review' };
 
   const firstUnseen = DOOMSDAY_SKILLS.find((skill) => !masteryById.has(skill.learningUnitId));
-  if (firstUnseen) return firstUnseen;
+  if (firstUnseen) return { skill: firstUnseen, reason: 'next-new' };
 
-  return (
+  const weakest =
     [...DOOMSDAY_SKILLS].sort(
       (a, b) =>
         (masteryById.get(a.learningUnitId)?.strength ?? 0) -
           (masteryById.get(b.learningUnitId)?.strength ?? 0) || a.number - b.number
-    )[0] ?? DOOMSDAY_SKILLS[0]!
-  );
+    )[0] ?? DOOMSDAY_SKILLS[0]!;
+  return { skill: weakest, reason: 'weakest' };
 }
 
 export { learningStageLabel as masteryLabel };

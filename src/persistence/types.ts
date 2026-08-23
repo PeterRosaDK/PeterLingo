@@ -8,6 +8,7 @@ export type NoteNaming = 'danish' | 'international';
 
 export interface Settings {
   theme: ThemePreference;
+  feedbackSounds: boolean;
   noteNaming: NoteNaming;
   showPianoNoteNames: boolean;
   targetMinutes: number;
@@ -41,6 +42,7 @@ export interface PeterLingoSnapshot {
 
 export const defaultSettings: Settings = {
   theme: 'system',
+  feedbackSounds: true,
   noteNaming: 'danish',
   showPianoNoteNames: true,
   targetMinutes: 7,

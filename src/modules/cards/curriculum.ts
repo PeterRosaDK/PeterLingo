@@ -1,4 +1,5 @@
 import type { ScheduledLearningUnit } from '../../learning/fsrs/scheduler';
+import type { RecommendationReason } from '../../learning/recommendation';
 import { learningStageLabel } from '../../learning/stages';
 import type { LearningStage, MasteryRecord } from '../../learning/types';
 
@@ -22,6 +23,11 @@ export interface CardsSkill {
   description: string;
   fluentThresholdMs: number;
   unitPrefix: string;
+}
+
+export interface CardsRecommendation {
+  skill: CardsSkill;
+  reason: RecommendationReason;
 }
 
 export const CARDS_SKILLS: CardsSkill[] = [
@@ -155,6 +161,14 @@ export function recommendCardsSkill(
   scheduled: ScheduledLearningUnit[],
   now = new Date()
 ): CardsSkill {
+  return cardsRecommendation(mastery, scheduled, now).skill;
+}
+
+export function cardsRecommendation(
+  mastery: MasteryRecord[],
+  scheduled: ScheduledLearningUnit[],
+  now = new Date()
+): CardsRecommendation {
   const due = CARDS_SKILLS.filter((skill) =>
     scheduled.some(
       (card) =>
@@ -166,16 +180,16 @@ export function recommendCardsSkill(
       (cardsSkillStrength(a, mastery) ?? 0) - (cardsSkillStrength(b, mastery) ?? 0) ||
       a.number - b.number
   );
-  if (due[0]) return due[0];
+  if (due[0]) return { skill: due[0], reason: 'due-review' };
 
   const unseen = CARDS_SKILLS.find((skill) => cardsSkillStrength(skill, mastery) === null);
-  if (unseen) return unseen;
+  if (unseen) return { skill: unseen, reason: 'next-new' };
 
-  return (
+  const weakest =
     [...CARDS_SKILLS].sort(
       (a, b) =>
         (cardsSkillStrength(a, mastery) ?? 0) - (cardsSkillStrength(b, mastery) ?? 0) ||
         a.number - b.number
-    )[0] ?? CARDS_SKILLS[0]!
-  );
+    )[0] ?? CARDS_SKILLS[0]!;
+  return { skill: weakest, reason: 'weakest' };
 }

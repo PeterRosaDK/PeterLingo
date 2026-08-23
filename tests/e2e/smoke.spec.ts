@@ -18,8 +18,23 @@ test('Doomsday exercise gives an answer and a progressive hint', async ({ page }
   await page.getByRole('button', { name: /Hele datoen/ }).click();
   await page.getByRole('button', { name: 'Giv mig et hint' }).click();
   await expect(page.getByText('Start med århundredet', { exact: true })).toBeVisible();
+  const activeStep = await page.locator('.exercise-shell .eyebrow').textContent();
   await page.getByRole('button', { name: 'søndag', exact: true }).click();
   await expect(page.getByRole('status')).toBeVisible();
+  await expect(page.locator('.doomsday-answers .correct-answer')).toHaveCount(1);
+  await expect(page.locator('.doomsday-answers [aria-pressed="true"]')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Ny opgave i samme trin' }).click();
+  await expect(page.locator('.exercise-shell .eyebrow')).toHaveText(activeStep ?? '');
+  await expect(page.locator('.doomsday-answers [aria-pressed="true"]')).toHaveCount(0);
+});
+
+test('adaptive recommendation does not replace an active Doomsday question', async ({ page }) => {
+  await page.goto('/fag/doomsday');
+  const step = await page.locator('.exercise-shell .eyebrow').textContent();
+  await expect(page.locator('.doomsday-answers [aria-pressed="true"]')).toHaveCount(0);
+  await page.locator('.doomsday-answers button').first().click();
+  await expect(page.getByRole('status')).toBeVisible();
+  await expect(page.locator('.exercise-shell .eyebrow')).toHaveText(step ?? '');
 });
 
 test('Osterlind BCS curriculum uses real local card assets', async ({ page }) => {
@@ -35,8 +50,14 @@ test('Osterlind BCS curriculum uses real local card assets', async ({ page }) =>
   const card = page.locator('.cards-practice-visual img');
   await expect(card).toBeVisible();
   await expect(card).toHaveAttribute('src', /assets\/cards\/fronts/);
+  const activeStep = await page.locator('.exercise-shell .eyebrow').textContent();
   await page.locator('.card-choices button').first().click();
   await expect(page.getByRole('status')).toBeVisible();
+  await expect(page.locator('.card-choices .correct-answer')).toHaveCount(1);
+  await expect(page.locator('.card-choices [aria-pressed="true"]')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Ny opgave i samme trin' }).click();
+  await expect(page.locator('.exercise-shell .eyebrow')).toHaveText(activeStep ?? '');
+  await expect(page.locator('.card-choices [aria-pressed="true"]')).toHaveCount(0);
 });
 
 test('Pi starts at 30 and opens only the next five digits', async ({ page }) => {
@@ -55,7 +76,9 @@ test('Pi acknowledges every correct digit in an unfinished block', async ({ page
   await page.goto('/fag/pi');
   await page.getByRole('button', { name: /Lær næste fem/ }).click();
   await page.getByRole('button', { name: 'Skjul og prøv selv' }).click();
-  await page.getByLabel('Skriv fem cifre').fill('50289');
+  const input = page.getByLabel('Skriv fem cifre');
+  await expect(input).toBeFocused();
+  await input.fill('50289');
   await page.getByRole('button', { name: 'Tjek' }).click();
   await expect(page.getByRole('status')).toContainText('4 af 5 cifre sad rigtigt');
 });
