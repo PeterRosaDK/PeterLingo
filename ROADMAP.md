@@ -8,6 +8,8 @@ Physical GoCube validation is deliberately still open.
 
 ## Milestone 1 — Hardware & Roux
 
+Status: paused pending the manufacturer's response to the deeply discharged GoCube battery. Do not bypass the charger's battery-safety protection. If the hardware cannot be restored or replaced, retain the existing mock diagnostics and defer physical Roux training without blocking the rest of PeterLingo.
+
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
 - Add orientation-independent First Block and Second Block detection.
@@ -15,6 +17,8 @@ Physical GoCube validation is deliberately still open.
 - Inspect GPL-compatible Roux solver code only if it improves concrete pedagogy; isolate any reused code and record exact provenance.
 
 ## Milestone 2 — Doomsday curriculum
+
+Status: next active milestone while Milestone 1 is externally blocked.
 
 - Complete weekday numbering, century anchors, year arithmetic, month anchors, leap years, and arbitrary-date progression.
 - Add generated weak-step drills and configurable fluency thresholds.

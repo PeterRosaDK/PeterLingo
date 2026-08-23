@@ -12,6 +12,7 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Renamed the user-facing subject Musikøre to Hørelære while retaining stable internal learning IDs.
 - Clarified that Beacio is required on iPhone/iPad Safari, not on Mac Chrome/Edge.
 - Documented the planned FSRS evaluation, non-punitive motivation layer, subject-module registry, and five candidate expansion subjects.
+- Marked physical GoCube/Roux work as paused pending manufacturer support and promoted Doomsday to the next active milestone.
 
 ## [0.1.0] - 2026-08-23
 
