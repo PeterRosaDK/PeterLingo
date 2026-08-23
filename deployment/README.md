@@ -17,6 +17,10 @@ Root, deep routes, manifest, and service worker are protected by the same applic
 signed-in and multi-device convergence checks remain before the release gate is considered
 completely verified.
 
+The discreet production-only `Log ud` link uses `/cdn-cgi/access/logout`. Cloudflare Access does
+not support end-user logout from only one application, so PeterLingo asks for confirmation and
+warns that the action also ends other Access sessions in the same browser.
+
 ## Cloud bindings
 
 `wrangler.toml` is the non-secret Pages configuration. D1 is bound as `DB`. The following values

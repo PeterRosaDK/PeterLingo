@@ -12,6 +12,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Provisioned the production D1 database in Cloudflare's European region, activated
   `peterlingo.petergpt.dk`, restricted it to Peter's approved Access identity, and deployed exact
   revision `475974e`; physical signed-in and multi-device convergence checks remain.
+- Added a discreet production logout link with an explicit warning that Cloudflare Access cannot
+  log an end user out of only one protected application.
 - Added visible sync/offline/auth states, automatic retry, explicit manual sync, request limits,
   same-origin mutation checks, and tests for duplicate delivery, two-device union, deterministic
   replay, malformed cloud data, and attempts created during an active request.

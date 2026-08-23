@@ -21,13 +21,33 @@ const syncLabels: Record<CloudSyncStatus, string> = {
 
 export function AppShell() {
   const { syncStatus } = useLearningData();
+  const showLogout = window.location.hostname === 'peterlingo.petergpt.dk';
   return (
     <div className="app-shell">
       <header className="topbar">
         <Logo />
-        <span className={`local-badge sync-${syncStatus}`} title="PeterLingo cloudstatus">
-          <i /> {syncLabels[syncStatus]}
-        </span>
+        <div className="topbar-actions">
+          <span className={`local-badge sync-${syncStatus}`} title="PeterLingo cloudstatus">
+            <i /> {syncLabels[syncStatus]}
+          </span>
+          {showLogout && (
+            <a
+              className="logout-link"
+              href="/cdn-cgi/access/logout"
+              title="Cloudflare logger også ud af andre Access-beskyttede PeterGPT-apps"
+              onClick={(event) => {
+                if (
+                  !window.confirm(
+                    'Cloudflare logger dig også ud af andre Access-beskyttede PeterGPT-apps i denne browser. Vil du fortsætte?'
+                  )
+                )
+                  event.preventDefault();
+              }}
+            >
+              Log ud
+            </a>
+          )}
+        </div>
       </header>
       <main id="main-content">
         <Outlet />

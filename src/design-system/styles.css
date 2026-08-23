@@ -185,6 +185,23 @@ p {
   background: var(--coral);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--coral) 16%, transparent);
 }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logout-link {
+  padding: 7px 4px;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+.logout-link:hover,
+.logout-link:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+}
 .page {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
