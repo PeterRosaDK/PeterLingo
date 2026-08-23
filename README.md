@@ -6,7 +6,7 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects sh
 - Roux method and smart-cube plumbing
 - BCS progressing toward memorized BCS (MBCS)
 - the first 100 decimal digits of pi
-- ear training and instrument geography
+- Hørelære (ear training) and instrument geography
 
 Milestone 0 is version **0.1.0**. It is a functional foundation, not a claim that every curriculum is complete.
 
@@ -45,13 +45,15 @@ npm run test:e2e
 
 ## PWA and offline behavior
 
-`vite-plugin-pwa` precaches the application shell and local assets. After one successful production visit, Doomsday, BCS/MBCS, Pi, virtual Musikøre instruments, and non-hardware Roux practice are designed to work offline. Bluetooth pairing still depends on browser/platform support and a secure context.
+`vite-plugin-pwa` precaches the application shell and local assets. After one successful production visit, Doomsday, BCS/MBCS, Pi, virtual Hørelære instruments, and non-hardware Roux practice are designed to work offline. Bluetooth pairing still depends on browser/platform support and a secure context.
 
 The production build assumes it is served at `/`, suitable for `https://peterlingo.petergpt.dk`. Milestone 0 does not create a Cloudflare project or change DNS.
 
 ## GoCube and iOS
 
 PeterLingo imports `@beacio/core/auto` before the React application or any Bluetooth capability check. The real adapter uses the generic API from `smartcube-web-bluetooth`, pinned to a reviewed commit supporting GoCube/Rubik's Connected.
+
+Beacio is only needed for Safari on iPhone/iPad. On Mac, do not install Beacio; open PeterLingo in a current Chrome or Edge browser, which supplies Web Bluetooth directly. Desktop Safari and Firefox are not supported for this path.
 
 On iPhone/iPad:
 

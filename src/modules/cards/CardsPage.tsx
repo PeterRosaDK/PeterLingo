@@ -17,6 +17,7 @@ import {
   type CardCode,
 } from './bcs';
 import { PlayingCard } from './PlayingCard';
+import { BcsIntro } from './BcsIntro';
 
 function makeExercise(card: CardCode): GeneratedExercise<{ current: CardCode; answer: CardCode }> {
   const value = parseCard(card);
@@ -42,14 +43,18 @@ function makeExercise(card: CardCode): GeneratedExercise<{ current: CardCode; an
       {
         id: 'suit-value',
         label: 'Kulørværdi',
-        content: `${SUIT_LABELS[value.suit]} har værdien ${SUIT_VALUES[value.suit]}.`,
+        content: `${SUIT_LABELS[value.suit]} har kulørværdien ${SUIT_VALUES[value.suit]}. Det er kun et fast hjælpetal i BCS-reglen.`,
       },
       {
         id: 'rank',
-        label: 'Find den nye værdi',
-        content: `${value.rank} × 2 + ${SUIT_VALUES[value.suit]} = ${doubled}; reduceret til 1–13 bliver det ${reduced} (${RANK_LABELS[next.rank]}).`,
+        label: 'Regn den nye kortværdi ud',
+        content: `${value.rank} × 2 + ${SUIT_VALUES[value.suit]} = ${doubled}. ${doubled > 13 ? `Træk 13 fra, indtil tallet er mellem 1 og 13: ${reduced}` : `Tallet er allerede mellem 1 og 13: ${reduced}`}. Det svarer til ${RANK_LABELS[next.rank].toLowerCase()}.`,
       },
-      { id: 'relation', label: 'Kulørrelation', content: `Den nye værdi siger ${relation}.` },
+      {
+        id: 'relation',
+        label: 'Vælg den nye kulør',
+        content: `Den nye kortværdi er ${next.rank}, så reglen siger ${relation}.`,
+      },
       {
         id: 'answer',
         label: 'Vis kortet',
@@ -117,27 +122,7 @@ export function CardsPage() {
           <PlayingCard card="13S" size="small" stacked dealt />
         </div>
       </header>
-      <section className="bcs-rule">
-        <p className="eyebrow">Den fælles motor</p>
-        <ol>
-          <li>
-            <b>1</b>
-            <span>Fordobl værdien</span>
-          </li>
-          <li>
-            <b>2</b>
-            <span>Læg kulørtallet til</span>
-          </li>
-          <li>
-            <b>3</b>
-            <span>Reducer til 1–13</span>
-          </li>
-          <li>
-            <b>4</b>
-            <span>Flyt kuløren efter den nye værdi</span>
-          </li>
-        </ol>
-      </section>
+      <BcsIntro />
       <ExerciseShell
         eyebrow="BCS · næste kort"
         title={exercise.prompt}

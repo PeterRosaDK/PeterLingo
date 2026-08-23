@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createContinueExercise, createFillGapExercise } from './exercises';
-import { digits, PI_100 } from './piData';
+import { digits, evaluatePiPrefix, PI_100 } from './piData';
 
 describe('Pi source and windows', () => {
   it('contains exactly the first 100 decimal digits', () => {
@@ -22,5 +22,17 @@ describe('Pi source and windows', () => {
   it('generates non-prefix continuation and gap exercises', () => {
     expect(createContinueExercise(16).parameters).toMatchObject({ start: 16, answer: '23846' });
     expect(createFillGapExercise(24).parameters).toMatchObject({ start: 24, answer: '33832' });
+  });
+
+  it('stops a prefix run at the first incorrect decimal', () => {
+    expect(evaluatePiPrefix('14159')).toMatchObject({ correctDigits: 5, complete: false });
+    expect(evaluatePiPrefix('14158')).toMatchObject({
+      correctDigits: 4,
+      wrong: { position: 5, typed: '8', expected: '9' },
+    });
+    expect(evaluatePiPrefix(`${PI_100.slice(0, 50)} ${PI_100.slice(50)}`)).toMatchObject({
+      correctDigits: 100,
+      complete: true,
+    });
   });
 });

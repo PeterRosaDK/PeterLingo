@@ -100,7 +100,7 @@ export function MusicEarPage() {
       <header className="subject-hero mint">
         <div>
           <p className="eyebrow">Rustent er ikke det samme som nyt</p>
-          <h1>Musikøre</h1>
+          <h1>Hørelære</h1>
           <p>Lyt, genkend og find tonen direkte på det instrument, du har ved hånden.</p>
         </div>
         <div className="waveform" aria-hidden="true">

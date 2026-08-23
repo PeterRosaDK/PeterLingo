@@ -17,3 +17,32 @@ export function precedingDigits(startPosition: number, count: number): string {
 export function followingDigits(endPosition: number, count: number): string {
   return digits(endPosition + 1, count);
 }
+
+export interface PiPrefixProgress {
+  normalized: string;
+  correctDigits: number;
+  complete: boolean;
+  wrong?: { position: number; typed: string; expected: string };
+}
+
+export function evaluatePiPrefix(input: string): PiPrefixProgress {
+  const normalized = input.replace(/\D/g, '').slice(0, PI_100.length);
+  const wrongIndex = [...normalized].findIndex((digit, index) => digit !== PI_100[index]);
+  if (wrongIndex >= 0) {
+    return {
+      normalized,
+      correctDigits: wrongIndex,
+      complete: false,
+      wrong: {
+        position: wrongIndex + 1,
+        typed: normalized[wrongIndex]!,
+        expected: PI_100[wrongIndex]!,
+      },
+    };
+  }
+  return {
+    normalized,
+    correctDigits: normalized.length,
+    complete: normalized.length === PI_100.length,
+  };
+}

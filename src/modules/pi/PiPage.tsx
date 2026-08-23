@@ -10,12 +10,13 @@ import {
   type PiExerciseKind,
 } from './exercises';
 import { PI_100 } from './piData';
+import { PiPrefixRun } from './PiPrefixRun';
 
 export function PiPage() {
   const [kind, setKind] = useState<PiExerciseKind>('continue');
   const [start, setStart] = useState(16);
   const exercise = useMemo(
-    () => (kind === 'continue' ? createContinueExercise(start) : createFillGapExercise(start)),
+    () => (kind === 'fill-gap' ? createFillGapExercise(start) : createContinueExercise(start)),
     [kind, start]
   );
   const [hints, setHints] = useState(() => createHintProgress(exercise.hints));
@@ -25,10 +26,10 @@ export function PiPage() {
 
   const switchExercise = (nextKind: PiExerciseKind) => {
     setKind(nextKind);
-    setStart(nextKind === 'continue' ? 16 : 24);
+    setStart(nextKind === 'fill-gap' ? 24 : 16);
     setValue('');
     setFeedback(null);
-    const next = nextKind === 'continue' ? createContinueExercise(16) : createFillGapExercise(24);
+    const next = nextKind === 'fill-gap' ? createFillGapExercise(24) : createContinueExercise(16);
     setHints(createHintProgress(next.hints));
     restartTimer();
   };
@@ -67,18 +68,6 @@ export function PiPage() {
         </div>
         <div className="pi-mark">π</div>
       </header>
-      <section className="digit-ribbon" aria-label="De første 100 decimaler af pi">
-        {PI_100.split('').map((digit, index) => (
-          <span
-            className={index < 30 ? 'known' : index < 40 ? 'focus' : ''}
-            key={index}
-            title={`Position ${index + 1}`}
-          >
-            {digit}
-            {(index + 1) % 10 === 0 && <small>{index + 1}</small>}
-          </span>
-        ))}
-      </section>
       <div className="segmented" aria-label="Øvelsestype">
         <button
           className={kind === 'continue' ? 'active' : ''}
@@ -92,42 +81,52 @@ export function PiPage() {
         >
           Udfyld et hul
         </button>
+        <button
+          className={kind === 'prefix-run' ? 'active' : ''}
+          onClick={() => switchExercise('prefix-run')}
+        >
+          Kør fra starten
+        </button>
       </div>
-      <ExerciseShell
-        eyebrow={`Position ${exercise.parameters.start}–${exercise.parameters.start + exercise.parameters.count - 1}`}
-        title={exercise.prompt}
-        hints={exercise.hints}
-        hintProgress={hints}
-        onHint={() => setHints((current) => revealNextHint(exercise.hints, current))}
-      >
-        <div className="pi-context">
-          <span>3.</span>
-          {exercise.parameters.context || '…'}
-        </div>
-        <form className="inline-answer" onSubmit={(event) => void submit(event)}>
-          <label>
-            Skriv fem cifre
-            <input
-              inputMode="numeric"
-              autoComplete="off"
-              value={value}
-              maxLength={8}
-              onChange={(event) => setValue(event.target.value)}
-            />
-          </label>
-          <button className="button primary" disabled={Boolean(feedback)}>
-            Tjek
-          </button>
-        </form>
-        {feedback && (
-          <div className="feedback" role="status">
-            {feedback}
-            <button type="button" className="button primary" onClick={next}>
-              Nyt vindue
-            </button>
+      {kind === 'prefix-run' ? (
+        <PiPrefixRun />
+      ) : (
+        <ExerciseShell
+          eyebrow={`Position ${exercise.parameters.start}–${exercise.parameters.start + exercise.parameters.count - 1}`}
+          title={exercise.prompt}
+          hints={exercise.hints}
+          hintProgress={hints}
+          onHint={() => setHints((current) => revealNextHint(exercise.hints, current))}
+        >
+          <div className="pi-context">
+            <span>3.</span>
+            {exercise.parameters.context || '…'}
           </div>
-        )}
-      </ExerciseShell>
+          <form className="inline-answer" onSubmit={(event) => void submit(event)}>
+            <label>
+              Skriv fem cifre
+              <input
+                inputMode="numeric"
+                autoComplete="off"
+                value={value}
+                maxLength={8}
+                onChange={(event) => setValue(event.target.value)}
+              />
+            </label>
+            <button className="button primary" disabled={Boolean(feedback)}>
+              Tjek
+            </button>
+          </form>
+          {feedback && (
+            <div className="feedback" role="status">
+              {feedback}
+              <button type="button" className="button primary" onClick={next}>
+                Nyt vindue
+              </button>
+            </div>
+          )}
+        </ExerciseShell>
+      )}
       <section className="diagnostic-card">
         <div>
           <p className="eyebrow">Kort startdiagnose</p>
@@ -139,6 +138,18 @@ export function PiPage() {
         </div>
         <span className="status-pill">Klar · ikke gennemført</span>
       </section>
+      <details className="lesson-card pi-reference">
+        <summary>Vis de 100 decimaler som opslag</summary>
+        <p>Åbn kun denne oversigt, når du vil kontrollere eller øve en bestemt passage.</p>
+        <div className="digit-ribbon" aria-label="De første 100 decimaler af pi">
+          {PI_100.split('').map((digit, index) => (
+            <span key={index} title={`Position ${index + 1}`}>
+              {digit}
+              {(index + 1) % 10 === 0 && <small>{index + 1}</small>}
+            </span>
+          ))}
+        </div>
+      </details>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export const learningCatalog: LearningUnit[] = [
   {
     id: 'cards:suit-values',
     discipline: 'cards',
-    title: 'Kulørernes tal',
+    title: 'Kulørværdierne',
     stage: 'assisted',
     estimatedSeconds: 40,
     isNew: true,

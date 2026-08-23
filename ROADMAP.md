@@ -2,7 +2,7 @@
 
 ## Milestone 0 — Foundation (0.1.0)
 
-Shared architecture and five functional thin slices: PWA shell, IndexedDB/JSON portability, FSRS boundary, adaptive session seed, Doomsday lesson, BCS drill with full local deck, Pi windows/diagnostic scaffold, cubing.js + real/mock smart-cube diagnostics, and Musikøre audio/touch instruments.
+Shared architecture and five functional thin slices: PWA shell, IndexedDB/JSON portability, FSRS boundary, adaptive session seed, Doomsday lesson, BCS drill with full local deck, Pi windows/diagnostic scaffold, cubing.js + real/mock smart-cube diagnostics, and Hørelære audio/touch instruments.
 
 Physical GoCube validation is deliberately still open.
 
@@ -32,7 +32,7 @@ Physical GoCube validation is deliberately still open.
 - Teach five-digit chunks, ten-digit landmarks, cross-boundary bridges, previous/next, gaps, and random-access prompts.
 - Visualize robust territory and weak transitions from actual attempts.
 
-## Milestone 5 — Musikøre
+## Milestone 5 — Hørelære
 
 - Intervals ascending, descending, harmonic, recognition, and construction across generated roots/timbres.
 - Scale degrees, triads, seventh chords, melodic memory, notation, and instrument-specific geography.

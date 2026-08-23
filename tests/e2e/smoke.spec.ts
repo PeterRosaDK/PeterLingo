@@ -4,7 +4,7 @@ test('home shows one coherent five-subject experience', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Godmorgen, Peter/ })).toBeVisible();
   await expect(page.getByRole('link', { name: /Start dagens træning/ })).toBeVisible();
-  for (const name of ['Doomsday', 'Roux', 'BCS → MBCS', 'Pi', 'Musikøre']) {
+  for (const name of ['Doomsday', 'Roux', 'BCS → MBCS', 'Pi', 'Hørelære']) {
     await expect(page.getByRole('link', { name: new RegExp(name) })).toBeVisible();
   }
 });
@@ -12,8 +12,10 @@ test('home shows one coherent five-subject experience', async ({ page }) => {
 test('Doomsday exercise gives an answer and a progressive hint', async ({ page }) => {
   await page.goto('/fag/doomsday');
   await expect(page.getByRole('heading', { name: 'Doomsday', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sådan finder du ugedagen' })).toBeVisible();
+  await expect(page.getByText('23. august 2026')).toBeVisible();
   await page.getByRole('button', { name: 'Giv mig et hint' }).click();
-  await expect(page.getByText('Århundredets anker', { exact: true })).toBeVisible();
+  await expect(page.getByText('Start med århundredet', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'søndag' }).click();
   await expect(page.getByRole('status')).toBeVisible();
 });
@@ -21,6 +23,8 @@ test('Doomsday exercise gives an answer and a progressive hint', async ({ page }
 test('BCS drill uses real local card assets', async ({ page }) => {
   await page.goto('/fag/kort');
   await expect(page.getByRole('heading', { name: 'Kortene kommer tilbage' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Hvad er kulørværdien?' })).toBeVisible();
+  await expect(page.getByText('Spar', { exact: true })).toBeVisible();
   const card = page.locator('.current-card img');
   await expect(card).toBeVisible();
   await expect(card).toHaveAttribute('src', /assets\/cards\/fronts/);
@@ -30,6 +34,7 @@ test('BCS drill uses real local card assets', async ({ page }) => {
 
 test('Pi has a non-prefix exercise and gap mode', async ({ page }) => {
   await page.goto('/fag/pi');
+  await expect(page.locator('.pi-reference .digit-ribbon')).not.toBeVisible();
   await expect(page.getByText('Position 16–20')).toBeVisible();
   await page.getByRole('button', { name: 'Udfyld et hul' }).click();
   await expect(page.getByText('Position 24–28', { exact: true })).toBeVisible();
@@ -38,18 +43,36 @@ test('Pi has a non-prefix exercise and gap mode', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText('overgang');
 });
 
+test('Pi prefix run stops at the first wrong digit without showing the answer', async ({
+  page,
+}) => {
+  await page.goto('/fag/pi');
+  await page.getByRole('button', { name: 'Kør fra starten' }).click();
+  const input = page.getByLabel('Decimaler af pi fra begyndelsen');
+  await input.fill('14158');
+  await expect(page.getByRole('status')).toContainText('Stop ved decimal 5');
+  await expect(page.locator('.prefix-score strong')).toHaveText('4');
+  await expect(input).toBeDisabled();
+});
+
 test('Roux mock state reaches the live move log', async ({ page }) => {
   await page.goto('/fag/roux');
   await expect(page.getByRole('heading', { name: 'Roux', exact: true })).toBeVisible();
+  const fullscreenAvailable = await page
+    .locator('.cube-stage')
+    .evaluate((element) => Boolean((element as HTMLElement).requestFullscreen));
+  if (fullscreenAvailable)
+    await expect(page.getByRole('button', { name: /Terning \+ træk i fuld skærm/ })).toBeVisible();
+  await expect(page.getByText('Beacio skal ikke installeres på Mac.')).toBeVisible();
   await page.locator('.cube-stage .move-pad button').first().click();
   await expect(page.locator('.move-history span')).toContainText('R');
   await page.getByRole('link', { name: 'Åbn GoCube-diagnostik' }).click();
   await expect(page.getByText(/fysisk GoCube endnu ikke verificeret/i)).toBeVisible();
 });
 
-test('Musikøre exposes interval practice and all four touch instruments', async ({ page }) => {
-  await page.goto('/fag/musikoere');
-  await expect(page.getByRole('heading', { name: 'Musikøre', exact: true })).toBeVisible();
+test('Hørelære exposes interval practice and all four touch instruments', async ({ page }) => {
+  await page.goto('/fag/hoerelaere');
+  await expect(page.getByRole('heading', { name: 'Hørelære', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Lille terts' }).click();
   await expect(page.getByRole('status')).toBeVisible();
   for (const tab of ['Klaver', 'Guitar', 'Bas', 'Cello'])

@@ -1,7 +1,7 @@
 import type { GeneratedExercise } from '../../learning/types';
 import { digits, followingDigits, PI_100 } from './piData';
 
-export type PiExerciseKind = 'continue' | 'fill-gap';
+export type PiExerciseKind = 'continue' | 'fill-gap' | 'prefix-run';
 export type PiExercise = GeneratedExercise<{
   kind: PiExerciseKind;
   start: number;
@@ -44,6 +44,23 @@ export function createFillGapExercise(start: number, count = 5): PiExercise {
       { id: 'first-two', label: 'De første to', content: answer.slice(0, 2) },
       { id: 'answer', label: 'Vis hele blokken', content: answer, revealsAnswer: true },
     ],
+  };
+}
+
+export function createPrefixRunExercise(): PiExercise {
+  return {
+    id: 'pi:prefix-run:1-100',
+    learningUnitId: 'pi:prefix-fluency',
+    discipline: 'pi',
+    prompt: 'Hvor langt kan du fortsætte fra 3 komma?',
+    parameters: {
+      kind: 'prefix-run',
+      start: 1,
+      count: 100,
+      answer: PI_100,
+      context: '',
+    },
+    hints: [],
   };
 }
 

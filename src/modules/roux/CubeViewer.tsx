@@ -17,7 +17,7 @@ export function CubeViewer({
       puzzle: '3x3x3',
       visualization: '3D',
       background: 'none',
-      controlPanel: compact ? 'none' : 'bottom-row',
+      controlPanel: 'none',
       viewerLink: 'none',
       experimentalDragInput: 'auto',
       cameraLatitude: 28,

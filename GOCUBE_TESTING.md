@@ -33,8 +33,9 @@ Repeat the iPhone procedure in both portrait and landscape. Also confirm the dia
 ## Desktop Chrome or Edge
 
 1. Use a current Chrome/Edge browser on macOS/Windows with Bluetooth enabled.
-2. Confirm Beacio reads **Ikke nødvendig** and Web Bluetooth is available.
-3. Run connection, four-turn direction check, 30-turn sync check, disconnect, and manual reconnect as above.
+2. Do not install Beacio on the Mac; it is only needed for Safari on iPhone/iPad.
+3. Confirm Beacio reads **Ikke nødvendig** and Web Bluetooth is available.
+4. Run connection, four-turn direction check, 30-turn sync check, disconnect, and manual reconnect as above.
 
 ## Recovery checks
 

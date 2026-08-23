@@ -45,9 +45,9 @@ export const subjects: SubjectDefinition[] = [
   {
     id: 'music-ear',
     eyebrow: 'Lyt · forstå · spil',
-    title: 'Musikøre',
-    description: 'Genopliv øret på klaver, guitar, bas og cello.',
-    route: '/fag/musikoere',
+    title: 'Hørelære',
+    description: 'Genopliv gehøret på klaver, guitar, bas og cello.',
+    route: '/fag/hoerelaere',
     accent: 'mint',
   },
 ];

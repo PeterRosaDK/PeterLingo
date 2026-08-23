@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
 import type { CubeMove, CubeState } from '../../hardware/smartcube/types';
@@ -11,6 +11,11 @@ export function RouxPage() {
   const [adapter] = useState(() => new MockSmartCubeAdapter());
   const [cubeState, setCubeState] = useState<CubeState>(() => adapter.getCubeState());
   const [history, setHistory] = useState<CubeMove[]>([]);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [fullscreenAvailable, setFullscreenAvailable] = useState(
+    () => typeof HTMLElement !== 'undefined' && Boolean(HTMLElement.prototype.requestFullscreen)
+  );
+  const stage = useRef<HTMLElement>(null);
 
   useEffect(() => {
     void adapter.connect();
@@ -25,11 +30,25 @@ export function RouxPage() {
     };
   }, [adapter]);
 
+  useEffect(() => {
+    const updateFullscreen = () => setFullscreen(document.fullscreenElement === stage.current);
+    document.addEventListener('fullscreenchange', updateFullscreen);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreen);
+  }, []);
+
   const reset = () => {
     adapter.reset();
     setHistory([]);
   };
   const firstBlock = cubeState.facelets ? isFixedLeftFirstBlockSolved(cubeState.facelets) : null;
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement === stage.current) await document.exitFullscreen();
+      else await stage.current?.requestFullscreen();
+    } catch {
+      setFullscreenAvailable(false);
+    }
+  };
 
   return (
     <div className="page subject-page roux-page">
@@ -44,13 +63,26 @@ export function RouxPage() {
         </div>
       </header>
       <div className="roux-layout">
-        <section className="cube-stage">
+        <section className="cube-stage" ref={stage}>
           <div className="stage-heading">
             <div>
               <p className="eyebrow">Softwareklar mock-terning</p>
               <h2>Prøv live state-plumbing</h2>
             </div>
-            <span className="status-pill good">Forbundet · mock</span>
+            <div className="stage-tools">
+              <span className="status-pill good">Forbundet · mock</span>
+              {fullscreenAvailable && (
+                <button
+                  className="button subtle fullscreen-toggle"
+                  type="button"
+                  aria-pressed={fullscreen}
+                  onClick={() => void toggleFullscreen()}
+                >
+                  <span aria-hidden="true">{fullscreen ? '↙' : '⛶'}</span>
+                  {fullscreen ? 'Afslut fuld skærm' : 'Terning + træk i fuld skærm'}
+                </button>
+              )}
+            </div>
           </div>
           <CubeViewer algorithm={cubeState.algorithm} />
           <div className="move-pad" aria-label="Mock-træk">
@@ -117,6 +149,16 @@ export function RouxPage() {
             Diagnostikken viser browser, Beacio, batteri, moves, facelets og synkronisering uden at
             gøre resten af PeterLingo afhængig af Bluetooth.
           </p>
+          <div className="platform-guidance">
+            <span>
+              <strong>Mac Mini</strong>
+              Brug Chrome eller Edge. Beacio skal ikke installeres på Mac.
+            </span>
+            <span>
+              <strong>iPhone/iPad</strong>
+              Installér Beacio-appen og aktivér dens Safari-udvidelse.
+            </span>
+          </div>
         </div>
         <Link className="button primary" to="/fag/roux/diagnostik">
           Åbn GoCube-diagnostik

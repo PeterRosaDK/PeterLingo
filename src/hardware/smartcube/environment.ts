@@ -13,6 +13,7 @@ export function detectBluetoothEnvironment(userAgent = navigator.userAgent): Blu
   const ios =
     /iPad|iPhone|iPod/.test(userAgent) ||
     (userAgent.includes('Macintosh') && navigator.maxTouchPoints > 1);
+  const mac = !ios && /Macintosh|Mac OS X/.test(userAgent);
   const webBluetooth = 'bluetooth' in navigator;
   const platform = detectPlatform();
   const browser = ios
@@ -28,7 +29,12 @@ export function detectBluetoothEnvironment(userAgent = navigator.userAgent): Blu
   else if (ios && !webBluetooth)
     guidance =
       'Installér Beacio, aktivér Safari-udvidelsen under Indstillinger → Apps → Safari → Udvidelser, og genindlæs siden.';
-  else if (!webBluetooth) guidance = 'Brug en aktuel Chrome eller Edge med Web Bluetooth.';
+  else if (!webBluetooth)
+    guidance = mac
+      ? 'Beacio er kun til iPhone/iPad. Åbn PeterLingo i en aktuel Chrome eller Edge på Mac.'
+      : 'Brug en aktuel Chrome eller Edge med Web Bluetooth.';
+  else if (mac)
+    guidance = 'Beacio er ikke nødvendig på Mac. Chrome eller Edge bruger Web Bluetooth direkte.';
   return {
     platform,
     browser,

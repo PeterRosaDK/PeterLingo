@@ -9,7 +9,7 @@ const unitRoute = (discipline: string) =>
   discipline === 'cards'
     ? '/fag/kort'
     : discipline === 'music-ear'
-      ? '/fag/musikoere'
+      ? '/fag/hoerelaere'
       : `/fag/${discipline}`;
 
 export function SessionPage() {

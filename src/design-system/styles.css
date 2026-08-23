@@ -112,6 +112,17 @@ p {
   outline: 3px solid color-mix(in srgb, var(--citrine) 85%, white);
   outline-offset: 4px;
 }
+.sr-only {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 .app-shell {
   min-height: 100vh;
@@ -786,6 +797,95 @@ p {
 .lesson-card > p:not(.eyebrow) {
   max-width: 800px;
 }
+.method-lead {
+  max-width: 880px !important;
+  font-size: 1.02rem;
+}
+.method-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+.method-steps article {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 13px;
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 16px;
+}
+.method-steps article > b {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--citrine);
+  color: #2e3028;
+}
+.method-steps h3,
+.bcs-foundations h3,
+.bcs-rule h3 {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+.method-steps p,
+.bcs-foundations p {
+  margin: 0;
+  font-size: 0.86rem;
+}
+.anchor-table {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 13px;
+}
+.anchor-table span {
+  display: grid;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.anchor-table small {
+  color: var(--ink-soft);
+  font-size: 0.64rem;
+}
+.anchor-table strong {
+  text-transform: capitalize;
+  font-size: 0.8rem;
+}
+.worked-example {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.35fr) 1fr;
+  gap: 24px;
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--citrine) 16%, var(--bg));
+}
+.worked-example > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+.worked-example > div span {
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.worked-example ol {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 7px;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
 .weekday-wheel {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -919,6 +1019,21 @@ p {
   box-shadow: var(--shadow-soft);
   scrollbar-width: thin;
 }
+.pi-reference {
+  margin-top: 28px;
+}
+.pi-reference summary {
+  cursor: pointer;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+.pi-reference > p {
+  margin: 12px 0 0;
+}
+.pi-reference .digit-ribbon {
+  margin: 20px 0 0;
+  box-shadow: none;
+}
 .digit-ribbon > span {
   min-width: 24px;
   height: 50px;
@@ -958,6 +1073,12 @@ p {
   padding: 5px;
   background: color-mix(in srgb, var(--ink) 7%, transparent);
   border-radius: 14px;
+}
+.pi-page > .segmented {
+  width: 100%;
+}
+.pi-page > .segmented button {
+  flex: 1;
 }
 .segmented button {
   border: 0;
@@ -1016,6 +1137,61 @@ p {
 }
 .inline-answer .button {
   height: 54px;
+}
+.prefix-run > header p:not(.eyebrow) {
+  margin: 10px 0 0;
+}
+.prefix-score {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.prefix-score strong {
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 3.4rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--violet) 80%, var(--ink));
+}
+.prefix-score span {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.prefix-input {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #251f35;
+  color: #f3eefa;
+}
+.prefix-input b {
+  flex: none;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 2rem;
+  opacity: 0.55;
+}
+.prefix-input input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 1.7rem;
+  letter-spacing: 0.12em;
+}
+.prefix-input input:disabled {
+  opacity: 1;
+}
+.prefix-input:has(input[aria-invalid='true']) {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--coral) 25%, transparent);
 }
 .diagnostic-card {
   margin-top: 28px;
@@ -1098,6 +1274,90 @@ p {
 }
 .bcs-rule {
   margin-bottom: 28px;
+}
+.bcs-intro {
+  margin-bottom: 28px;
+}
+.bcs-intro .bcs-rule {
+  margin: 26px 0 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+.bcs-foundations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+}
+.bcs-foundations article {
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 16px;
+}
+.rank-line,
+.suit-value-grid,
+.suit-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 15px;
+}
+.rank-line span {
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-align: center;
+}
+.suit-value-grid span {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 5px;
+  padding: 9px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 0.67rem;
+}
+.suit-value-grid span.red i {
+  color: #c4473d;
+}
+.suit-value-grid i {
+  font-size: 1.1rem;
+  font-style: normal;
+}
+.suit-value-grid b {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--coral);
+  color: #2b2421;
+}
+.suit-rule-grid span {
+  display: grid;
+  gap: 4px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+.suit-rule-grid b {
+  color: var(--ink);
+  font-size: 1rem;
+}
+.suit-cycle {
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.coral-example {
+  background: color-mix(in srgb, var(--coral) 13%, var(--bg));
 }
 .bcs-rule ol {
   list-style: none;
@@ -1188,6 +1448,31 @@ p {
 .stage-heading h2 {
   font-size: 1.5rem;
 }
+.stage-tools {
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 9px;
+}
+.fullscreen-toggle {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+.cube-stage:fullscreen {
+  overflow: auto;
+  padding: clamp(24px, 4vw, 52px);
+  border: 0;
+  border-radius: 0;
+  background: var(--bg);
+}
+.cube-stage:fullscreen .cube-viewer {
+  height: min(65vh, 650px);
+}
 .move-pad {
   display: flex;
   justify-content: center;
@@ -1265,6 +1550,25 @@ p {
 .hardware-callout p {
   max-width: 750px;
   margin-bottom: 0;
+}
+.platform-guidance {
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.platform-guidance span {
+  display: grid;
+  gap: 3px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+.platform-guidance strong {
+  color: var(--ink);
 }
 .move-history {
   margin-top: 20px;
@@ -1928,6 +2232,22 @@ p {
   .diagnostic-grid {
     grid-template-columns: 1fr;
   }
+  .method-steps,
+  .bcs-foundations,
+  .platform-guidance {
+    grid-template-columns: 1fr;
+  }
+  .worked-example {
+    grid-template-columns: 1fr;
+  }
+  .stage-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .stage-tools {
+    width: 100%;
+    justify-items: start;
+  }
   .hardware-callout,
   .diagnostic-card {
     align-items: flex-start;
@@ -2072,11 +2392,37 @@ p {
     align-items: stretch;
     flex-direction: column;
   }
+  .pi-page > .segmented {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .prefix-input {
+    padding: 14px;
+  }
+  .prefix-input input {
+    font-size: 1.35rem;
+  }
+  .rank-line,
+  .suit-value-grid,
+  .suit-rule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .card-fan {
     transform: scale(0.85);
   }
   .bcs-rule ol {
     grid-template-columns: 1fr;
+  }
+  .card-choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card-choices button {
+    display: grid;
+    place-items: center;
+  }
+  .card-choices .playing-card.medium {
+    width: min(130px, 35vw);
   }
   .diagnostic-panel dl div {
     grid-template-columns: 100px 1fr;

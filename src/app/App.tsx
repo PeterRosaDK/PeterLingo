@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './AppShell';
 import { DataProvider } from './DataProvider';
 import { ThemeSync } from './ThemeSync';
@@ -63,7 +63,8 @@ export function App() {
               <Route path="fag/pi" element={<PiPage />} />
               <Route path="fag/roux" element={<RouxPage />} />
               <Route path="fag/roux/diagnostik" element={<SmartCubeDiagnosticsPage />} />
-              <Route path="fag/musikoere" element={<MusicEarPage />} />
+              <Route path="fag/hoerelaere" element={<MusicEarPage />} />
+              <Route path="fag/musikoere" element={<Navigate replace to="/fag/hoerelaere" />} />
               <Route path="statistik" element={<StatsPage />} />
               <Route path="indstillinger" element={<SettingsPage />} />
               <Route path="*" element={<NotFoundPage />} />

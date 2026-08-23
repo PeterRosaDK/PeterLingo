@@ -4,6 +4,7 @@ import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
 import { ExerciseShell } from '../../components/ExerciseShell';
 import { createDateExercise, generatedModernDate } from './exercises';
 import { DANISH_MONTHS, DANISH_WEEKDAYS } from './doomsday';
+import { DoomsdayIntro } from './DoomsdayIntro';
 
 export function DoomsdayPage() {
   const [seed, setSeed] = useState(() => Date.now());
@@ -58,22 +59,7 @@ export function DoomsdayPage() {
         </div>
       </header>
 
-      <section className="lesson-card">
-        <p className="eyebrow">Introduktion · 1 minut</p>
-        <h2>Ugen er en cirkel med syv pladser</h2>
-        <p>
-          Doomsday regner modulo 7. Vi bruger søndag = 0, mandag = 1 og fortsætter til lørdag = 6.
-          Når du passerer 6, begynder du forfra.
-        </p>
-        <div className="weekday-wheel">
-          {DANISH_WEEKDAYS.map((day, index) => (
-            <span key={day}>
-              <b>{index}</b>
-              {day.slice(0, 3)}
-            </span>
-          ))}
-        </div>
-      </section>
+      <DoomsdayIntro />
 
       <ExerciseShell
         eyebrow="Genereret øvelse"
