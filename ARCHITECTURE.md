@@ -55,7 +55,17 @@ affect the star, so the motivation layer cannot punish teaching-mode work.
 
 `LearningRepository` is the domain-facing port. `IndexedDbLearningRepository` is the browser adapter and `InMemoryLearningRepository` supports deterministic tests. The IndexedDB schema is versioned; export/import validates the same snapshot contract.
 
-A future cloud adapter can implement the repository/sync boundary without moving teaching logic into networking code. Conflict semantics and encryption must be designed before that adapter exists.
+IndexedDB is an offline cache, not an adequate sole source for Peter's planned use across Mac,
+PC, iPhone, and iPad. The next persistence phase should add an authenticated Pages Function and
+Cloudflare D1 as the durable shared source while keeping exercises usable offline. Immutable
+attempts should merge by stable ID and timestamp; scheduled state and mastery should be rebuilt
+from the merged attempt history rather than allowing one device's complete snapshot to overwrite
+another. Settings and session metadata need explicit version/conflict rules.
+
+Cloudflare Access is the preferred authentication boundary for this single-user app. Its token
+must be verified by the server-side Function; a client-supplied email header is not sufficient.
+The custom domain should remain gated until authentication, initial local-to-cloud migration,
+multi-device convergence, export/recovery, and offline replay have been tested.
 
 ## Module boundaries
 

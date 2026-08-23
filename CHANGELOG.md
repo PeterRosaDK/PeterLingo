@@ -6,6 +6,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Documented the verified `peterlingo.pages.dev` Direct Upload and made authenticated D1 sync a
+  release gate before custom-domain, multi-device use; IndexedDB remains the offline cache.
 - Expanded Hørelære with a four-step introduction and adaptive daily recognition of little/major
   thirds, perfect fourths, and perfect fifths in ascending, descending, and harmonic form.
 - Revoiced Tone.js playback with a gentler attack, lower level, low-pass warmth, and restrained

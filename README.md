@@ -73,7 +73,12 @@ See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification.
 
 Substantive data lives in IndexedDB, behind `LearningRepository`; the UI never accesses the database directly. Settings, FSRS state, mastery, attempts, response times, hints, sessions, diagnostics, and hardware preferences can be exported/imported as versioned JSON from **Indstillinger**.
 
-Clearing site data removes local progress unless it was exported. There is no account, analytics, tracking, microphone access, or cloud synchronization.
+Clearing site data removes local progress unless it was exported. IndexedDB is separate for
+every browser, device, and origin, so `peterlingo.pages.dev` and a future
+`peterlingo.petergpt.dk` do not automatically share progress. There is currently no account,
+analytics, tracking, microphone access, or cloud synchronization. Until authenticated sync is
+implemented, use JSON export/import as a manual backup and do not treat one device as a complete
+multi-device history.
 
 ## Architecture and roadmap
 

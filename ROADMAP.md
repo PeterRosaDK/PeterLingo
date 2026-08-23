@@ -65,6 +65,18 @@ harmonisk. Et kort firetrins læringsforløb fører til en adaptiv dagsrunde på
 
 ## Milestone 6 — Daily intelligence
 
+Before ordinary Milestone 6 work, complete the multi-device persistence gate:
+
+- Add Cloudflare D1 behind a small Pages Function as the durable shared learning store.
+- Protect reads and writes with Cloudflare Access and server-side token validation for Peter's
+  approved identity.
+- Retain IndexedDB as an offline cache; queue local attempts and sync when connectivity returns.
+- Merge immutable attempts by stable ID and rebuild schedule/mastery from the merged history;
+  never resolve conflicts by replacing the newest device with an older whole snapshot.
+- Test first-device migration, Mac/PC/iPhone/iPad convergence, offline replay, duplicate delivery,
+  custom-domain origin migration, JSON export/recovery, and denied unauthenticated access.
+- Do not activate `peterlingo.petergpt.dk` for real sessions until this gate passes.
+
 - Calibrate session duration from observed response times.
 - Improve mixed-session sequencing, skill-specific mastery, streak calculation, confusion matrices, and weak-area explanations.
 - Calibrate FSRS retention and grading from sufficient longitudinal outcomes; compare it with half-life regression only when there is enough local data for a meaningful evaluation.
