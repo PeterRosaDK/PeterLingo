@@ -1,3 +1,8 @@
 name = "peterlingo"
 compatibility_date = "2026-08-23"
 pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "peterlingo"
+database_id = "db0b6f83-8f5b-41a2-bd1b-5b4016a240e3"
