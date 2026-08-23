@@ -74,9 +74,11 @@ the `Cf-Access-Jwt-Assertion` signature, issuer, application audience, and appro
 Access's JWKS; a client-supplied email header is never trusted. Same-origin mutation checks, an
 explicit intent header, bounded request sizes, and immutable inserts add defense in depth.
 
-The custom domain remains gated until the D1 binding and Access application are configured and
-authentication, initial local-to-cloud migration, multi-device convergence, export/recovery, and
-offline replay have been tested.
+The custom domain, D1 binding, and Access application are configured and active. Unauthenticated
+AJAX requests are denied, and `/login` deliberately bypasses the PWA navigation fallback so an
+expired session can re-enter Access. Physical authenticated sync, initial local-to-cloud migration,
+multi-device convergence, export/recovery, and offline replay remain release-gate checks before
+routine multi-device use.
 
 ## Module boundaries
 

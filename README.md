@@ -53,7 +53,11 @@ npm run test:e2e
 
 `vite-plugin-pwa` precaches the application shell and local assets. After one successful production visit, Doomsday, BCS/MBCS, Pi, virtual Hørelære instruments, and non-hardware Roux practice are designed to work offline. Bluetooth pairing still depends on browser/platform support and a secure context.
 
-The production build assumes it is served at `/`, suitable for `https://peterlingo.petergpt.dk`. Milestone 0 does not create a Cloudflare project or change DNS.
+The production build is served at `/` on the active, Access-protected custom domain
+`https://peterlingo.petergpt.dk`. Cloudflare Pages hosts the PWA and Function, while D1 stores the
+shared attempt history. The app shell remains available offline; when the Access session has
+expired, the shell shows **Log ind** and sends a network navigation through `/login` before
+returning to the app.
 
 ## GoCube and iOS
 
