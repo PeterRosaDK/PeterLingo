@@ -69,13 +69,15 @@ Before ordinary Milestone 6 work, complete the multi-device persistence gate:
 
 Implementation status: the offline-first attempt log, deterministic merge/replay, D1 migration,
 Access-JWT validation, UI state, and automated conflict tests are implemented and deployed.
-Cloudflare D1, Pages bindings, custom domain, and the single-user Access policy are active. The
-physical signed-in and multi-device test matrix remains before the gate is complete.
+Cloudflare D1, Pages bindings, custom domain, and the single-user Access policy are active. Peter
+confirmed signed-in iPad-to-Mac Mini access and shared progress on 2026-08-23. The core gate is
+therefore open; PC/iPhone, offline-conflict, origin-migration, and clean-browser recovery checks
+remain as operational hardening rather than blockers for ordinary Milestone 6 work.
 
 - Add Cloudflare D1 behind a small Pages Function as the durable shared learning store. _(Deployed
   in EEUR.)_
 - Protect reads and writes with Cloudflare Access and server-side token validation for Peter's
-  approved identity. _(Deployed; signed-in browser check pending.)_
+  approved identity. _(Deployed and physically signed in on iPad and Mac Mini.)_
 - Retain IndexedDB as an offline cache; queue local attempts and sync when connectivity returns.
   _(Implemented.)_
 - Merge immutable attempts by stable ID and rebuild schedule/mastery from the merged history;
@@ -83,10 +85,11 @@ physical signed-in and multi-device test matrix remains before the gate is compl
   _(Implemented and unit-tested.)_
 - Test first-device migration, Mac/PC/iPhone/iPad convergence, offline replay, duplicate delivery,
   custom-domain origin migration, JSON export/recovery, and denied unauthenticated access.
-- Do not rely on `peterlingo.petergpt.dk` for real multi-device sessions until the physical test
-  matrix passes.
+- Use `peterlingo.petergpt.dk` as the canonical multi-device origin; retain the remaining physical
+  matrix as explicit hardening checks.
 
-- Calibrate session duration from observed response times.
+- Calibrate session duration from observed response times. _(First conservative median-based
+  calibration implemented.)_
 - Improve mixed-session sequencing, skill-specific mastery, streak calculation, confusion matrices, and weak-area explanations.
 - Calibrate FSRS retention and grading from sufficient longitudinal outcomes; compare it with half-life regression only when there is enough local data for a meaningful evaluation.
 - Extend the non-punitive motivation layer with completed-session feedback, mastery milestones, and
@@ -94,7 +97,8 @@ physical signed-in and multi-device test matrix remains before the gate is compl
 - The first motivation layer is already active: each completed attempt earns one of three daily
   effort stars per subject regardless of correctness or hint use. Milestone 6 should evaluate the
   target, add streak grace, and avoid turning stars into a rigid quota.
-- Add session continuation/completion across routes.
+- Add session continuation/completion across routes. _(First daily-plan resume and completion
+  summary implemented; deeper exercise-to-exercise routing remains.)_
 
 ## Milestone 7 — Advanced subjects
 

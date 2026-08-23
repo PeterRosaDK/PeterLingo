@@ -6,6 +6,13 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Made the home greeting follow the device's local time: Godnat before 07, Godmorgen until 11,
+  Goddag until 18, and Godaften for the rest of the evening.
+- Started Milestone 6 daily intelligence with response-time-calibrated duration estimates, a clear
+  reason for every selected learning unit, resumable daily progress, and a non-punitive completion
+  summary.
+- Corrected the home-page storage note to describe offline IndexedDB plus the protected shared
+  cloud history instead of the obsolete local-only Milestone 0 model.
 - Added a service-worker update guard that reloads an already installed PWA when a new version
   takes control, plus a cache-proof `/api/login` recovery route for stale app shells.
 - Locked the active Doomsday and BCS/MBCS step during an exercise, reset answer selection between

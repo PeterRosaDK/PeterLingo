@@ -2,11 +2,20 @@ import { expect, test } from '@playwright/test';
 
 test('home shows one coherent five-subject experience', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /Godmorgen, Peter/ })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /(Godnat|Godmorgen|Goddag|Godaften), Peter/ })
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: /Start dagens træning/ })).toBeVisible();
   for (const name of ['Doomsday', 'Roux', 'BCS → MBCS', 'Pi', 'Hørelære']) {
     await expect(page.getByRole('link', { name: new RegExp(name) })).toBeVisible();
   }
+});
+
+test('daily session explains why each learning unit was selected', async ({ page }) => {
+  await page.goto('/session');
+  await expect(page.getByRole('heading', { name: /af \d+ stop tilbage/ })).toBeVisible();
+  await expect(page.locator('.session-reason').first()).toHaveText('Næste lille nye trin');
+  await expect(page.getByRole('link', { name: /Begynd første øvelse/ })).toBeVisible();
 });
 
 test('Doomsday exercise gives an answer and a progressive hint', async ({ page }) => {
@@ -188,7 +197,9 @@ test('production PWA reopens its home shell offline', async ({ page }, testInfo)
   await page.context().setOffline(true);
   try {
     await page.reload();
-    await expect(page.getByRole('heading', { name: /Godmorgen, Peter/ })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /(Godnat|Godmorgen|Goddag|Godaften), Peter/ })
+    ).toBeVisible();
   } finally {
     await page.context().setOffline(false);
   }

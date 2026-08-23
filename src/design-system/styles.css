@@ -2752,6 +2752,12 @@ p {
 .session-plan li:last-child {
   border: 0;
 }
+.session-plan li.completed {
+  background: color-mix(in srgb, var(--mint) 9%, var(--surface));
+}
+.session-plan li.completed > b {
+  color: var(--brand-2);
+}
 .session-plan li > b {
   color: var(--ink-soft);
   font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
@@ -2785,6 +2791,31 @@ p {
 .session-plan time {
   color: var(--ink-soft);
   font-size: 0.7rem;
+}
+.session-plan .session-reason {
+  color: var(--brand-2);
+}
+.session-complete {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 26px;
+  border: 1px solid color-mix(in srgb, var(--mint) 45%, var(--line));
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--mint) 10%, var(--surface));
+  box-shadow: var(--shadow-soft);
+}
+.session-complete > span {
+  font-size: 2rem;
+  color: var(--brand-2);
+}
+.session-complete h2,
+.session-complete p {
+  margin: 0;
+}
+.session-complete .eyebrow {
+  margin-bottom: 5px;
 }
 .compact-start {
   width: 100%;
@@ -3031,6 +3062,19 @@ p {
   }
   .privacy-note a {
     grid-column: 2;
+  }
+  .session-plan li {
+    grid-template-columns: 34px 10px 1fr;
+  }
+  .session-plan time {
+    grid-column: 3;
+  }
+  .session-complete {
+    grid-template-columns: auto 1fr;
+  }
+  .session-complete .button {
+    grid-column: 2;
+    justify-self: start;
   }
   .subject-hero {
     grid-template-columns: 1fr;

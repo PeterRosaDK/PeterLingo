@@ -1,6 +1,7 @@
 import type { ScheduledLearningUnit } from '../fsrs/scheduler';
-import type { LearningUnit, MasteryRecord, SessionRecord } from '../types';
+import type { Attempt, LearningUnit, MasteryRecord, SessionRecord } from '../types';
 import { disciplineForLearningUnitId } from './catalog';
+import { estimatedSecondsForUnit } from './sessionInsights';
 
 export interface SessionSelectionInput {
   catalog: LearningUnit[];
@@ -8,21 +9,14 @@ export interface SessionSelectionInput {
   mastery: MasteryRecord[];
   recentSessions: SessionRecord[];
   focusWeights: Record<string, number>;
+  attempts?: Attempt[];
   now?: Date;
   targetMinutes?: number;
   maxNewItems?: number;
 }
 
-export function selectDailySession(input: SessionSelectionInput): LearningUnit[] {
-  const now = input.now ?? new Date();
-  const budgetSeconds = (input.targetMinutes ?? 7) * 60;
-  const maxNew = input.maxNewItems ?? 3;
-  const scheduledById = new Map(input.scheduled.map((card) => [card.learningUnitId, card]));
+function expandedCatalog(input: SessionSelectionInput): LearningUnit[] {
   const masteryById = new Map(input.mastery.map((record) => [record.learningUnitId, record]));
-  const recentIds = new Set(
-    input.recentSessions.slice(-2).flatMap((session) => session.plannedUnitIds)
-  );
-
   const catalog = [...input.catalog];
   for (const card of input.scheduled) {
     if (catalog.some((unit) => unit.id === card.learningUnitId)) continue;
@@ -36,8 +30,34 @@ export function selectDailySession(input: SessionSelectionInput): LearningUnit[]
       estimatedSeconds: 60,
     });
   }
+  return catalog.map((unit) => ({
+    ...unit,
+    estimatedSeconds: estimatedSecondsForUnit(unit, input.attempts ?? []),
+  }));
+}
 
-  const ranked = catalog
+export function resolveLearningUnits(
+  input: SessionSelectionInput,
+  learningUnitIds: string[]
+): LearningUnit[] {
+  const byId = new Map(expandedCatalog(input).map((unit) => [unit.id, unit]));
+  return learningUnitIds.flatMap((id) => {
+    const unit = byId.get(id);
+    return unit ? [unit] : [];
+  });
+}
+
+export function selectDailySession(input: SessionSelectionInput): LearningUnit[] {
+  const now = input.now ?? new Date();
+  const budgetSeconds = (input.targetMinutes ?? 7) * 60;
+  const maxNew = input.maxNewItems ?? 3;
+  const scheduledById = new Map(input.scheduled.map((card) => [card.learningUnitId, card]));
+  const masteryById = new Map(input.mastery.map((record) => [record.learningUnitId, record]));
+  const recentIds = new Set(
+    input.recentSessions.slice(-2).flatMap((session) => session.plannedUnitIds)
+  );
+
+  const ranked = expandedCatalog(input)
     .map((unit) => {
       const card = scheduledById.get(unit.id);
       const due = card ? new Date(card.due).getTime() <= now.getTime() : false;

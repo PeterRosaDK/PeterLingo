@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
 import { useLearningData } from '../app/DataProvider';
+import { greetingForDate } from '../app/greeting';
 import { subjects } from '../app/subjects';
 import { StarMeter } from '../components/StarMeter';
 import { ProgressRing } from '../design-system/ProgressRing';
 import { FsrsScheduler } from '../learning/fsrs/scheduler';
-import { attemptsOnDay, dailyStars, dailyStarTotal } from '../learning/gamification/dailyStars';
+import { dailyStars, dailyStarTotal } from '../learning/gamification/dailyStars';
 import { disciplineForLearningUnitId, learningCatalog } from '../learning/sessions/catalog';
-import { selectDailySession } from '../learning/sessions/sessionSelector';
+import { dailySessionProgress, localDateKey } from '../learning/sessions/sessionInsights';
+import {
+  resolveLearningUnits,
+  selectDailySession,
+  type SessionSelectionInput,
+} from '../learning/sessions/sessionSelector';
 import type { DisciplineId } from '../learning/types';
 import { PlayingCard } from '../modules/cards/PlayingCard';
 import { CubeViewer } from '../modules/roux/CubeViewer';
@@ -70,20 +76,29 @@ export function HomePage() {
   const { snapshot, ready } = useLearningData();
   const today = new Date();
   const due = snapshot.scheduledUnits.filter((card) => scheduler.isDue(card, today));
-  const plan = selectDailySession({
+  const selectionInput: SessionSelectionInput = {
     catalog: learningCatalog,
     scheduled: snapshot.scheduledUnits,
     mastery: snapshot.mastery,
     recentSessions: snapshot.sessions,
     focusWeights: snapshot.settings.focusWeights,
+    attempts: snapshot.attempts,
     targetMinutes: snapshot.settings.targetMinutes,
     now: today,
-  });
+  };
+  const suggestedPlan = selectDailySession(selectionInput);
+  const savedSession = snapshot.sessions.find(
+    (session) => session.id === `daily:${localDateKey(today)}`
+  );
+  const savedPlan = savedSession
+    ? resolveLearningUnits(selectionInput, savedSession.plannedUnitIds)
+    : [];
+  const plan = savedPlan.length ? savedPlan : suggestedPlan;
+  const sessionProgress = dailySessionProgress(plan, snapshot.attempts, today);
   const estimatedMinutes = Math.max(
     1,
     Math.round(plan.reduce((sum, unit) => sum + unit.estimatedSeconds, 0) / 60)
   );
-  const attemptsToday = attemptsOnDay(snapshot.attempts, today);
   const starsToday = dailyStarTotal(snapshot.attempts, today);
   const masteredByDiscipline = (id: DisciplineId) => {
     const records = snapshot.mastery.filter((item) => item.discipline === id);
@@ -97,16 +112,25 @@ export function HomePage() {
       <section className="today-hero">
         <div className="hero-copy">
           <p className="eyebrow">{formatToday()}</p>
-          <h1>Godmorgen, Peter.</h1>
+          <h1>{greetingForDate(today)}, Peter.</h1>
           <p className="hero-lead">
-            En lille, skarp træning er klar. I dag lægger vi vægten dér, hvor hukommelsen har mest
-            brug for dig.
+            {sessionProgress.complete
+              ? 'Dagens plan er gennemført. Du kan se resultatet eller tage en fri ekstrarunde.'
+              : 'En lille, skarp træning er klar. I dag lægger vi vægten dér, hvor hukommelsen har mest brug for dig.'}
           </p>
           <Link className="button start-button" to="/session">
-            <span>Start dagens træning</span>
+            <span>
+              {sessionProgress.complete
+                ? 'Se dagens resultat'
+                : sessionProgress.completedCount
+                  ? 'Fortsæt dagens træning'
+                  : 'Start dagens træning'}
+            </span>
             <small>
               {ready
-                ? `${estimatedMinutes} min · ${plan.length} læringsenheder`
+                ? sessionProgress.completedCount
+                  ? `${sessionProgress.completedCount}/${plan.length} læringsenheder gennemført`
+                  : `${estimatedMinutes} min · ${plan.length} læringsenheder`
                 : 'Beregner dagens rytme…'}
             </small>
             <b aria-hidden="true">→</b>
@@ -115,7 +139,7 @@ export function HomePage() {
         <div className="today-state">
           <div className="pulse-orbit">
             <ProgressRing
-              value={plan.length ? attemptsToday.length / plan.length : 0}
+              value={plan.length ? sessionProgress.completedCount / plan.length : 0}
               label="Dagens session"
             />
           </div>
@@ -191,10 +215,13 @@ export function HomePage() {
       <section className="privacy-note">
         <span aria-hidden="true">⌁</span>
         <div>
-          <strong>Din læring bliver på enheden</strong>
-          <p>Fremskridt gemmes lokalt i IndexedDB. Ingen konto, analyse eller tracking.</p>
+          <strong>Din læring virker også offline</strong>
+          <p>
+            Forsøg gemmes først på enheden og synkroniseres derefter til din beskyttede
+            cloudhistorik. Ingen analyse eller tracking.
+          </p>
         </div>
-        <Link to="/indstillinger">Backup data</Link>
+        <Link to="/indstillinger">Data og synkronisering</Link>
       </section>
     </div>
   );
