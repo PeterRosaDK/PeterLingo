@@ -9,6 +9,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added offline-first multi-device progress sync: immutable attempts merge through an
   Access-protected Pages Function and D1, while deterministic FSRS/mastery replay prevents one
   device from overwriting another.
+- Provisioned the production D1 database in Cloudflare's European region, activated
+  `peterlingo.petergpt.dk`, restricted it to Peter's approved Access identity, and deployed exact
+  revision `475974e`; physical signed-in and multi-device convergence checks remain.
 - Added visible sync/offline/auth states, automatic retry, explicit manual sync, request limits,
   same-origin mutation checks, and tests for duplicate delivery, two-device union, deterministic
   replay, malformed cloud data, and attempts created during an active request.

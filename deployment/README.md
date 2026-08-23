@@ -6,14 +6,16 @@ project at `peterlingo.petergpt.dk`.
 
 ## Current state
 
-The Direct Upload project `peterlingo` was created on 2026-08-23 and revision `f770430`
-was deployed to `https://peterlingo.pages.dev`. The root route, Hørelære deep route,
-manifest, and service worker returned HTTP 200.
+The Direct Upload project `peterlingo` was created on 2026-08-23. Revision `475974e` is deployed
+with its Pages Function and D1 binding. The production alias rejects unauthenticated API requests,
+and the unique deployment is `https://7bebef10.peterlingo.pages.dev`.
 
-That deployment predates the cloud-sync implementation. The custom domain is deliberately not
-active yet. Treat the `pages.dev` deployment as technical verification, not the canonical home
-for real multi-device sessions, until D1, Access, secrets, a new exact deployment, and the
-multi-device checks below are complete.
+`https://peterlingo.petergpt.dk` is active and is the canonical production origin. Cloudflare
+Access redirects unauthenticated requests and permits only Peter's approved identity through the
+account's Cloudflare identity provider; email one-time PIN is not enabled for this application.
+Root, deep routes, manifest, and service worker are protected by the same application. Physical
+signed-in and multi-device convergence checks remain before the release gate is considered
+completely verified.
 
 ## Cloud bindings
 
@@ -24,9 +26,10 @@ must be configured as Pages secrets and never committed:
 - `ACCESS_AUD`
 - `ALLOWED_EMAIL`
 
-Apply `migrations/0001_create_attempts.sql` to D1 before the first production sync. The Function
-rejects requests when any binding is absent and validates the Access token itself, even though
-Access also protects the hostname at Cloudflare's edge.
+`migrations/0001_create_attempts.sql` was applied locally and to the production `peterlingo` D1
+database in the EEUR region on 2026-08-23. The Function rejects requests when any binding is
+absent and validates the Access token itself, even though Access also protects the hostname at
+Cloudflare's edge.
 
 ## Direct Upload
 
