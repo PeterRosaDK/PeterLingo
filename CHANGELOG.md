@@ -6,6 +6,10 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Expanded Richard Osterlind's BCS into ten adaptive BCS/MBCS skills, including independent
+  card-to-position and position-to-card recall, cyclic cuts, and removed-card handling.
+- Corrected the teaching sequence to Osterlind's own two-stage value calculation and removed an
+  unrelated performer reference from the roadmap.
 - Expanded the Doomsday and BCS introductions with plain-language, worked walkthroughs.
 - Replaced the cube viewer's isolated fullscreen control with a Roux-stage fullscreen mode that keeps move controls visible.
 - Hid the complete Pi reference by default and added an unassisted prefix run that stops at the first wrong digit.

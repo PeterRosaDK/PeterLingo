@@ -11,9 +11,10 @@ export function BcsIntro() {
       <p className="eyebrow">BCS fra begyndelsen</p>
       <h2 id="bcs-intro-title">Først ordene — så reglen</h2>
       <p className="method-lead">
-        BCS er en fast rækkefølge af alle 52 kort. Reglen fortæller, hvilket kort der kommer efter
-        det kort, du ser. Senere lærer du rækkefølgen udenad som MBCS, men lige nu må du gerne regne
-        dig frem.
+        Richard Osterlinds Breakthrough Card System (BCS) er en fast, cirkulær rækkefølge af alle 52
+        kort. Reglen fortæller, hvilket kort der kommer efter det kort, du ser. Senere lærer du
+        rækkefølgen udenad som Memorized Breakthrough Card System (MBCS), men lige nu må du gerne
+        regne dig frem.
       </p>
 
       <div className="bcs-foundations">
@@ -54,15 +55,15 @@ export function BcsIntro() {
           </li>
           <li>
             <b>2</b>
-            <span>Læg kulørværdien til</span>
+            <span>Er resultatet over 13, så træk 13 fra</span>
           </li>
           <li>
             <b>3</b>
-            <span>Er tallet over 13, så træk 13 fra</span>
+            <span>Læg kulørtallet til, og begynd forfra efter 13</span>
           </li>
           <li>
             <b>4</b>
-            <span>Brug det nye tal til at vælge den nye kulør</span>
+            <span>Brug det færdige tal til at vælge den nye kulør</span>
           </li>
         </ol>
       </div>
@@ -99,6 +100,34 @@ export function BcsIntro() {
           <li>Det næste kort er derfor 3 spar.</li>
         </ol>
       </aside>
+
+      <div className="bcs-to-mbcs">
+        <article>
+          <span>BCS</span>
+          <h3>Fra ét kort til det næste</h3>
+          <p>
+            Du ser et kendt kort og bruger Osterlinds regel til at finde naboen. Fordi rækkefølgen
+            er cirkulær, ødelægger et almindeligt cut ikke forbindelsen mellem kortene.
+          </p>
+        </article>
+        <article>
+          <span>MBCS</span>
+          <h3>Direkte mellem kort og position</h3>
+          <p>
+            Du lærer den samme BCS-rækkefølge udenad. Målet er at kende både kortets nummer og
+            kortet på et givet nummer straks — uden først at gå gennem kæden.
+          </p>
+        </article>
+        <article>
+          <span>Vigtigt</span>
+          <h3>Cut og fjernelse er ikke det samme</h3>
+          <p>
+            Ved et cut flyttes en samlet topbunke til bunden, så alle 52 kort bliver i den cirkulære
+            rækkefølge. Fjernede kort lægges ikke tilbage og ændrer derfor, hvad der reelt er
+            tilbage i spillet.
+          </p>
+        </article>
+      </div>
     </section>
   );
 }

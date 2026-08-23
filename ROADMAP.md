@@ -27,13 +27,18 @@ Status: implemented and locally verified on 2026-08-23 while Milestone 1 is exte
 
 ## Milestone 3 — BCS to MBCS
 
-Status: next active milestone. The complete numbered BCS stack overview is already available as a practical setup aid.
+Status: implemented and locally verified on 2026-08-23. The subject follows Richard Osterlind's
+Breakthrough Card System and its memorized form; unrelated performers and routines are outside
+this curriculum.
 
 - Separate suit values, rank reduction, suit relationship, full next/previous card, and multi-card-forward units.
 - Introduce independent `card-to-position:*` and `position-to-card:*` units.
-- Add cuts, cyclic offsets, target location, removed top cards, and Ladanye-style arithmetic.
+- Add cuts, cyclic offsets, target location, and removed top cards while preserving Osterlind's
+  exact 52-card order and the distinction between calculated BCS recall and direct MBCS recall.
 
 ## Milestone 4 — Pi 100
+
+Status: next active milestone.
 
 - Turn the short scaffold into a scored adaptive diagnostic.
 - Teach five-digit chunks, ten-digit landmarks, cross-boundary bridges, previous/next, gaps, and random-access prompts.

@@ -22,7 +22,7 @@ test('Doomsday exercise gives an answer and a progressive hint', async ({ page }
   await expect(page.getByRole('status')).toBeVisible();
 });
 
-test('BCS drill uses real local card assets', async ({ page }) => {
+test('Osterlind BCS curriculum uses real local card assets', async ({ page }) => {
   await page.goto('/fag/kort');
   await expect(page.getByRole('heading', { name: 'Kortene kommer tilbage' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Hvad er kulørværdien?' })).toBeVisible();
@@ -30,7 +30,9 @@ test('BCS drill uses real local card assets', async ({ page }) => {
   await page.getByText('Vis hele BCS-rækkefølgen · 52 kort').click();
   await expect(page.locator('.bcs-stack-grid li')).toHaveCount(52);
   await expect(page.getByText(/begynd med nummer 52/i)).toBeVisible();
-  const card = page.locator('.current-card img');
+  await page.getByRole('button', { name: /Næste kort.*Sæt værdi/ }).click();
+  await expect(page.getByRole('heading', { name: /Hvilket kort følger efter/ })).toBeVisible();
+  const card = page.locator('.cards-practice-visual img');
   await expect(card).toBeVisible();
   await expect(card).toHaveAttribute('src', /assets\/cards\/fronts/);
   await page.locator('.card-choices button').first().click();

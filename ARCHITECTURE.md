@@ -20,7 +20,9 @@ Examples:
 
 - Doomsday uses six separate units from `doomsday:weekday-numbering` through `doomsday:complete-date`, each with generated examples and its own fluency threshold.
 - `music-ear:interval:3:descending` can use different roots.
-- `cards:bcs-next` trains the algorithm; future card-to-position and position-to-card units remain distinct.
+- The cards module implements Richard Osterlind's exact BCS cycle. Foundation, next/previous,
+  multi-forward, and cut arithmetic are separate skills; each MBCS association is also stored in
+  both directions as `cards:card-to-position:*` and `cards:position-to-card:*`.
 - Pi windows can be fixed learning units because exact digits are the content.
 
 The four PeterLingo stages—teaching, assisted, unassisted, and fluent—are domain concepts outside FSRS.

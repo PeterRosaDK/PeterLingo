@@ -2,6 +2,12 @@
 
 PeterLingo itself is GPL-3.0. This file records material dependencies and all assets copied into the repository.
 
+## Osterlind Breakthrough Card System
+
+The card curriculum implements the mathematical cycle publicly known as Richard Osterlind's
+Breakthrough Card System and preserves that attribution. PeterLingo contains its own educational
+wording and code; it does not reproduce Osterlind's performance routines or publication text.
+
 ## OpenDecks playing cards
 
 - Project: `AustinGabriel/OpenDecks-Public-Domain-and-CC0-Playing-Cards`

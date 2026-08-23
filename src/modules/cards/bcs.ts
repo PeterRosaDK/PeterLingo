@@ -25,9 +25,33 @@ export function formatCard({ rank, suit }: PlayingCardData): CardCode {
   return `${rank}${suit}`;
 }
 
-export function nextBcsCard(card: CardCode): CardCode {
+export interface BcsRankCalculation {
+  doubled: number;
+  reducedDouble: Rank;
+  withSuitValue: number;
+  result: Rank;
+}
+
+function reduceToRank(value: number): Rank {
+  return (((value - 1) % 13) + 1) as Rank;
+}
+
+export function bcsRankCalculation(card: CardCode): BcsRankCalculation {
   const { rank, suit } = parseCard(card);
-  const newRank = (((rank * 2 + SUIT_VALUES[suit] - 1) % 13) + 1) as Rank;
+  const doubled = rank * 2;
+  const reducedDouble = reduceToRank(doubled);
+  const withSuitValue = reducedDouble + SUIT_VALUES[suit];
+  return {
+    doubled,
+    reducedDouble,
+    withSuitValue,
+    result: reduceToRank(withSuitValue),
+  };
+}
+
+export function nextBcsCard(card: CardCode): CardCode {
+  const { suit } = parseCard(card);
+  const newRank = bcsRankCalculation(card).result;
   let newSuit = suit;
   if (newRank >= 4 && newRank <= 6) newSuit = SAME_COLOUR_OPPOSITE[suit];
   else if (newRank >= 7 && newRank <= 9) newSuit = PREVIOUS_SUIT[suit];
@@ -54,13 +78,46 @@ export function cardAtPosition(position: number): CardCode {
 }
 
 export function positionOfCard(card: CardCode): number {
-  return BCS_STACK.indexOf(card) + 1;
+  const position = BCS_STACK.indexOf(card) + 1;
+  if (position === 0) throw new RangeError(`Kortet findes ikke i BCS: ${card}`);
+  return position;
 }
 
 export function cyclicOffset(position: number, offset: number): number {
   if (!Number.isInteger(position) || position < 1 || position > 52)
     throw new RangeError('Positionen skal være 1–52.');
   return ((((position - 1 + offset) % 52) + 52) % 52) + 1;
+}
+
+export function cardAtOffset(card: CardCode, offset: number): CardCode {
+  if (!Number.isInteger(offset)) throw new RangeError('Afstanden skal være et helt tal.');
+  return cardAtPosition(cyclicOffset(positionOfCard(card), offset));
+}
+
+export function previousBcsCard(card: CardCode): CardCode {
+  return cardAtOffset(card, -1);
+}
+
+export function forwardDistance(from: CardCode, to: CardCode): number {
+  return (positionOfCard(to) - positionOfCard(from) + 52) % 52;
+}
+
+export function positionAfterCut(position: number, cutSize: number): number {
+  if (!Number.isInteger(cutSize) || cutSize < 0 || cutSize > 51)
+    throw new RangeError('Et cut skal flytte 0–51 kort.');
+  return cyclicOffset(position, -cutSize);
+}
+
+export function cutSizeForTarget(position: number, targetPosition: number): number {
+  if (!Number.isInteger(targetPosition) || targetPosition < 1 || targetPosition > 52)
+    throw new RangeError('Målpositionen skal være 1–52.');
+  return (position - targetPosition + 52) % 52;
+}
+
+export function topCardAfterRemoving(removedCards: number): CardCode {
+  if (!Number.isInteger(removedCards) || removedCards < 0 || removedCards > 51)
+    throw new RangeError('Der skal være 0–51 fjernede topkort.');
+  return cardAtPosition(removedCards + 1);
 }
 
 export const RANK_LABELS: Record<Rank, string> = {

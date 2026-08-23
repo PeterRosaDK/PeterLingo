@@ -4,7 +4,7 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects sh
 
 - Doomsday weekday calculation
 - Roux method and smart-cube plumbing
-- BCS progressing toward memorized BCS (MBCS)
+- Richard Osterlind's BCS progressing toward memorized BCS (MBCS)
 - the first 100 decimal digits of pi
 - Hørelære (ear training) and instrument geography
 
