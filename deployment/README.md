@@ -6,16 +6,17 @@ project at `peterlingo.petergpt.dk`.
 
 ## Current state
 
-The Direct Upload project `peterlingo` was created on 2026-08-23. Revision `2223ec9` is deployed
+The Direct Upload project `peterlingo` was created on 2026-08-23. Revision `455b555` is deployed
 with its Pages Function and D1 binding. The production alias rejects unauthenticated API requests,
-and the unique deployment is `https://a5452a08.peterlingo.pages.dev`.
+and the unique deployment is `https://7bdb7164.peterlingo.pages.dev`.
 
 `https://peterlingo.petergpt.dk` is active and is the canonical production origin. Cloudflare
 Access redirects unauthenticated requests and permits only Peter's approved identity through the
 account's Cloudflare identity provider; email one-time PIN is not enabled for this application.
 Root, deep routes, manifest, and service worker are protected by the same application. Physical
-signed-in access was confirmed by Peter on 2026-08-23. Authenticated API sync and multi-device
-convergence checks remain before the release gate is considered completely verified.
+signed-in access and shared progress between iPad and Mac Mini were confirmed by Peter on
+2026-08-23. PC/iPhone, offline-conflict, origin-migration, and clean-browser recovery checks remain
+as operational hardening.
 
 `/api/login` is the cache-proof login recovery route: Access authenticates the request before the
 Function redirects to `/`. It remains reachable through an old app shell because service workers

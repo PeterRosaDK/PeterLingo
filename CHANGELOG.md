@@ -27,7 +27,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   device from overwriting another.
 - Provisioned the production D1 database in Cloudflare's European region, activated
   `peterlingo.petergpt.dk`, restricted it to Peter's approved Access identity, and deployed exact
-  revision `2223ec9`; physical authenticated multi-device convergence checks remain.
+  revision `455b555`; iPad-to-Mac Mini convergence is confirmed, while the remaining physical
+  hardening matrix is still open.
 - Added a discreet production logout link with an explicit warning that Cloudflare Access cannot
   log an end user out of only one protected application; logout now returns to PeterLingo instead
   of leaving the user on Cloudflare's technical response page.
