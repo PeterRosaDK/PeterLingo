@@ -42,6 +42,11 @@ The daily selector ranks due cards, weak mastery, limited new work, focus weight
 
 Every recorded attempt includes the stable unit, generated parameters, correctness, response time, hints used, answer reveal, timestamp, and scheduler grade.
 
+Hørelære gemmer hvert af de fire første intervaller separat for melodisk opad, melodisk
+nedad og harmonisk præsentation. En dagsrunde fryser tre genererede opgaver ved start — én af
+hver præsentation — og vælger det svageste interval i hver gruppe ud fra den hidtil registrerede
+styrke.
+
 Daily stars are a derived view over attempts, not additional persistent currency. Each local-day
 attempt contributes one effort star to its discipline up to three. Correctness and hints do not
 affect the star, so the motivation layer cannot punish teaching-mode work.
@@ -86,7 +91,13 @@ The fixed-orientation First Block detector checks the DLF, DBL, DL, FL, and BL c
 
 ## Audio and music
 
-`AudioEngine` hides Tone.js. Audio context start/resume happens from the user's tap. `VirtualPiano` supports simultaneous pointer capture, while guitar and bass share a fretted engine and cello uses a fretless presentation with optional chromatic guide targets. Pitch logic is MIDI/pitch-class based; Danish/German versus international names are display policy.
+`AudioEngine` hides Tone.js. Audio context start/resume happens from the user's tap. Intervaler
+afspilles enten sekventielt eller samtidigt gennem en langsomt anslået, lavpasfiltreret synth med
+diskret rumklang. `VirtualPiano` supports simultaneous pointer capture, while guitar and bass
+share a fretted engine and cello uses a fretless presentation with optional chromatic guide
+targets. Pitch logic is MIDI/pitch-class based; Danish/German versus international names are
+display policy. Real samples can later be added behind the same audio port without changing the
+learning model.
 
 VexFlow renders short conventional notation fragments. PeterLingo is not a notation editor.
 

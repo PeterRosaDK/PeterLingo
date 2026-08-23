@@ -6,6 +6,10 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Expanded Hørelære with a four-step introduction and adaptive daily recognition of little/major
+  thirds, perfect fourths, and perfect fifths in ascending, descending, and harmonic form.
+- Revoiced Tone.js playback with a gentler attack, lower level, low-pass warmth, and restrained
+  room sound; local instrument samples remain an optional later quality upgrade.
 - Rebuilt Pi around a gentle 30-decimal starting boundary, voluntary prefix diagnosis, five-digit
   unlocks, ten-digit landmarks, bridges, gaps, neighbouring digits, and safe random access.
 - Pi recall now acknowledges and stores partial accuracy such as four correct digits out of five,

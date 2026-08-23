@@ -99,15 +99,51 @@ test('Roux mock state reaches the live move log', async ({ page }) => {
   await expect(page.getByText(/fysisk GoCube endnu ikke verificeret/i)).toBeVisible();
 });
 
-test('Hørelære exposes interval practice and all four touch instruments', async ({ page }) => {
+test('Hørelære teaches, tests all three presentations, and exposes four instruments', async ({
+  page,
+}) => {
   await page.goto('/fag/hoerelaere');
   await expect(page.getByRole('heading', { name: 'Hørelære', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Lille terts' }).click();
-  await expect(page.getByRole('status')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Et interval er en afstand, ikke to bestemte toner' })
+  ).toBeVisible();
+  for (let step = 0; step < 3; step += 1)
+    await page.getByRole('button', { name: 'Næste lille skridt' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Melodisk op, melodisk ned og harmonisk' })
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Gå til dagens test' }).click();
+  const roundMap = page.getByLabel('Dagens tre intervalformer');
+  for (const presentation of ['melodisk opad', 'melodisk nedad', 'harmonisk'])
+    await expect(roundMap.getByText(presentation, { exact: true })).toBeVisible();
+
+  for (let question = 1; question <= 3; question += 1) {
+    await expect(page.locator('.exercise-shell .eyebrow')).toContainText(`${question} af 3`);
+    await page.locator('.answer-grid.intervals button').first().click();
+    await expect(page.getByRole('status')).toBeVisible();
+    await page
+      .getByRole('button', {
+        name: question === 3 ? 'Se dagens resultat' : 'Næste interval',
+      })
+      .click();
+  }
+  await expect(
+    page.getByRole('heading', { name: 'Du lyttede dig gennem alle tre former' })
+  ).toBeVisible();
+
   for (const tab of ['Klaver', 'Guitar', 'Bas', 'Cello'])
     await expect(page.getByRole('tab', { name: tab })).toBeVisible();
   await page.getByRole('tab', { name: 'Cello' }).click();
   await expect(page.getByLabel('Virtuelt cellofingerbræt')).toBeVisible();
+
+  await page.getByRole('link', { name: 'I dag' }).click();
+  const earCard = page.getByRole('link', { name: /Hørelære.*Lær intervallet roligt/i });
+  await expect(earCard.getByLabel('3 af 3 stjerner i dag')).toBeVisible();
+  await earCard.click();
+  await expect(page.getByRole('button', { name: /Dagens test/ })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
 });
 
 test('settings persist through IndexedDB reload', async ({ page }) => {

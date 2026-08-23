@@ -6,7 +6,8 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects sh
 - Roux method and smart-cube plumbing
 - Richard Osterlind's BCS progressing toward memorized BCS (MBCS)
 - pi in five-digit steps from Peter's first 30, with 500 verified decimals currently available
-- Hørelære (ear training) and instrument geography
+- Hørelære with a four-step interval introduction, adaptive three-question daily test, and
+  instrument geography
 
 Milestone 0 is version **0.1.0**. It is a functional foundation, not a claim that every curriculum is complete.
 

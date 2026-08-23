@@ -44,9 +44,9 @@ export const subjects: SubjectDefinition[] = [
   },
   {
     id: 'music-ear',
-    eyebrow: 'Lyt · forstå · spil',
+    eyebrow: 'Melodisk · harmonisk',
     title: 'Hørelære',
-    description: 'Genopliv gehøret på klaver, guitar, bas og cello.',
+    description: 'Lær intervallet roligt, og tag derefter dagens adaptive høretest.',
     route: '/fag/hoerelaere',
     accent: 'mint',
   },

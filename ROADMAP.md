@@ -48,12 +48,20 @@ milestone rather than a curriculum ceiling, with 500 source-verified decimals cu
 
 ## Milestone 5 — Hørelære
 
-Status: next active milestone.
+Status: første intervalfase implementeret og lokalt verificeret på 2026-08-23. Fire
+begyndelsesintervaller trænes som særskilte færdigheder melodisk opad, melodisk nedad og
+harmonisk. Et kort firetrins læringsforløb fører til en adaptiv dagsrunde på tre spørgsmål.
 
-- Intervals ascending, descending, harmonic, recognition, and construction across generated roots/timbres.
-- Scale degrees, triads, seventh chords, melodic memory, notation, and instrument-specific geography.
-- Bass-clef and later tenor-clef cello work; grand-staff piano.
-- Consider MIDI through a separate adapter. Microphone input remains out of scope until explicitly designed.
+- Implementeret nu: genkendelse af lille/stor terts, ren kvart og ren kvint på tværs af
+  genererede grundtoner; én opadgående, én nedadgående og én harmonisk opgave per dagsrunde.
+- Næste udvidelse: intervalkonstruktion, flere intervaller og kontrollerede klangvariationer.
+- Senere i milepælen: skalatrin, treklange, firklange, melodisk hukommelse, notation og
+  instrumentspecifik tonegeografi.
+- Basnøgle og senere tenornøgle til cello; dobbeltsystem til klaver.
+- Overvej lokale instrument-samples efter Peters lyttetest af den blødgjorte synth. Samples er
+  en kvalitetsopgradering, ikke en forudsætning for intervalpedagogikken.
+- Overvej MIDI gennem en separat adapter. Mikrofoninput er fortsat uden for scope, indtil det er
+  særskilt designet.
 
 ## Milestone 6 — Daily intelligence
 

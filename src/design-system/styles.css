@@ -2194,6 +2194,190 @@ p {
 .waveform i:nth-child(2n) {
   animation-delay: -0.7s;
 }
+.ear-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 28px 0 14px;
+}
+.ear-mode-switch button {
+  min-height: 88px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 16px 18px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.ear-mode-switch button:hover,
+.ear-mode-switch button.active {
+  border-color: color-mix(in srgb, var(--mint) 70%, var(--line));
+  background: color-mix(in srgb, var(--mint) 11%, var(--surface));
+}
+.ear-mode-switch button.active {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--mint) 35%, transparent);
+}
+.ear-mode-switch strong {
+  font-size: 0.9rem;
+}
+.ear-mode-switch span {
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+.ear-lesson {
+  margin-top: 14px;
+}
+.ear-lesson > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.ear-lesson > header p:last-child {
+  max-width: 720px;
+  margin-bottom: 0;
+  color: var(--ink-soft);
+}
+.ear-step-count {
+  min-width: 58px;
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mint) 18%, var(--bg));
+  color: var(--brand);
+  font-weight: 800;
+}
+.ear-demo-pair,
+.ear-demo-grid {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0;
+}
+.ear-demo-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ear-demo-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.ear-demo-pair button,
+.ear-demo-grid button {
+  min-height: 100px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 9px;
+  border: 1px solid color-mix(in srgb, var(--mint) 65%, var(--line));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--mint) 9%, var(--surface));
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 750;
+}
+.ear-demo-pair button:hover,
+.ear-demo-grid button:hover {
+  background: color-mix(in srgb, var(--mint) 18%, var(--surface));
+}
+.ear-demo-pair button span,
+.ear-demo-grid button span {
+  color: var(--brand);
+  font-size: 1.5rem;
+}
+.ear-lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ear-reference {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.ear-reference summary {
+  cursor: pointer;
+  font-weight: 750;
+}
+.ear-reference ul {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  list-style: none;
+}
+.ear-reference li {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg);
+}
+.ear-reference li span {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+.ear-round-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 20px;
+}
+.ear-round-map span {
+  padding: 10px 12px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.69rem;
+  font-weight: 750;
+}
+.ear-round-map span.active {
+  color: var(--ink);
+  border-color: var(--mint);
+  background: color-mix(in srgb, var(--mint) 14%, var(--surface));
+}
+.ear-round-map span.done {
+  color: var(--brand);
+  border-color: transparent;
+}
+.ear-test-prompt {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.ear-test-prompt p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+.ear-replay-answer {
+  display: block;
+  padding: 5px 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--brand);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+.ear-round-complete {
+  margin-top: 14px;
+  text-align: center;
+}
+.ear-round-complete p:not(.eyebrow) {
+  max-width: 650px;
+  margin: 0 auto 20px;
+  color: var(--ink-soft);
+}
+.ear-round-score {
+  display: block;
+  margin: 8px 0 16px;
+  color: var(--brand);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 4rem;
+}
 .ear-prompt {
   display: flex;
   align-items: center;
@@ -2821,6 +3005,23 @@ p {
   .ear-prompt {
     flex-direction: column;
     gap: 15px;
+  }
+  .ear-mode-switch,
+  .ear-demo-pair,
+  .ear-reference ul {
+    grid-template-columns: 1fr;
+  }
+  .ear-demo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ear-demo-grid button {
+    min-height: 88px;
+    padding: 10px 5px;
+    font-size: 0.7rem;
+  }
+  .ear-round-map span {
+    padding: 9px 4px;
+    font-size: 0.6rem;
   }
   .instrument-surface {
     margin-left: -12px;
