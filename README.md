@@ -5,10 +5,13 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects sh
 - Doomsday weekday calculation
 - Roux method and smart-cube plumbing
 - Richard Osterlind's BCS progressing toward memorized BCS (MBCS)
-- the first 100 decimal digits of pi
+- pi in five-digit steps from Peter's first 30, with 500 verified decimals currently available
 - Hørelære (ear training) and instrument geography
 
 Milestone 0 is version **0.1.0**. It is a functional foundation, not a claim that every curriculum is complete.
+
+Three daily effort stars per subject provide a deliberately small motivation loop. A completed
+attempt counts even when it is wrong or uses hints; the stars are not a mastery score.
 
 ## Screenshots
 

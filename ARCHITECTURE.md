@@ -23,7 +23,10 @@ Examples:
 - The cards module implements Richard Osterlind's exact BCS cycle. Foundation, next/previous,
   multi-forward, and cut arithmetic are separate skills; each MBCS association is also stored in
   both directions as `cards:card-to-position:*` and `cards:position-to-card:*`.
-- Pi windows can be fixed learning units because exact digits are the content.
+- Pi starts from a user-declared 30-decimal working boundary. A prefix diagnostic, contiguous
+  five-digit chunk mastery, and `piLearningProfile` advance that boundary without opening distant
+  random windows. The local verified dataset currently contains 500 decimals; 100 is only a
+  milestone. Chunks, bridges, gaps, random access, and before/after recall retain distinct IDs.
 
 The four PeterLingo stages—teaching, assisted, unassisted, and fluent—are domain concepts outside FSRS.
 
@@ -38,6 +41,10 @@ The four PeterLingo stages—teaching, assisted, unassisted, and fluent—are do
 The daily selector ranks due cards, weak mastery, limited new work, focus weights, and recent sessions. It has a time budget and a cap on new units, but no fixed 20% subject quota.
 
 Every recorded attempt includes the stable unit, generated parameters, correctness, response time, hints used, answer reveal, timestamp, and scheduler grade.
+
+Daily stars are a derived view over attempts, not additional persistent currency. Each local-day
+attempt contributes one effort star to its discipline up to three. Correctness and hints do not
+affect the star, so the motivation layer cannot punish teaching-mode work.
 
 ## Persistence and future sync
 

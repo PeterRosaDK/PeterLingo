@@ -6,6 +6,13 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Rebuilt Pi around a gentle 30-decimal starting boundary, voluntary prefix diagnosis, five-digit
+  unlocks, ten-digit landmarks, bridges, gaps, neighbouring digits, and safe random access.
+- Pi recall now acknowledges and stores partial accuracy such as four correct digits out of five,
+  while keeping the whole block scheduled until it is secure.
+- Expanded the verified local Pi source from 100 to 500 decimals while retaining 100 as a milestone.
+- Added three daily effort stars per subject; attempts with mistakes or hints count equally, and a
+  small mock Roux sequence makes its stars achievable without physical hardware.
 - Expanded Richard Osterlind's BCS into ten adaptive BCS/MBCS skills, including independent
   card-to-position and position-to-card recall, cyclic cuts, and removed-card handling.
 - Corrected the teaching sequence to Osterlind's own two-stage value calculation and removed an

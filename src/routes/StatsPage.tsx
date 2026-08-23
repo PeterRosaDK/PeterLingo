@@ -1,5 +1,7 @@
 import { useLearningData } from '../app/DataProvider';
 import { subjects } from '../app/subjects';
+import { StarMeter } from '../components/StarMeter';
+import { dailyStars, dailyStarTotal } from '../learning/gamification/dailyStars';
 
 function median(values: number[]): number {
   if (!values.length) return 0;
@@ -23,7 +25,7 @@ export function StatsPage() {
       <header className="page-heading">
         <p className="eyebrow">Kun dine lokale data</p>
         <h1>Statistik</h1>
-        <p>Et roligt overblik over kvalitet, hjælp og tempo — ikke et pointsystem.</p>
+        <p>Et roligt overblik over kvalitet, hjælp, tempo og dagens ikke-punitive indsats.</p>
       </header>
       <section className="metric-grid">
         <article>
@@ -48,6 +50,26 @@ export function StatsPage() {
           <strong>{hintRate.toFixed(1)}</strong>
           <small>pr. forsøg</small>
         </article>
+      </section>
+      <section className="daily-star-board" aria-labelledby="daily-star-title">
+        <header>
+          <div>
+            <p className="eyebrow">Tre små skridt i hvert fag</p>
+            <h2 id="daily-star-title">Dagens stjerner · {dailyStarTotal(attempts)}/15</h2>
+          </div>
+          <p>
+            Et gennemført forsøg giver en stjerne. Fejl og brug af hints fjerner aldrig stjerner.
+          </p>
+        </header>
+        <div>
+          {subjects.map((subject) => (
+            <article key={subject.id}>
+              <span className={`subject-dot ${subject.accent}`} />
+              <strong>{subject.title}</strong>
+              <StarMeter stars={dailyStars(attempts, subject.id)} />
+            </article>
+          ))}
+        </div>
       </section>
       <section className="mastery-table">
         <h2>Faglig aktivitet</h2>

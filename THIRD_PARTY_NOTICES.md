@@ -8,6 +8,15 @@ The card curriculum implements the mathematical cycle publicly known as Richard 
 Breakthrough Card System and preserves that attribution. PeterLingo contains its own educational
 wording and code; it does not reproduce Osterlind's performance routines or publication text.
 
+## Pi decimal source
+
+- Sequence: OEIS A000796, decimal expansion of pi
+- Source: <https://oeis.org/A000796>
+- Bundled range: the first 500 decimal places, excluding the integer 3
+
+The bundled string was compared directly with terms 2–501 of the OEIS b-file. Mathematical digits
+are factual data; the source is retained for reproducibility and position semantics.
+
 ## OpenDecks playing cards
 
 - Project: `AustinGabriel/OpenDecks-Public-Domain-and-CC0-Playing-Cards`

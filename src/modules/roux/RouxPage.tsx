@@ -4,6 +4,7 @@ import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdap
 import type { CubeMove, CubeState } from '../../hardware/smartcube/types';
 import { isFixedLeftFirstBlockSolved } from '../../hardware/smartcube/state';
 import { CubeViewer } from './CubeViewer';
+import { RouxMoveDrill } from './RouxMoveDrill';
 
 const moves = ['R', "R'", 'U', "U'", 'L', "L'", 'M', "M'"];
 
@@ -141,6 +142,7 @@ export function RouxPage() {
           </div>
         </aside>
       </div>
+      <RouxMoveDrill />
       <section className="hardware-callout">
         <div>
           <p className="eyebrow">Fysisk GoCube</p>

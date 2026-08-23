@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useLearningData } from '../app/DataProvider';
 import { subjects } from '../app/subjects';
+import { StarMeter } from '../components/StarMeter';
 import { ProgressRing } from '../design-system/ProgressRing';
 import { FsrsScheduler } from '../learning/fsrs/scheduler';
+import { attemptsOnDay, dailyStars, dailyStarTotal } from '../learning/gamification/dailyStars';
 import { disciplineForLearningUnitId, learningCatalog } from '../learning/sessions/catalog';
 import { selectDailySession } from '../learning/sessions/sessionSelector';
 import type { DisciplineId } from '../learning/types';
@@ -81,9 +83,8 @@ export function HomePage() {
     1,
     Math.round(plan.reduce((sum, unit) => sum + unit.estimatedSeconds, 0) / 60)
   );
-  const attemptsToday = snapshot.attempts.filter(
-    (attempt) => attempt.attemptedAt.slice(0, 10) === today.toISOString().slice(0, 10)
-  );
+  const attemptsToday = attemptsOnDay(snapshot.attempts, today);
+  const starsToday = dailyStarTotal(snapshot.attempts, today);
   const masteredByDiscipline = (id: DisciplineId) => {
     const records = snapshot.mastery.filter((item) => item.discipline === id);
     return records.length
@@ -124,8 +125,8 @@ export function HomePage() {
               <dd>{due.length}</dd>
             </div>
             <div>
-              <dt>Gennemført i dag</dt>
-              <dd>{attemptsToday.length}</dd>
+              <dt>Dagens stjerner</dt>
+              <dd>{starsToday}/15</dd>
             </div>
             <div>
               <dt>Ny læring i planen</dt>
@@ -156,12 +157,14 @@ export function HomePage() {
           const subjectDue = due.filter(
             (card) => disciplineForLearningUnitId(card.learningUnitId) === subject.id
           ).length;
+          const subjectStars = dailyStars(snapshot.attempts, subject.id, today);
           const copy = (
             <div className="subject-card-copy">
               <p className="eyebrow">{subject.eyebrow}</p>
               <h3>{subject.title}</h3>
               <p>{subject.description}</p>
               <footer>
+                <StarMeter stars={subjectStars} compact />
                 <span>{progress ? `${Math.round(progress * 100)}% styrke` : 'Ikke startet'}</span>
                 <span>{subjectDue ? `${subjectDue} klar nu` : 'Direkte træning'}</span>
               </footer>

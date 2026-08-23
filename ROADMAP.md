@@ -38,13 +38,17 @@ this curriculum.
 
 ## Milestone 4 — Pi 100
 
-Status: next active milestone.
+Status: implemented and locally verified on 2026-08-23. The initial working boundary is Peter's
+known first 30 decimals; progression then opens one five-digit block at a time. Decimal 100 is a
+milestone rather than a curriculum ceiling, with 500 source-verified decimals currently bundled.
 
 - Turn the short scaffold into a scored adaptive diagnostic.
 - Teach five-digit chunks, ten-digit landmarks, cross-boundary bridges, previous/next, gaps, and random-access prompts.
 - Visualize robust territory and weak transitions from actual attempts.
 
 ## Milestone 5 — Hørelære
+
+Status: next active milestone.
 
 - Intervals ascending, descending, harmonic, recognition, and construction across generated roots/timbres.
 - Scale degrees, triads, seventh chords, melodic memory, notation, and instrument-specific geography.
@@ -56,7 +60,11 @@ Status: next active milestone.
 - Calibrate session duration from observed response times.
 - Improve mixed-session sequencing, skill-specific mastery, streak calculation, confusion matrices, and weak-area explanations.
 - Calibrate FSRS retention and grading from sufficient longitudinal outcomes; compare it with half-life regression only when there is enough local data for a meaningful evaluation.
-- Add an optional, non-punitive motivation layer with completed-session feedback, mastery milestones, and streak grace. Hints and teaching mode must never be punished.
+- Extend the non-punitive motivation layer with completed-session feedback, mastery milestones, and
+  streak grace. Hints and teaching mode must never be punished.
+- The first motivation layer is already active: each completed attempt earns one of three daily
+  effort stars per subject regardless of correctness or hint use. Milestone 6 should evaluate the
+  target, add streak grace, and avoid turning stars into a rigid quota.
 - Add session continuation/completion across routes.
 
 ## Milestone 7 — Advanced subjects

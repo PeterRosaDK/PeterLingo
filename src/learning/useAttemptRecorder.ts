@@ -27,12 +27,14 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
       answerRevealed,
       stage,
       fluentThresholdMs,
+      parameterOverrides,
     }: {
       correct: boolean;
       hintsUsed: number;
       answerRevealed: boolean;
       stage: LearningStage;
       fluentThresholdMs: number;
+      parameterOverrides?: Record<string, unknown>;
     }) => {
       const now = performance.now();
       const responseTimeMs = now - (startedAt.current ?? now);
@@ -45,7 +47,10 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
         stage,
         fluentThresholdMs,
       });
-      const attempt = createAttempt(exercise, {
+      const recordedExercise = parameterOverrides
+        ? { ...exercise, parameters: { ...exercise.parameters, ...parameterOverrides } }
+        : exercise;
+      const attempt = createAttempt(recordedExercise, {
         correct,
         responseTimeMs,
         hintsUsed,

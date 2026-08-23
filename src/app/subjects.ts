@@ -36,9 +36,9 @@ export const subjects: SubjectDefinition[] = [
   },
   {
     id: 'pi',
-    eyebrow: '100 decimaler',
+    eyebrow: 'Fem cifre ad gangen',
     title: 'Pi',
-    description: 'Lær sikre bidder, overgange og at begynde et vilkårligt sted.',
+    description: 'Udvid sikre bidder og overgange uden et fast loft på 100.',
     route: '/fag/pi',
     accent: 'violet',
   },
