@@ -38,7 +38,7 @@ export const subjects: SubjectDefinition[] = [
     id: 'pi',
     eyebrow: '100 decimaler',
     title: 'Pi',
-    description: 'Lær robuste bidder, broer og tilfældig adgang.',
+    description: 'Lær sikre bidder, overgange og at begynde et vilkårligt sted.',
     route: '/fag/pi',
     accent: 'violet',
   },

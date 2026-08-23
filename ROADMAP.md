@@ -8,7 +8,7 @@ Physical GoCube validation is deliberately still open.
 
 ## Milestone 1 — Hardware & Roux
 
-Status: paused pending the manufacturer's response to the deeply discharged GoCube battery. Do not bypass the charger's battery-safety protection. If the hardware cannot be restored or replaced, retain the existing mock diagnostics and defer physical Roux training without blocking the rest of PeterLingo.
+Status: paused pending the manufacturer's response to the deeply discharged GoCube battery. Do not bypass the charger's battery-safety protection. Roux remains a permanent PeterLingo subject; if this GoCube cannot be restored, physical work resumes with a replacement cube. Until then, retain the existing mock diagnostics and let the other subjects progress.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
@@ -18,13 +18,16 @@ Status: paused pending the manufacturer's response to the deeply discharged GoCu
 
 ## Milestone 2 — Doomsday curriculum
 
-Status: next active milestone while Milestone 1 is externally blocked.
+Status: implemented and locally verified on 2026-08-23 while Milestone 1 is externally blocked.
 
 - Complete weekday numbering, century anchors, year arithmetic, month anchors, leap years, and arbitrary-date progression.
+- Give generated date practice an initial 1975–2000 focus, matching the birth dates people are most likely to ask Peter about, while keeping the algorithm Gregorian and general.
 - Add generated weak-step drills and configurable fluency thresholds.
 - Keep modern Gregorian as the explicit default.
 
 ## Milestone 3 — BCS to MBCS
+
+Status: next active milestone. The complete numbered BCS stack overview is already available as a practical setup aid.
 
 - Separate suit values, rank reduction, suit relationship, full next/previous card, and multi-card-forward units.
 - Introduce independent `card-to-position:*` and `position-to-card:*` units.

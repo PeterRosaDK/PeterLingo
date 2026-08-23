@@ -18,7 +18,7 @@ LearningUnit → module exercise generator → GeneratedExercise
 
 Examples:
 
-- `doomsday:century-anchor-1900` can generate many dates.
+- Doomsday uses six separate units from `doomsday:weekday-numbering` through `doomsday:complete-date`, each with generated examples and its own fluency threshold.
 - `music-ear:interval:3:descending` can use different roots.
 - `cards:bcs-next` trains the algorithm; future card-to-position and position-to-card units remain distinct.
 - Pi windows can be fixed learning units because exact digits are the content.

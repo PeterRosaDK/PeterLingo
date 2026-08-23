@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateDoomsday, centuryAnchor, GregorianCalendar } from './doomsday';
+import { calculateDoomsday, centuryAnchor, GregorianCalendar, monthAnchorDay } from './doomsday';
 
 describe('Gregorian Doomsday', () => {
   const calendar = new GregorianCalendar();
@@ -26,6 +26,15 @@ describe('Gregorian Doomsday', () => {
     expect(centuryAnchor(1900)).toBe(3);
     expect(centuryAnchor(2000)).toBe(2);
     expect(centuryAnchor(2100)).toBe(0);
+  });
+
+  it('uses the correct month anchors on both sides of leap day', () => {
+    expect(monthAnchorDay(1, false)).toBe(3);
+    expect(monthAnchorDay(2, false)).toBe(28);
+    expect(monthAnchorDay(1, true)).toBe(4);
+    expect(monthAnchorDay(2, true)).toBe(29);
+    expect(monthAnchorDay(3, true)).toBe(14);
+    expect(monthAnchorDay(12, false)).toBe(12);
   });
 
   it('exposes the mental calculation parts', () => {

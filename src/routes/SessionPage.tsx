@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLearningData } from '../app/DataProvider';
 import { subjectById } from '../app/subjects';
+import { learningStageLabel } from '../learning/stages';
 import { learningCatalog } from '../learning/sessions/catalog';
 import { selectDailySession } from '../learning/sessions/sessionSelector';
 
@@ -56,7 +57,7 @@ export function SessionPage() {
               <span className={`subject-dot ${subject.accent}`} />
               <div>
                 <small>
-                  {subject.title} · {unit.stage}
+                  {subject.title} · {learningStageLabel(unit.stage)}
                 </small>
                 <strong>{unit.title}</strong>
               </div>

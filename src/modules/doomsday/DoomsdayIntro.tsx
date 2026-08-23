@@ -15,12 +15,22 @@ export function DoomsdayIntro() {
       <p className="method-lead">
         “Dommedag” er bare navnet på den ugedag, som en række lette datoer deler i et bestemt år.
         Når du har fundet årets dommedag, går du fra en nærliggende huskedato til den dato, du leder
-        efter.
+        efter. Metoden er seks små færdigheder; du behøver ikke lære hele regnestykket på én gang.
       </p>
 
       <div className="method-steps">
         <article>
           <b>1</b>
+          <div>
+            <h3>Giv ugedagene tal</h3>
+            <p>
+              Søndag er 0, mandag 1 og så videre til lørdag 6. Tallene gør det muligt at flytte
+              rundt på ugen med et lille plusstykke.
+            </p>
+          </div>
+        </article>
+        <article>
+          <b>2</b>
           <div>
             <h3>Find århundredets faste anker</h3>
             <p>Det er dit udgangspunkt. For år i 2000-tallet begynder du altid på tirsdag.</p>
@@ -35,7 +45,7 @@ export function DoomsdayIntro() {
           </div>
         </article>
         <article>
-          <b>2</b>
+          <b>3</b>
           <div>
             <h3>Brug årets sidste to cifre</h3>
             <p>
@@ -46,7 +56,7 @@ export function DoomsdayIntro() {
           </div>
         </article>
         <article>
-          <b>3</b>
+          <b>4</b>
           <div>
             <h3>Vælg en huskedato i måneden</h3>
             <p>
@@ -56,7 +66,17 @@ export function DoomsdayIntro() {
           </div>
         </article>
         <article>
-          <b>4</b>
+          <b>5</b>
+          <div>
+            <h3>Kontrollér januar og februar</h3>
+            <p>
+              I normale år er 3. januar og 28. februar huskedatoer. I skudår flyttes de til 4.
+              januar og 29. februar. Et århundredeår er kun skudår, hvis det kan deles med 400.
+            </p>
+          </div>
+        </article>
+        <article>
+          <b>6</b>
           <div>
             <h3>Gå til måldatoen</h3>
             <p>

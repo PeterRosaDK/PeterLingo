@@ -37,7 +37,9 @@ export function PiPage() {
     event.preventDefault();
     const correct = isPiAnswer(value, exercise.parameters.answer);
     setFeedback(
-      correct ? 'Ja — den overgang holder.' : `Det rigtige vindue er ${exercise.parameters.answer}.`
+      correct
+        ? 'Ja — de fem cifre er rigtige.'
+        : `De rigtige fem cifre er ${exercise.parameters.answer}.`
     );
     await record({
       correct,
@@ -64,7 +66,7 @@ export function PiPage() {
         <div>
           <p className="eyebrow">100 decimaler</p>
           <h1>Pi</h1>
-          <p>Ikke kun forfra. Du lærer også at lande sikkert midt i strømmen.</p>
+          <p>Ikke kun forfra. Du lærer også at begynde sikkert midt i talrækken.</p>
         </div>
         <div className="pi-mark">π</div>
       </header>
@@ -73,7 +75,7 @@ export function PiPage() {
           className={kind === 'continue' ? 'active' : ''}
           onClick={() => switchExercise('continue')}
         >
-          Fortsæt et sted fra
+          Fortsæt midt i rækken
         </button>
         <button
           className={kind === 'fill-gap' ? 'active' : ''}
@@ -85,7 +87,7 @@ export function PiPage() {
           className={kind === 'prefix-run' ? 'active' : ''}
           onClick={() => switchExercise('prefix-run')}
         >
-          Kør fra starten
+          Skriv fra starten
         </button>
       </div>
       {kind === 'prefix-run' ? (
@@ -121,7 +123,7 @@ export function PiPage() {
             <div className="feedback" role="status">
               {feedback}
               <button type="button" className="button primary" onClick={next}>
-                Nyt vindue
+                Ny ciffergruppe
               </button>
             </div>
           )}
@@ -129,11 +131,11 @@ export function PiPage() {
       )}
       <section className="diagnostic-card">
         <div>
-          <p className="eyebrow">Kort startdiagnose</p>
-          <h2>Det du allerede kan, skal først bevises let</h2>
+          <p className="eyebrow">Kort indledende prøve</p>
+          <h2>Find ud af, hvad der allerede sidder fast</h2>
           <p>
-            {piDiagnosticPrompts.length} små vinkler tester fortsættelse, indeks og broer. Intet
-            markeres mestret på forhånd.
+            {piDiagnosticPrompts.length} små opgaver undersøger, om du kan fortsætte, finde en
+            bestemt placering og huske overgangene. Intet regnes som lært på forhånd.
           </p>
         </div>
         <span className="status-pill">Klar · ikke gennemført</span>

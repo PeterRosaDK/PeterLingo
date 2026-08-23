@@ -14,9 +14,11 @@ test('Doomsday exercise gives an answer and a progressive hint', async ({ page }
   await expect(page.getByRole('heading', { name: 'Doomsday', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sådan finder du ugedagen' })).toBeVisible();
   await expect(page.getByText('23. august 2026')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Hvilket tal|Hvilken ugedag/ })).toBeVisible();
+  await page.getByRole('button', { name: /Hele datoen/ }).click();
   await page.getByRole('button', { name: 'Giv mig et hint' }).click();
   await expect(page.getByText('Start med århundredet', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'søndag' }).click();
+  await page.getByRole('button', { name: 'søndag', exact: true }).click();
   await expect(page.getByRole('status')).toBeVisible();
 });
 
@@ -25,6 +27,9 @@ test('BCS drill uses real local card assets', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Kortene kommer tilbage' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Hvad er kulørværdien?' })).toBeVisible();
   await expect(page.getByText('Spar', { exact: true })).toBeVisible();
+  await page.getByText('Vis hele BCS-rækkefølgen · 52 kort').click();
+  await expect(page.locator('.bcs-stack-grid li')).toHaveCount(52);
+  await expect(page.getByText(/begynd med nummer 52/i)).toBeVisible();
   const card = page.locator('.current-card img');
   await expect(card).toBeVisible();
   await expect(card).toHaveAttribute('src', /assets\/cards\/fronts/);
@@ -40,14 +45,14 @@ test('Pi has a non-prefix exercise and gap mode', async ({ page }) => {
   await expect(page.getByText('Position 24–28', { exact: true })).toBeVisible();
   await page.getByLabel('Skriv fem cifre').fill('33832');
   await page.getByRole('button', { name: 'Tjek' }).click();
-  await expect(page.getByRole('status')).toContainText('overgang');
+  await expect(page.getByRole('status')).toContainText('de fem cifre er rigtige');
 });
 
 test('Pi prefix run stops at the first wrong digit without showing the answer', async ({
   page,
 }) => {
   await page.goto('/fag/pi');
-  await page.getByRole('button', { name: 'Kør fra starten' }).click();
+  await page.getByRole('button', { name: 'Skriv fra starten' }).click();
   const input = page.getByLabel('Decimaler af pi fra begyndelsen');
   await input.fill('14158');
   await expect(page.getByRole('status')).toContainText('Stop ved decimal 5');

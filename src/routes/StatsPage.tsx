@@ -44,7 +44,7 @@ export function StatsPage() {
           <small>svartid</small>
         </article>
         <article>
-          <span>Hints</span>
+          <span>Hjælp brugt</span>
           <strong>{hintRate.toFixed(1)}</strong>
           <small>pr. forsøg</small>
         </article>

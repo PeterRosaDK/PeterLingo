@@ -13,6 +13,7 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Clarified that Beacio is required on iPhone/iPad Safari, not on Mac Chrome/Edge.
 - Documented the planned FSRS evaluation, non-punitive motivation layer, subject-module registry, and five candidate expansion subjects.
 - Marked physical GoCube/Roux work as paused pending manufacturer support and promoted Doomsday to the next active milestone.
+- Expanded Doomsday into six adaptive learning steps with 1975–2000 date practice, added the complete physical BCS stack overview, and improved several literal Danish UI translations.
 
 ## [0.1.0] - 2026-08-23
 

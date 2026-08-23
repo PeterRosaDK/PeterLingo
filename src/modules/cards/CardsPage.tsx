@@ -18,6 +18,7 @@ import {
 } from './bcs';
 import { PlayingCard } from './PlayingCard';
 import { BcsIntro } from './BcsIntro';
+import { BcsStackOverview } from './BcsStackOverview';
 
 function makeExercise(card: CardCode): GeneratedExercise<{ current: CardCode; answer: CardCode }> {
   const value = parseCard(card);
@@ -123,6 +124,7 @@ export function CardsPage() {
         </div>
       </header>
       <BcsIntro />
+      <BcsStackOverview />
       <ExerciseShell
         eyebrow="BCS · næste kort"
         title={exercise.prompt}

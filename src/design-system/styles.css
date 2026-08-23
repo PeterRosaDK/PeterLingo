@@ -910,6 +910,146 @@ p {
   color: var(--ink);
   font-size: 1.25rem;
 }
+.doomsday-curriculum > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.doomsday-curriculum > header p:not(.eyebrow) {
+  max-width: 680px;
+  margin-bottom: 0;
+}
+.curriculum-progress {
+  min-width: 112px;
+  display: grid;
+  justify-items: center;
+  padding: 14px 17px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--citrine) 15%, var(--bg));
+}
+.curriculum-progress strong {
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 1.8rem;
+}
+.curriculum-progress span {
+  color: var(--ink-soft);
+  font-size: 0.65rem;
+}
+.curriculum-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.curriculum-step {
+  min-height: 142px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: start;
+  gap: 11px;
+  padding: 17px;
+  text-align: left;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.curriculum-step:hover,
+.curriculum-step.active {
+  border-color: color-mix(in srgb, var(--citrine) 70%, var(--line));
+  background: color-mix(in srgb, var(--citrine) 10%, var(--surface));
+}
+.curriculum-step.active {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--citrine) 45%, transparent);
+}
+.curriculum-step > b {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.curriculum-step > span {
+  display: grid;
+  gap: 6px;
+}
+.curriculum-step span > strong {
+  font-size: 0.9rem;
+}
+.curriculum-step span > small {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+.curriculum-step span > i {
+  color: var(--brand-2);
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 800;
+}
+.curriculum-step > em {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--citrine);
+  color: #2e3028;
+  font-size: 0.55rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.doomsday-question-object {
+  width: min(280px, 72vw);
+  min-height: 230px;
+  margin: 10px auto 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(29, 43, 38, 0.12);
+  overflow: hidden;
+}
+.doomsday-question-object span {
+  width: 100%;
+  margin-bottom: auto;
+  padding: 15px;
+  text-align: center;
+  background: var(--citrine);
+  color: #2e3028;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.doomsday-question-object strong {
+  padding: 20px 14px 4px;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: clamp(3.4rem, 10vw, 6rem);
+  line-height: 1;
+  text-transform: capitalize;
+}
+.doomsday-question-object small {
+  margin: auto 0 22px;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+}
+.doomsday-answers:not(.weekdays) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.feedback.incorrect {
+  background: color-mix(in srgb, var(--coral) 14%, var(--bg));
+}
 .exercise-shell {
   margin-top: 28px;
 }
@@ -1283,6 +1423,72 @@ p {
   padding: 0;
   border: 0;
   box-shadow: none;
+}
+.bcs-stack-overview summary {
+  cursor: pointer;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+.bcs-stack-overview[open] summary {
+  margin-bottom: 26px;
+}
+.stack-instructions {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  padding: 22px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--coral) 12%, var(--bg));
+}
+.stack-instructions h2 {
+  font-size: 1.45rem;
+}
+.stack-instructions p {
+  margin-bottom: 0;
+}
+.stack-instructions ol {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  align-content: center;
+  gap: 9px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.bcs-stack-grid {
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  list-style: none;
+}
+.bcs-stack-grid li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 28px 58px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+.bcs-stack-grid li > b {
+  color: var(--coral);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 1.1rem;
+  text-align: center;
+}
+.bcs-stack-grid li > span:last-child {
+  min-width: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.bcs-stack-grid .playing-card.small {
+  width: 58px;
 }
 .bcs-foundations {
   display: grid;
@@ -2237,8 +2443,24 @@ p {
   .platform-guidance {
     grid-template-columns: 1fr;
   }
+  .stack-instructions {
+    grid-template-columns: 1fr;
+  }
+  .bcs-stack-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .worked-example {
     grid-template-columns: 1fr;
+  }
+  .doomsday-curriculum > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .curriculum-progress {
+    width: max-content;
+  }
+  .curriculum-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .stage-heading {
     align-items: flex-start;
@@ -2392,6 +2614,13 @@ p {
     align-items: stretch;
     flex-direction: column;
   }
+  .curriculum-grid,
+  .doomsday-answers:not(.weekdays) {
+    grid-template-columns: 1fr;
+  }
+  .curriculum-step {
+    min-height: 0;
+  }
   .pi-page > .segmented {
     align-items: stretch;
     flex-direction: column;
@@ -2406,6 +2635,9 @@ p {
   .suit-value-grid,
   .suit-rule-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .bcs-stack-grid {
+    grid-template-columns: 1fr;
   }
   .card-fan {
     transform: scale(0.85);
