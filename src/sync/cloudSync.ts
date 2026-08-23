@@ -48,9 +48,11 @@ export async function synchronizeRepository(
   try {
     response = await request('/api/sync', {
       method: 'POST',
+      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
         'X-PeterLingo-Intent': 'sync-v1',
+        'X-Requested-With': 'XMLHttpRequest',
       },
       body: JSON.stringify({ attempts: outgoing.attempts }),
     });
