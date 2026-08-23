@@ -31,7 +31,9 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local development URL, normally `http://localhost:5173`. There are no secrets and no backend.
+Vite prints the local development URL, normally `http://localhost:5173`. Plain Vite development
+keeps data local. Pages Function development additionally needs a local D1 binding and the
+variables listed in `.dev.vars.example`.
 
 ## Quality commands
 
@@ -69,16 +71,26 @@ On iPhone/iPad:
 
 See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. The physical path is implemented but not yet hardware-verified.
 
-## Local data
+## Learning data
 
-Substantive data lives in IndexedDB, behind `LearningRepository`; the UI never accesses the database directly. Settings, FSRS state, mastery, attempts, response times, hints, sessions, diagnostics, and hardware preferences can be exported/imported as versioned JSON from **Indstillinger**.
+Substantive data lives first in IndexedDB, behind `LearningRepository`; the UI never accesses the
+database directly. Settings, FSRS state, mastery, attempts, response times, hints, sessions,
+diagnostics, and hardware preferences can be exported/imported as versioned JSON from
+**Indstillinger**.
 
-Clearing site data removes local progress unless it was exported. IndexedDB is separate for
-every browser, device, and origin, so `peterlingo.pages.dev` and a future
-`peterlingo.petergpt.dk` do not automatically share progress. There is currently no account,
-analytics, tracking, microphone access, or cloud synchronization. Until authenticated sync is
-implemented, use JSON export/import as a manual backup and do not treat one device as a complete
-multi-device history.
+The cloud-sync implementation sends immutable attempts through an authenticated Pages Function
+to D1. Each sync takes the union of server and device UUIDs, then deterministically rebuilds FSRS
+and mastery from the merged chronology. A request reloads IndexedDB after its network round trip,
+so an attempt made while syncing cannot be overwritten. Offline work remains local and retries at
+the next app start, explicit sync, or browser `online` event.
+
+Only learning attempts and their derived progression synchronize in this first version. Settings,
+session metadata, diagnostics, and hardware preferences remain device-local but are included in
+JSON export. Clearing site data before a successful cloud sync can therefore still remove local
+changes. IndexedDB also remains separate for each origin; migrate pre-cloud progress by exporting
+JSON on the old origin and importing it on the protected production origin.
+
+There is no analytics, tracking, microphone access, or general PeterGPT account database.
 
 ## Architecture and roadmap
 

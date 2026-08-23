@@ -63,7 +63,9 @@ export class FsrsScheduler implements Scheduler {
   private readonly engine = fsrs({
     request_retention: 0.9,
     maximum_interval: 36_500,
-    enable_fuzz: true,
+    // Cloud sync rebuilds derived schedules from the immutable attempt log.
+    // Fuzz would make that replay differ between devices.
+    enable_fuzz: false,
     enable_short_term: true,
   });
 

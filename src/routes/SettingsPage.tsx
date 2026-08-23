@@ -4,7 +4,7 @@ import { exportLearningData, importLearningData } from '../persistence/dataTrans
 import type { Settings } from '../persistence/types';
 
 export function SettingsPage() {
-  const { snapshot, repository, refresh } = useLearningData();
+  const { snapshot, repository, refresh, syncNow, syncStatus } = useLearningData();
   const fileInput = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<string | null>(null);
   const save = async (settings: Settings) => {
@@ -26,6 +26,7 @@ export function SettingsPage() {
     try {
       await importLearningData(repository, await file.text());
       await refresh();
+      void syncNow();
       setStatus('Data importeret.');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Import mislykkedes.');
@@ -46,9 +47,12 @@ export function SettingsPage() {
   return (
     <div className="page settings-page">
       <header className="page-heading">
-        <p className="eyebrow">Din lokale PeterLingo</p>
+        <p className="eyebrow">Din PeterLingo</p>
         <h1>Indstillinger</h1>
-        <p>Alt gemmes i denne browser. Eksportér en backup, før du rydder browserdata.</p>
+        <p>
+          Forsøg gemmes straks i browseren og synkroniseres med din private cloud, når forbindelsen
+          er klar.
+        </p>
       </header>
       <section className="settings-section">
         <h2>Udseende</h2>
@@ -116,7 +120,20 @@ export function SettingsPage() {
         </label>
       </section>
       <section className="settings-section data-settings">
-        <h2>Data og backup</h2>
+        <h2>Synkronisering og backup</h2>
+        <p>
+          Status: <strong>{syncLabels[syncStatus]}</strong>. Offline arbejde bliver på enheden og
+          sendes automatisk, næste gang PeterLingo er online.
+        </p>
+        <div className="button-row">
+          <button
+            className="button secondary"
+            disabled={syncStatus === 'syncing'}
+            onClick={() => void syncNow()}
+          >
+            Synkronisér nu
+          </button>
+        </div>
         <p>
           JSON indeholder indstillinger, FSRS-state, forsøg, svartider, hints, sessioner, diagnoser
           og hardwarepræferencer.
@@ -149,3 +166,13 @@ export function SettingsPage() {
     </div>
   );
 }
+
+const syncLabels = {
+  local: 'gemt lokalt',
+  syncing: 'synkroniserer …',
+  synced: 'synkroniseret',
+  offline: 'offline · gemt lokalt',
+  'auth-required': 'cloudlogin kræves',
+  unavailable: 'cloudsynkronisering er ikke aktiveret på denne adresse',
+  error: 'synkronisering fejlede · data er gemt lokalt',
+} as const;

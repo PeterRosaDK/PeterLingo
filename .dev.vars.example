@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local Pages Function development. Never commit real values.
+ACCESS_TEAM_DOMAIN="your-team.cloudflareaccess.com"
+ACCESS_AUD="your-access-application-audience"
+ALLOWED_EMAIL="your-approved-email@example.com"

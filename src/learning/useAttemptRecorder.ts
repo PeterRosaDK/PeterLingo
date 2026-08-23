@@ -9,7 +9,7 @@ const scheduler = new FsrsScheduler();
 const grading = new DefaultGradingPolicy();
 
 export function useAttemptRecorder(exercise: GeneratedExercise) {
-  const { repository, snapshot, refresh } = useLearningData();
+  const { repository, snapshot, refresh, syncNow } = useLearningData();
   const startedAt = useRef<number | null>(null);
 
   useEffect(() => {
@@ -47,9 +47,14 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
         stage,
         fluentThresholdMs,
       });
-      const recordedExercise = parameterOverrides
-        ? { ...exercise, parameters: { ...exercise.parameters, ...parameterOverrides } }
-        : exercise;
+      const recordedExercise = {
+        ...exercise,
+        parameters: {
+          ...exercise.parameters,
+          ...parameterOverrides,
+          learningStage: stage,
+        },
+      };
       const attempt = createAttempt(recordedExercise, {
         correct,
         responseTimeMs,
@@ -70,9 +75,10 @@ export function useAttemptRecorder(exercise: GeneratedExercise) {
         updatedAt: new Date().toISOString(),
       });
       await refresh();
+      void syncNow();
       return attempt;
     },
-    [exercise, refresh, repository, snapshot.scheduledUnits]
+    [exercise, refresh, repository, snapshot.scheduledUnits, syncNow]
   );
 
   return { record, restartTimer };

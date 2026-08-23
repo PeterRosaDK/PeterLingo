@@ -6,6 +6,14 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Added offline-first multi-device progress sync: immutable attempts merge through an
+  Access-protected Pages Function and D1, while deterministic FSRS/mastery replay prevents one
+  device from overwriting another.
+- Added visible sync/offline/auth states, automatic retry, explicit manual sync, request limits,
+  same-origin mutation checks, and tests for duplicate delivery, two-device union, deterministic
+  replay, malformed cloud data, and attempts created during an active request.
+- Updated Vite to 7.3.6 and added pinned Cloudflare tooling; the dependency audit now reports no
+  known vulnerabilities.
 - Documented the verified `peterlingo.pages.dev` Direct Upload and made authenticated D1 sync a
   release gate before custom-domain, multi-device use; IndexedDB remains the offline cache.
 - Expanded Hørelære with a four-step introduction and adaptive daily recognition of little/major

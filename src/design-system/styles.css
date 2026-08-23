@@ -175,6 +175,16 @@ p {
   border-radius: 50%;
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--mint) 16%, transparent);
 }
+.local-badge.sync-syncing i {
+  background: var(--citrine);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--citrine) 18%, transparent);
+}
+.local-badge.sync-offline i,
+.local-badge.sync-auth-required i,
+.local-badge.sync-error i {
+  background: var(--coral);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--coral) 16%, transparent);
+}
 .page {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;

@@ -67,12 +67,19 @@ harmonisk. Et kort firetrins læringsforløb fører til en adaptiv dagsrunde på
 
 Before ordinary Milestone 6 work, complete the multi-device persistence gate:
 
-- Add Cloudflare D1 behind a small Pages Function as the durable shared learning store.
+Implementation status: the offline-first attempt log, deterministic merge/replay, D1 migration,
+Access-JWT validation, UI state, and automated conflict tests are implemented locally. Cloudflare
+provisioning and the physical multi-device test matrix remain before the gate is complete.
+
+- Add Cloudflare D1 behind a small Pages Function as the durable shared learning store. _(Code and
+  migration implemented; cloud binding pending.)_
 - Protect reads and writes with Cloudflare Access and server-side token validation for Peter's
   approved identity.
 - Retain IndexedDB as an offline cache; queue local attempts and sync when connectivity returns.
+  _(Implemented.)_
 - Merge immutable attempts by stable ID and rebuild schedule/mastery from the merged history;
   never resolve conflicts by replacing the newest device with an older whole snapshot.
+  _(Implemented and unit-tested.)_
 - Test first-device migration, Mac/PC/iPhone/iPad convergence, offline replay, duplicate delivery,
   custom-domain origin migration, JSON export/recovery, and denied unauthenticated access.
 - Do not activate `peterlingo.petergpt.dk` for real sessions until this gate passes.

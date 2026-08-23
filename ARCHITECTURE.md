@@ -2,7 +2,10 @@
 
 ## Product boundary
 
-PeterLingo 0.1 is a static, browser-first PWA. It has no backend, authentication, analytics, tracking, AI API, microphone input, deployment credentials, or Mac Mini service. Generated production files can be hosted at the root of `peterlingo.petergpt.dk`.
+PeterLingo is a browser-first PWA with a narrow Cloudflare backend for private learning-history
+sync. It has no analytics, tracking, AI API, microphone input, general account database,
+deployment credentials in the repository, or Mac Mini service. The production build and Pages
+Function are hosted at the root of `peterlingo.petergpt.dk`.
 
 ## Shared learning units
 
@@ -55,17 +58,25 @@ affect the star, so the motivation layer cannot punish teaching-mode work.
 
 `LearningRepository` is the domain-facing port. `IndexedDbLearningRepository` is the browser adapter and `InMemoryLearningRepository` supports deterministic tests. The IndexedDB schema is versioned; export/import validates the same snapshot contract.
 
-IndexedDB is an offline cache, not an adequate sole source for Peter's planned use across Mac,
-PC, iPhone, and iPad. The next persistence phase should add an authenticated Pages Function and
-Cloudflare D1 as the durable shared source while keeping exercises usable offline. Immutable
-attempts should merge by stable ID and timestamp; scheduled state and mastery should be rebuilt
-from the merged attempt history rather than allowing one device's complete snapshot to overwrite
-another. Settings and session metadata need explicit version/conflict rules.
+IndexedDB is the immediate offline store; Cloudflare D1 is the durable shared source for Peter's
+planned use across Mac, PC, iPhone, and iPad. An authenticated Pages Function accepts immutable
+attempts, inserts each `(owner, UUID)` once, and returns the shared chronology. The client merges
+that response with a freshly reloaded local snapshot, then deterministically rebuilds scheduled
+state and mastery. One device's complete snapshot therefore never overwrites another.
 
-Cloudflare Access is the preferred authentication boundary for this single-user app. Its token
-must be verified by the server-side Function; a client-supplied email header is not sufficient.
-The custom domain should remain gated until authentication, initial local-to-cloud migration,
-multi-device convergence, export/recovery, and offline replay have been tested.
+The first sync contract deliberately excludes settings, session metadata, diagnostics, and
+hardware preferences. Those remain device-local and portable through JSON until each has an
+explicit conflict rule. Attempts record the PeterLingo learning stage needed for replay. FSRS fuzz
+is disabled so identical histories produce identical schedules on every device.
+
+Cloudflare Access is the authentication boundary for this single-user app. The Function verifies
+the `Cf-Access-Jwt-Assertion` signature, issuer, application audience, and approved email against
+Access's JWKS; a client-supplied email header is never trusted. Same-origin mutation checks, an
+explicit intent header, bounded request sizes, and immutable inserts add defense in depth.
+
+The custom domain remains gated until the D1 binding and Access application are configured and
+authentication, initial local-to-cloud migration, multi-device convergence, export/recovery, and
+offline replay have been tested.
 
 ## Module boundaries
 
@@ -116,4 +127,6 @@ VexFlow renders short conventional notation fragments. PeterLingo is not a notat
 - All card art and application assets are local; no runtime CDN is required.
 - No external font request is made.
 - Semantic buttons, labels, focus indication, non-color text, sufficient contrast, keyboard navigation, responsive layouts, and reduced-motion rules are part of the design system.
-- BLE data is handled locally by the browser/Beacio path. PeterLingo sends no learning or cube data to a server.
+- BLE and cube data stay local. PeterLingo sends learning attempts, including generated exercise
+  parameters, response time, hint use, result, and timestamp, to its private D1 store; no cube data
+  is included.
