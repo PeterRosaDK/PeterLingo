@@ -11,6 +11,7 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Hid the complete Pi reference by default and added an unassisted prefix run that stops at the first wrong digit.
 - Renamed the user-facing subject Musikøre to Hørelære while retaining stable internal learning IDs.
 - Clarified that Beacio is required on iPhone/iPad Safari, not on Mac Chrome/Edge.
+- Documented the planned FSRS evaluation, non-punitive motivation layer, subject-module registry, and five candidate expansion subjects.
 
 ## [0.1.0] - 2026-08-23
 

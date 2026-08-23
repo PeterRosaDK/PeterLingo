@@ -43,6 +43,8 @@ Physical GoCube validation is deliberately still open.
 
 - Calibrate session duration from observed response times.
 - Improve mixed-session sequencing, skill-specific mastery, streak calculation, confusion matrices, and weak-area explanations.
+- Calibrate FSRS retention and grading from sufficient longitudinal outcomes; compare it with half-life regression only when there is enough local data for a meaningful evaluation.
+- Add an optional, non-punitive motivation layer with completed-session feedback, mastery milestones, and streak grace. Hints and teaching mode must never be punished.
 - Add session continuation/completion across routes.
 
 ## Milestone 7 — Advanced subjects
@@ -53,3 +55,21 @@ Physical GoCube validation is deliberately still open.
 - harmonic dictation and chorale-harmony refreshers
 - optional MIDI input
 - carefully designed cloud sync
+
+## Milestone 8 — Subject expansion and module registry
+
+Before scaling from five to ten subjects, make subject registration explicit without forcing very different exercises into one generic interface:
+
+- Introduce a typed subject-module registry for identity, title, route, visual metadata, learning-unit catalogue, and exercise entry points.
+- Replace hard-coded subject routing and focus-weight defaults while retaining stable learning-unit IDs and the shared FSRS, attempt, mastery, and session contracts.
+- Add a versioned persistence migration and backward-compatibility tests for existing IndexedDB data and JSON exports.
+- Keep interaction surfaces subject-specific: flashcards, maps, equations, chessboards, and code questions can share the learning engine without sharing one exercise UI.
+- Prove the extension boundary with one new subject end to end before adding the remaining four.
+
+Candidate subject tracks:
+
+- Chinese flashcards: character, meaning, pronunciation, and recognition/production as distinct learning units.
+- Geography tests: countries, capitals, flags, regions, and map placement in both directions.
+- Mathematics problems: concept-based generated exercises with step diagnostics rather than one card per set of numbers.
+- Chess openings: position-to-move and move-to-plan units with legal-move validation and a board-specific interface.
+- Python programming questions: concepts, output prediction, code reading, and debugging; arbitrary code execution remains out of scope until separately sandboxed and designed.
