@@ -12,6 +12,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Split Bluetooth feedback into chooser, advertisement, GATT connection, permission, and failure
   states, with targeted guidance for a sleeping cube, a cancelled chooser, blocked permission, or a
   cube already occupied by another app or browser tab.
+- Deployed remembered GoCube reconnection as exact revision `9f248ab` at
+  `https://69bfc8c8.peterlingo.pages.dev`.
 - Kept **Læs cuben igen** visible beside the physical facelet net even when Bluetooth is
   disconnected, with a clear disabled-state explanation instead of making the action disappear.
 - Deployed that GoCube reread correction as exact revision `9ea8842` at
