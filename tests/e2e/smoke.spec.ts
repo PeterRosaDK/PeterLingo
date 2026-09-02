@@ -174,6 +174,25 @@ test('manual cube state entry cycles stickers and reports color-count difference
   expect(await page.getByLabel('Teknisk 54-tegnskode').inputValue()).toMatch(/^RU{8}R{9}/);
 });
 
+test('manual cube state saves locally and produces verified color-based rescue steps', async ({
+  page,
+}) => {
+  const physicalState = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
+  await page.goto(`/fag/roux/manuel-tilstand?facelets=${physicalState}`);
+  await page.getByRole('button', { name: 'Gem og lav løsning' }).click();
+  await expect(page.getByText(/Stillingen er fysisk mulig/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('heading', { name: 'Trin for trin tilbage til løst' })).toBeVisible();
+  await expect(page.getByText('grøn side', { exact: true })).toBeVisible();
+  await expect(page.getByText(/en halv omgang/)).toBeVisible();
+  await page.getByRole('button', { name: 'Jeg har lavet trækket' }).click();
+  await expect(page.getByText('rød side', { exact: true })).toBeVisible();
+  await expect(page.getByText(/en kvart omgang mod uret/)).toBeVisible();
+
+  await page.goto('/fag/roux/manuel-tilstand');
+  await page.getByText('Vis teknisk kode til fejlsøgning').click();
+  await expect(page.getByLabel('Teknisk 54-tegnskode')).toHaveValue(physicalState);
+});
+
 test('Hørelære teaches, tests all three presentations, and exposes four instruments', async ({
   page,
 }) => {

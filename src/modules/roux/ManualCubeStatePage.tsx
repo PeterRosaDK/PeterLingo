@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
+import { describeMove, solveFacelets, validateFacelets, type CubeSolution } from './faceletSolver';
 
 const COLORS = ['U', 'R', 'F', 'D', 'L', 'B'] as const;
 type FaceColor = (typeof COLORS)[number];
@@ -35,12 +36,36 @@ const FACES = [
   { code: 'B', center: 'Blå', top: 'hvid side opad' },
 ] as const;
 
+const SAVED_CUBE_KEY = 'peterlingo:active-manual-cube:v1';
+
+interface SavedCubeState {
+  facelets: string;
+  savedAt: string;
+}
+
 function isFacelets(value: unknown): value is string {
   return (
     typeof value === 'string' &&
     value.length === 54 &&
     [...value].every((color) => COLORS.includes(color as FaceColor))
   );
+}
+
+function loadSavedCube(): SavedCubeState | null {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SAVED_CUBE_KEY) ?? 'null') as unknown;
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      isFacelets((parsed as SavedCubeState).facelets) &&
+      typeof (parsed as SavedCubeState).savedAt === 'string'
+    ) {
+      return parsed as SavedCubeState;
+    }
+  } catch {
+    // A corrupt local draft must never block manual recovery.
+  }
+  return null;
 }
 
 export function colorCounts(facelets: string): Record<FaceColor, number> {
@@ -63,9 +88,27 @@ export function ManualCubeStatePage() {
   const location = useLocation();
   const supplied = (location.state as { facelets?: unknown } | null)?.facelets;
   const reported = isFacelets(supplied) ? supplied : null;
-  const startingState = withCanonicalCenters(reported ?? SOLVED_FACELETS);
+  const linkedFacelets = new URLSearchParams(location.search).get('facelets');
+  const imported = isFacelets(linkedFacelets) ? linkedFacelets : null;
+  const [savedCube, setSavedCube] = useState<SavedCubeState | null>(() => loadSavedCube());
+  const startingState = withCanonicalCenters(
+    imported ?? reported ?? savedCube?.facelets ?? SOLVED_FACELETS
+  );
   const [facelets, setFacelets] = useState(startingState);
   const [copyStatus, setCopyStatus] = useState('');
+  const [solveStatus, setSolveStatus] = useState<'idle' | 'working' | 'ready' | 'error'>('idle');
+  const [solveMessage, setSolveMessage] = useState('');
+  const [solution, setSolution] = useState<CubeSolution | null>(null);
+  const [completedMoves, setCompletedMoves] = useState(0);
+  const currentMove = solution?.moves[completedMoves] ?? '';
+  const currentFace = COLORS.includes(currentMove[0] as FaceColor)
+    ? (currentMove[0] as FaceColor)
+    : 'U';
+  const currentTurnSymbol = currentMove.endsWith('2')
+    ? '↻↻'
+    : currentMove.endsWith("'")
+      ? '↺'
+      : '↻';
   const counts = useMemo(() => colorCounts(facelets), [facelets]);
   const countIsCorrect = COLORS.every((color) => counts[color] === 9);
   const differences = reported
@@ -82,11 +125,58 @@ export function ManualCubeStatePage() {
     : [];
 
   const cycleSticker = (index: number) => {
-    if (index % 9 === 4) return;
+    if (index % 9 === 4 || solveStatus === 'working') return;
     const current = facelets[index] as FaceColor;
     const next = COLORS[(COLORS.indexOf(current) + 1) % COLORS.length];
     setFacelets(`${facelets.slice(0, index)}${next}${facelets.slice(index + 1)}`);
     setCopyStatus('');
+    setSolveStatus('idle');
+    setSolution(null);
+    setCompletedMoves(0);
+  };
+
+  const replaceFacelets = (nextFacelets: string) => {
+    setFacelets(withCanonicalCenters(nextFacelets));
+    setCopyStatus('');
+    setSolveStatus('idle');
+    setSolveMessage('');
+    setSolution(null);
+    setCompletedMoves(0);
+  };
+
+  const saveAndSolve = async () => {
+    const validation = validateFacelets(facelets);
+    if (!validation.ok) {
+      setSolveStatus('error');
+      setSolveMessage(validation.message);
+      return;
+    }
+    const saved = { facelets, savedAt: new Date().toISOString() };
+    try {
+      localStorage.setItem(SAVED_CUBE_KEY, JSON.stringify(saved));
+    } catch {
+      setSolveStatus('error');
+      setSolveMessage('Browseren kunne ikke gemme cubens tilstand på denne enhed.');
+      return;
+    }
+    setSavedCube(saved);
+    setSolveStatus('working');
+    setSolveMessage('Kontrollerer stillingen og beregner en redningsløsning …');
+    setSolution(null);
+    setCompletedMoves(0);
+    try {
+      const nextSolution = await solveFacelets(facelets);
+      setSolution(nextSolution);
+      setSolveStatus('ready');
+      setSolveMessage(
+        nextSolution.moves.length
+          ? `Stillingen er fysisk mulig. Løsningen er kontrolleret og bruger ${nextSolution.moves.length} træk.`
+          : 'Stillingen er allerede løst.'
+      );
+    } catch (error) {
+      setSolveStatus('error');
+      setSolveMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
+    }
   };
 
   const copyFacelets = async () => {
@@ -155,7 +245,7 @@ export function ManualCubeStatePage() {
                       type="button"
                       className={`color-${color} ${isCenter ? 'center' : ''}`}
                       aria-label={`${face.center} side, ${position}: ${COLOR_NAMES[color]}${isCenter ? ', fast center' : ''}`}
-                      disabled={isCenter}
+                      disabled={isCenter || solveStatus === 'working'}
                       onClick={() => cycleSticker(index)}
                       key={index}
                     >
@@ -204,21 +294,127 @@ export function ManualCubeStatePage() {
           </label>
         </details>
         <div className="button-row">
-          <button type="button" className="button primary" onClick={() => void copyFacelets()}>
+          <button
+            type="button"
+            className="button primary"
+            onClick={() => void saveAndSolve()}
+            disabled={solveStatus === 'working'}
+          >
+            {solveStatus === 'working' ? 'Beregner løsning …' : 'Gem og lav løsning'}
+          </button>
+          <button type="button" className="button secondary" onClick={() => void copyFacelets()}>
             {reported ? 'Kopiér sammenligningen' : 'Kopiér tilstanden'}
           </button>
           {reported && facelets !== reported && (
             <button
               type="button"
               className="button secondary"
-              onClick={() => setFacelets(reported)}
+              onClick={() => replaceFacelets(reported)}
             >
               Gendan GoCubens forslag
             </button>
           )}
+          {savedCube && facelets !== savedCube.facelets && (
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => replaceFacelets(savedCube.facelets)}
+            >
+              Gendan senest gemte tilstand
+            </button>
+          )}
         </div>
+        <p className="local-cube-save-note">
+          Gemmes kun på denne enhed. Cubens øjeblikstilstand hører ikke til din cloudbaserede
+          læringshistorik.
+          {savedCube ? ` Senest gemt ${new Date(savedCube.savedAt).toLocaleString('da-DK')}.` : ''}
+        </p>
         {copyStatus && <p role="status">{copyStatus}</p>}
+        {solveMessage && (
+          <p className={`solve-message ${solveStatus}`} role="status">
+            {solveMessage}
+          </p>
+        )}
       </section>
+
+      {solution && (
+        <section className="cube-rescue-solution" aria-labelledby="rescue-solution-title">
+          <div className="stage-heading">
+            <div>
+              <p className="eyebrow">Løs for mig · sikker redningsvej</p>
+              <h2 id="rescue-solution-title">Trin for trin tilbage til løst</h2>
+            </div>
+            <span className="status-pill">
+              {completedMoves}/{solution.moves.length} træk
+            </span>
+          </div>
+          <p className="recovery-method-note">
+            Dette er en verificeret to-fase-løsning. Den er beregnet til at redde den aktuelle cube;
+            den er ikke den planlagte Roux-undervisning.
+          </p>
+
+          {completedMoves < solution.moves.length ? (
+            <div className="current-solve-step">
+              <div className={`solve-face color-${currentFace}`} aria-hidden="true">
+                {currentTurnSymbol}
+              </div>
+              <div>
+                <p className="eyebrow">
+                  Træk {completedMoves + 1} af {solution.moves.length}
+                </p>
+                <strong>{COLOR_NAMES[currentFace]} side</strong>
+                <p>{describeMove(currentMove)}</p>
+                <small>Teknisk navn: {currentMove}</small>
+              </div>
+            </div>
+          ) : (
+            <div className="cube-solved-message">
+              <strong>Cuben bør nu være løst</strong>
+              <p>Sammenlign alle seks fysiske sider. Gå ét trin tilbage, hvis noget ikke passer.</p>
+            </div>
+          )}
+
+          <div className="solve-progress" aria-label="Løsningsfremskridt">
+            <span
+              style={{ width: `${(completedMoves / Math.max(solution.moves.length, 1)) * 100}%` }}
+            />
+          </div>
+          <div className="button-row">
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => setCompletedMoves((current) => Math.max(0, current - 1))}
+              disabled={completedMoves === 0}
+            >
+              Forrige træk
+            </button>
+            {completedMoves < solution.moves.length && (
+              <button
+                type="button"
+                className="button primary"
+                onClick={() =>
+                  setCompletedMoves((current) => Math.min(solution.moves.length, current + 1))
+                }
+              >
+                Jeg har lavet trækket
+              </button>
+            )}
+            {completedMoves === solution.moves.length && solution.moves.length > 0 && (
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => setCompletedMoves(0)}
+              >
+                Vis løsningen fra begyndelsen
+              </button>
+            )}
+          </div>
+          <details className="technical-facelets">
+            <summary>Vis hele den tekniske trækrække</summary>
+            <p className="solution-algorithm">{solution.algorithm || 'Ingen træk nødvendige'}</p>
+          </details>
+        </section>
+      )}
 
       <div className="button-row manual-state-actions">
         <Link className="button secondary" to="/fag/roux/diagnostik">

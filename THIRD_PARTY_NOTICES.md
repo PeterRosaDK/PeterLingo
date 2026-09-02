@@ -44,7 +44,7 @@ Installed as a dependency; no source was copied into PeterLingo. The pinned gene
 | --------------- | ------: | --------------------------- | ------------------------------------------- |
 | React           |  19.2.8 | MIT                         | Interface                                   |
 | ts-fsrs         |   5.4.1 | MIT                         | FSRS scheduling behind PeterLingo's adapter |
-| cubing.js       |  0.63.3 | MPL-2.0 OR GPL-3.0-or-later | Cube visualization/state                    |
+| cubing.js       |  0.63.3 | MPL-2.0 OR GPL-3.0-or-later | Cube state, visualization, recovery solving |
 | @beacio/core    |   1.2.0 | MIT                         | Early iOS Safari Web Bluetooth path         |
 | Tone.js         | 15.1.22 | MIT                         | Web Audio abstraction                       |
 | VexFlow         |   5.0.0 | MIT                         | Short notation rendering                    |
@@ -56,3 +56,6 @@ The lockfile is the authoritative complete dependency graph and retains package 
 ## Reused Roux solver code
 
 None in Milestone 0. No code from `wodzik/cube` or another Roux solver has been copied or claimed.
+The current non-Roux recovery path calls cubing.js's packaged two-phase solver through the existing
+library boundary; its bundled min2phase component is marked MIT in the cubing.js source.
+PeterLingo adds validation and user guidance but does not copy its solver code.

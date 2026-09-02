@@ -26,6 +26,9 @@ device matrix are still under active verification.
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback
   and verification oracle, not as a Roux solution.
+- The first recovery fallback is implemented for manually entered states: it checks full physical
+  cube legality, verifies the cubing.js two-phase result against the input state, and presents the
+  route one colour-based move at a time. Phase-aware Roux solving remains open.
 - Give the solver two explicit optimization profiles. **Solve for me** may use the full available
   repertoire and return the best verified route found, without claiming mathematical optimality.
   **Teach me Roux** starts with a deliberately small beginner repertoire and favours recognizable,
