@@ -6,6 +6,12 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added the complete fixed-color Second Block teaching slice: five short explanations, a
+  red-yellow right-block target, all five target pieces, DR and square subgoals, safe `R`/`U`
+  exercise setups, live GoCube completion, and an explicit manual fallback.
+- Added a deliberately small beginner repertoire of `R U R'` and `R U' R'`, with wide `r`
+  insertions and M-based shortcuts shown as later algorithm-ladder steps rather than immediate
+  memorization.
 - Added the first complete Roux teaching slice: a short standard-grip check, a four-step First Block
   lesson, an accurate 1×2×3 target visual, the five orange-yellow target pieces, front-square and
   back-pair subgoals, live GoCube progress, automatic completion, and a labelled manual fallback.
@@ -16,6 +22,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Standardized the Roux learning track on real face notation (`U/R/F/D/L/B`, prime, and `2`) while
+  retaining color-based one- or two-turn instructions only in the separately labelled emergency
+  recovery solver.
+- Fixed beginner block colors to orange-left First Block and red-right Second Block over the yellow
+  bottom in the white-up, green-front reference grip; color-neutral solving remains a later skill.
 - Replaced the abstract M/M′ calibration wording with the visible rule “green middle column down”
   and “green middle column up”; beginners may use whichever finger makes a clean quarter turn.
 - Deployed the first complete First Block teaching slice as exact revision `0d2c337` at

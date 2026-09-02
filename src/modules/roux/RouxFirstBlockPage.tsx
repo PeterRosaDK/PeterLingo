@@ -428,8 +428,9 @@ function FirstBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
         Appen viser kun delmålene — du finder selv trækkene.
       </p>
       <p className="first-block-calibration-note">
-        Brug kun ydertræk i denne første udgave. M og M′ er ikke nødvendige til First Block, og vi
-        tager dem først med, når din kopierede GoCube-målerapport er fortolket.
+        Alle træk skrives med standardnotation. Brug kun ydertræk i denne første udgave. M og M′ er
+        ikke nødvendige til First Block, og vi tager dem først med, når din kopierede
+        GoCube-målerapport er fortolket.
       </p>
 
       <div className="first-block-live-grid">
@@ -561,7 +562,7 @@ export function RouxFirstBlockPage({
 }) {
   const revealPractice = () => {
     window.setTimeout(() => {
-      document.getElementById('first-block-practice')?.scrollIntoView({
+      document.getElementById('first-block-practice')?.scrollIntoView?.({
         behavior: 'smooth',
         block: 'start',
       });
@@ -606,6 +607,9 @@ export function RouxFirstBlockPage({
         . PeterLingo fastholder vores eget hvide-op, grønne-front referencegreb.
       </p>
       <div className="button-row page-footer-actions">
+        <Link className="button primary" to="/fag/roux/second-block">
+          Fortsæt til Second Block
+        </Link>
         <Link className="button secondary" to="/fag/roux/notation">
           Slå notation op
         </Link>

@@ -53,6 +53,10 @@ if visible, and the result.
 17. Start **Løs den aflæste cube** and perform the shown move physically. A quarter-turn should
     advance immediately; a half-turn should advance only after its second matching quarter-turn.
     Disconnect the cube and confirm that the manual step buttons return.
+18. Open **Roux → Second Block** with the cube solved. Perform the displayed `R`/`U`
+    exercise setup, start the live attempt, and rebuild the red-yellow right block. Confirm that
+    the five-piece counter follows the physical cube, completion is automatic, and deliberately
+    breaking the orange First Block prevents completion until it is restored.
 
 ## iPad Safari + Beacio
 

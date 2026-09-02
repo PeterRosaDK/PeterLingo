@@ -38,6 +38,9 @@ export function RouxPage() {
           <Link className="button secondary" to="/fag/roux/first-block">
             Begynd First Block
           </Link>
+          <Link className="button secondary" to="/fag/roux/second-block">
+            Fortsæt med Second Block
+          </Link>
           <Link className="button secondary" to="/fag/roux/notation">
             Lær cubens notation
           </Link>
@@ -52,11 +55,11 @@ export function RouxPage() {
                 <span>Åben nu: find par og byg 1×2×3 intuitivt.</span>
               </div>
             </li>
-            <li>
+            <li className="active">
               <b>02</b>
               <div>
                 <strong>Second Block</strong>
-                <span>Bevar friheden omkring M-laget.</span>
+                <span>Åben nu: byg højre blok med kun to korte værktøjer.</span>
               </div>
             </li>
             <li>
@@ -87,6 +90,13 @@ export function RouxPage() {
             forklare næste meningsfulde skridt. Alt skal bygge på den samme fysisk verificerede
             tilstand.
           </p>
+          <div className="notation-policy">
+            <strong>Fast notationsregel</strong>
+            <span>
+              Undervisning bruger standardnotation med bogstav, prime og 2. Kun “Løs for mig” må
+              oversætte et trin til centerfarve og én eller to drejninger.
+            </span>
+          </div>
           <div className="platform-guidance">
             <span>
               <strong>Løs for mig</strong>

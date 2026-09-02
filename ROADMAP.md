@@ -49,6 +49,12 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   self-reported offline fallback. It deliberately uses outer turns until M/M′ normalization is
   physically confirmed. Generated phase setup, move-level coaching, and orientation independence
   remain open.
+- The fixed-orientation Second Block slice is implemented with the red-yellow right block, a
+  five-part introduction, DR/first-square/final-pair subgoals, `R`/`U` exercise setups, live
+  recognition of all five new pieces, and a hard requirement that the orange First Block remains
+  intact. The first repertoire has only `R U R'` and `R U' R'`; wide `r` insertions and M-based
+  shortcuts are explicit later ladder steps. Generated coaching for arbitrary full scrambles and
+  orientation independence remain open.
 - Add a phase launcher that prepares the physical cube for any unlocked phase, plus an always
   available guided preview of later phases. Balance daily phase repetitions directly so First
   Block practice cannot starve Second Block, CMLL, or LSE of examples.

@@ -154,6 +154,30 @@ test('First Block has a complete beginner lesson and manual practice fallback', 
   await expect(page.getByText('First Block gennemført')).toBeVisible();
 });
 
+test('Second Block preserves fixed colors and keeps the starter repertoire small', async ({
+  page,
+}) => {
+  await page.goto('/fag/roux/second-block');
+  await expect(page.getByRole('heading', { name: 'Second Block', level: 1 })).toBeVisible();
+  await expect(page.getByText('Rød til højre · gul i bunden')).toBeVisible();
+  await expect(page.getByText(/R, U, R′ og U2/)).toBeVisible();
+  await expect(page.getByLabel('Aktuel øvelsesblanding')).toContainText(/^[RU2′ ]+$/);
+
+  for (let step = 0; step < 4; step += 1) {
+    await page.getByRole('button', { name: 'Næste delmål' }).click();
+  }
+  const tools = page.locator('.beginner-trigger-grid');
+  await expect(tools.getByText('R U R′')).toBeVisible();
+  await expect(tools.getByText('R U′ R′')).toBeVisible();
+  await expect(page.getByText('r U r′ · r U′ r′', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Jeg er klar til Second Block' }).click();
+
+  await page.getByRole('button', { name: 'Start uden GoCube' }).click();
+  await page.getByRole('button', { name: 'Begge blokke er samlet' }).click();
+  await expect(page.getByText('Second Block gennemført')).toBeVisible();
+  await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
+});
+
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
   await expect(

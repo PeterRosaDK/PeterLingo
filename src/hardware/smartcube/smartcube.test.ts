@@ -15,8 +15,16 @@ import {
   type SmartCubeProtocol,
 } from 'smartcube-web-bluetooth';
 import { MockSmartCubeAdapter } from './MockSmartCubeAdapter';
-import { fixedLeftFirstBlockProgress, isFixedLeftFirstBlockSolved, SOLVED_FACELETS } from './state';
+import {
+  fixedLeftFirstBlockProgress,
+  fixedRightSecondBlockProgress,
+  isFixedLeftFirstBlockSolved,
+  isFixedRightSecondBlockSolved,
+  SOLVED_FACELETS,
+} from './state';
 import { WebBluetoothSmartCubeAdapter } from './WebBluetoothSmartCubeAdapter';
+
+const SECOND_BLOCK_SETUP_FACELETS = 'UURUUFBBFRRDBRRURRURDFFUFFFDDRDDDDDBFFLLLLLLLBLLUBBUBB';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -65,6 +73,50 @@ describe('smart-cube adapters', () => {
     expect(fixedLeftFirstBlockProgress(withoutBackPair.join(''))).toMatchObject({
       solvedPieceIds: ['front-corner', 'front-edge', 'bottom-edge'],
       frontSquareComplete: true,
+      complete: false,
+    });
+  });
+
+  it('recognizes Second Block only while First Block remains intact', () => {
+    expect(isFixedRightSecondBlockSolved(SOLVED_FACELETS)).toBe(true);
+    expect(fixedRightSecondBlockProgress(SOLVED_FACELETS)).toEqual({
+      valid: true,
+      firstBlockComplete: true,
+      solvedPieceIds: ['front-corner', 'front-edge', 'bottom-edge', 'back-corner', 'back-edge'],
+      bottomEdgeComplete: true,
+      frontSquareComplete: true,
+      backSquareComplete: true,
+      oneSquareComplete: true,
+      complete: true,
+    });
+
+    const backSquareOnly = [...SOLVED_FACELETS];
+    backSquareOnly[29] = 'X';
+    backSquareOnly[23] = 'X';
+    expect(fixedRightSecondBlockProgress(backSquareOnly.join(''))).toMatchObject({
+      firstBlockComplete: true,
+      solvedPieceIds: ['bottom-edge', 'back-corner', 'back-edge'],
+      bottomEdgeComplete: true,
+      frontSquareComplete: false,
+      backSquareComplete: true,
+      oneSquareComplete: true,
+      complete: false,
+    });
+
+    const brokenFirstBlock = [...SOLVED_FACELETS];
+    brokenFirstBlock[27] = 'X';
+    expect(fixedRightSecondBlockProgress(brokenFirstBlock.join(''))).toMatchObject({
+      firstBlockComplete: false,
+      solvedPieceIds: ['front-corner', 'front-edge', 'bottom-edge', 'back-corner', 'back-edge'],
+      complete: false,
+    });
+
+    expect(fixedRightSecondBlockProgress(SECOND_BLOCK_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      firstBlockComplete: true,
+      solvedPieceIds: ['bottom-edge'],
+      bottomEdgeComplete: true,
+      oneSquareComplete: false,
       complete: false,
     });
   });

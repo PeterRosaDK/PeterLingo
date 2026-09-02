@@ -90,6 +90,13 @@ units, and watches the five target cubies live when a synchronized GoCube is con
 completion remains available as an explicitly self-reported offline fallback. This first slice
 uses only outer turns until Peter's copied M/M′ calibration report has been interpreted.
 
+**Roux → Second Block** continues with the fixed red-yellow right block while requiring the orange
+First Block to remain intact. The beginner repertoire is deliberately limited to `R`/`U` moves and
+the two short insertion tools `R U R'` and `R U' R'`. Each selectable exercise setup preserves First
+Block, and synchronized GoCube facelets track the five new pieces, the DR edge, the first square,
+and both completed blocks. Wide `r` insertions and M-based shortcuts remain later algorithm-ladder
+steps instead of being mixed into the first training round.
+
 ## Learning data
 
 Substantive data lives first in IndexedDB, behind `LearningRepository`; the UI never accesses the

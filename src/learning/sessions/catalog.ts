@@ -187,6 +187,22 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
+    id: 'roux:second-block-intro',
+    discipline: 'roux',
+    title: 'Anden blok',
+    stage: 'teaching',
+    estimatedSeconds: 120,
+    isNew: true,
+  },
+  {
+    id: 'roux:second-block-live',
+    discipline: 'roux',
+    title: 'Second Block med den fysiske cube',
+    stage: 'unassisted',
+    estimatedSeconds: 240,
+    isNew: true,
+  },
+  {
     id: 'music-ear:interval:3:ascending',
     discipline: 'music-ear',
     title: 'Lille terts melodisk opad',

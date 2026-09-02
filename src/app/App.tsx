@@ -34,6 +34,11 @@ const RouxFirstBlockPage = lazy(() =>
     default: module.RouxFirstBlockPage,
   }))
 );
+const RouxSecondBlockPage = lazy(() =>
+  import('../modules/roux/RouxSecondBlockPage').then((module) => ({
+    default: module.RouxSecondBlockPage,
+  }))
+);
 const SmartCubeDiagnosticsPage = lazy(() =>
   import('../modules/roux/SmartCubeDiagnosticsPage').then((module) => ({
     default: module.SmartCubeDiagnosticsPage,
@@ -78,6 +83,7 @@ export function App() {
               <Route path="fag/pi" element={<PiPage />} />
               <Route path="fag/roux" element={<RouxPage />} />
               <Route path="fag/roux/first-block" element={<RouxFirstBlockPage />} />
+              <Route path="fag/roux/second-block" element={<RouxSecondBlockPage />} />
               <Route path="fag/roux/notation" element={<CubeNotationHelpPage />} />
               <Route path="fag/roux/manuel-tilstand" element={<ManualCubeStatePage />} />
               <Route path="fag/roux/diagnostik" element={<SmartCubeDiagnosticsPage />} />

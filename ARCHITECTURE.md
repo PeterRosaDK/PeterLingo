@@ -112,6 +112,13 @@ intermediate goal, and lets a synchronized GoCube complete the first physical tr
 without a confirmation button. Color-neutral/orientation-independent recognition belongs to
 Milestone 1.
 
+The matching Second Block detector checks DRF, DBR, DR, FR, and BR relative to the live centers.
+It reports DR, front-square, back-square, and complete-block progress, but `complete` can only be
+true while the entire left First Block also remains solved. This protects the learning objective
+from accepting a right block that was obtained by destroying the first. The first Second Block
+course uses only standard `R`/`U` notation and records live and explicitly self-reported attempts
+separately.
+
 ## Cube visualization
 
 `CubeViewer` owns a `cubing.js` `TwistyPlayer`. Mock and physical move logs update its algorithm. Raw facelets are retained as logical state and surfaced in diagnostics. Milestone 1 must verify device move direction, initial facelet sync, reconnection, and visual/logical agreement on physical hardware.
