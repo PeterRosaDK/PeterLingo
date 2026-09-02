@@ -26,6 +26,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Revision `40dbf07` briefly treated `R → B` as a calibration mapping. It was superseded after
   choosing the conventional fixed orientation: outer letters must now match, and a mismatch gives
   an explicit grip correction. Only M/M′ are allowed to produce multi-event hardware evidence.
+- Deployed the fixed white-up, green-front reference orientation as exact revision `6e2c10a` at
+  `https://983eb27e.peterlingo.pages.dev`.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
