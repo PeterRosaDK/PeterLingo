@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Logo } from '../design-system/Logo';
+import { reconnectApprovedCube } from '../hardware/smartcube/physicalCube';
 import { cloudAccessAction, logoutCloudAccessAndReturn } from './cloudAccessAction';
 import { useLearningData, type CloudSyncStatus } from './DataProvider';
 
@@ -23,6 +25,11 @@ const syncLabels: Record<CloudSyncStatus, string> = {
 export function AppShell() {
   const { syncStatus } = useLearningData();
   const accessAction = cloudAccessAction(window.location.hostname, syncStatus);
+
+  useEffect(() => {
+    void reconnectApprovedCube();
+  }, []);
+
   return (
     <div className="app-shell">
       <header className="topbar">

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 
 const faces = [
-  { notation: 'F', name: 'Front', description: 'siden mod dig' },
-  { notation: 'R', name: 'Right', description: 'siden til højre' },
-  { notation: 'L', name: 'Left', description: 'siden til venstre' },
-  { notation: 'U', name: 'Up', description: 'siden øverst' },
-  { notation: 'D', name: 'Down', description: 'siden nederst' },
-  { notation: 'B', name: 'Back', description: 'siden væk fra dig' },
+  { notation: 'U', name: 'Hvid', description: 'laget med det hvide center' },
+  { notation: 'R', name: 'Rød', description: 'laget med det røde center' },
+  { notation: 'F', name: 'Grøn', description: 'laget med det grønne center' },
+  { notation: 'D', name: 'Gul', description: 'laget med det gule center' },
+  { notation: 'L', name: 'Orange', description: 'laget med det orange center' },
+  { notation: 'B', name: 'Blå', description: 'laget med det blå center' },
 ] as const;
 
 function CubeNet({ active }: { active?: string }) {
@@ -51,11 +51,12 @@ export function CubeNotationHelpPage() {
           <p className="eyebrow">Vores fælles greb</p>
           <h2>Hvid GO-side mod dig · logoet opret</h2>
           <p>
-            Behold dette greb gennem hele kalibreringen. Så betyder højre, venstre og op det samme
-            for dig og for appens instruktioner.
+            Behold dette greb gennem hele kalibreringen. I dette greb vender R-lagets røde center
+            opad; R betyder altså ikke “laget på din højre hånd”. Bogstaverne er faste navne på
+            centerfarverne.
           </p>
         </div>
-        <CubeNet active="F" />
+        <CubeNet active="U" />
       </section>
 
       <section className="notation-section" aria-labelledby="suffix-title">
@@ -76,7 +77,7 @@ export function CubeNotationHelpPage() {
               ↻
             </span>
             <h3>En kvart omgang med uret</h3>
-            <p>Se direkte på højre side, og drej den 90° med uret.</p>
+            <p>Se direkte på siden med rødt center, og drej laget 90° med uret.</p>
           </article>
           <article>
             <strong>R′</strong>
@@ -94,7 +95,7 @@ export function CubeNotationHelpPage() {
               ↻↻
             </span>
             <h3>En halv omgang</h3>
-            <p>Drej højre side 180°. Her er retningen ligegyldig.</p>
+            <p>Drej laget med rødt center 180°. Her er retningen ligegyldig.</p>
           </article>
         </div>
         <div className="prime-warning">
@@ -110,7 +111,7 @@ export function CubeNotationHelpPage() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Seks ydersider</p>
-            <h2 id="faces-title">Bogstavet vælger laget</h2>
+            <h2 id="faces-title">Bogstavet vælger en centerfarve</h2>
           </div>
         </div>
         <div className="face-legend">
@@ -130,9 +131,10 @@ export function CubeNotationHelpPage() {
       <section className="notation-section middle-slice-section" aria-labelledby="middle-title">
         <div>
           <p className="eyebrow">Roux-specialiteten</p>
-          <h2 id="middle-title">M er det lodrette midterlag</h2>
+          <h2 id="middle-title">M er det vandrette midterlag i GO-grebet</h2>
           <p>
-            M-laget ligger mellem L og R. Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den
+            M-laget ligger mellem det orange L-lag og det røde R-lag. Med GO-logoet mod dig er det
+            det vandrette midterlag. Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den
             modsatte vej. Drej kun midten—hold de to yderlag stille.
           </p>
           <p className="guidance">

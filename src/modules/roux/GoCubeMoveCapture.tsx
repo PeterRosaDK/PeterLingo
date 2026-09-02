@@ -13,17 +13,35 @@ interface GoCubeMoveCaptureProps {
 }
 
 const instructions = [
-  { notation: 'R', detail: 'Drej højre yderlag som et almindeligt R.' },
-  { notation: "R'", detail: 'Drej højre yderlag tilbage som R′.' },
-  { notation: 'L', detail: 'Drej venstre yderlag som et almindeligt L.' },
-  { notation: "L'", detail: 'Drej venstre yderlag tilbage som L′.' },
+  {
+    notation: 'R',
+    detail:
+      'Behold den hvide GO-side mod dig med logoet opret. Det røde center er øverst: drej det røde toplag 90° med uret, set direkte mod den røde side ovenfra.',
+  },
+  {
+    notation: "R'",
+    detail:
+      'Behold samme greb. Drej det røde toplag 90° mod uret, set direkte mod den røde side ovenfra.',
+  },
+  {
+    notation: 'L',
+    detail:
+      'Behold samme greb. Det orange center er nederst: drej det orange bundlag 90° med uret, set direkte mod den orange side nedefra.',
+  },
+  {
+    notation: "L'",
+    detail:
+      'Behold samme greb. Drej det orange bundlag 90° mod uret, set direkte mod den orange side nedefra.',
+  },
   {
     notation: 'M',
-    detail: 'Drej kun det lodrette midterlag i samme retning som et L-træk.',
+    detail:
+      'Behold samme greb. Drej kun midterlaget mellem det røde top- og orange bundlag i samme retning som L.',
   },
   {
     notation: "M'",
-    detail: 'Drej kun det lodrette midterlag modsat M-retningen.',
+    detail:
+      'Behold samme greb. Drej kun midterlaget mellem det røde top- og orange bundlag modsat M-retningen.',
   },
 ] as const;
 

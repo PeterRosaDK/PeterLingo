@@ -6,6 +6,16 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Made the connected GoCube authoritative during recovery: correctly registered physical turns now
+  advance the guide automatically, half-turns wait for both quarter-turn packets, and an unexpected
+  turn triggers recalculation from the next synchronized hardware state. Manual step buttons appear
+  only while the cube is disconnected.
+- Added one silent startup attempt to reconnect an already browser-approved GoCube. It never opens
+  the device chooser; a sleeping cube or unsupported browser falls back to the existing manual
+  connection flow.
+- Replaced spatially misleading `R`/`L` instructions with fixed center colors. In the agreed white
+  GO-side-forward grip, the red R layer is explicitly the top layer and M is the horizontal middle
+  layer; solve directions are always read facing the named center.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
   now opens **Løs den aflæste cube** and calculates its recovery route automatically; manual colour
   entry and synchronization checking remain clearly labelled fallbacks.

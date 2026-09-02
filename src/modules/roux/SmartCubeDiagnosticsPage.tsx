@@ -1,21 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { WebBluetoothSmartCubeAdapter } from '../../hardware/smartcube/WebBluetoothSmartCubeAdapter';
 import { detectBluetoothEnvironment } from '../../hardware/smartcube/environment';
+import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import type {
   ConnectionState,
   CubeMove,
   CubeState,
   RememberedCube,
-  SmartCubeAdapter,
 } from '../../hardware/smartcube/types';
 import { CubeFaceletNet } from './CubeFaceletNet';
 import { validateFacelets } from './faceletSolver';
 import { GoCubeMoveCapture } from './GoCubeMoveCapture';
-
-// Keep the approved connection alive while the user moves between PeterLingo routes.
-// A full page reload still follows the browser's Web Bluetooth permission model.
-const physicalCubeAdapter: SmartCubeAdapter = new WebBluetoothSmartCubeAdapter();
 
 type RememberedCheck = 'checking' | 'ready' | 'unsupported' | 'error';
 

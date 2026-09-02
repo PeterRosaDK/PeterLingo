@@ -38,11 +38,13 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       throw new Error('Web Bluetooth er ikke tilgængelig i denne browser.');
     }
     this.connectionState = 'connecting';
+    this.notifyState();
     try {
       const connection = await connectSmartCube({ onStatus });
       this.activateConnection(connection);
     } catch (error) {
       this.connectionState = 'error';
+      this.notifyState();
       throw error;
     }
   }
@@ -53,6 +55,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       throw new Error('Browseren kan ikke genåbne tidligere godkendte Bluetooth-enheder.');
     }
     this.connectionState = 'connecting';
+    this.notifyState();
     let device: BluetoothDevice | undefined;
     try {
       onStatus?.('Henter tidligere Bluetooth-tilladelse…');
@@ -76,6 +79,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     } catch (error) {
       if (device?.gatt?.connected) device.gatt.disconnect();
       this.connectionState = 'error';
+      this.notifyState();
       throw error;
     }
   }
@@ -109,6 +113,8 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     this.connection = connection;
     this.subscription = connection.events$.subscribe((event) => this.onEvent(event));
     this.connectionState = 'connected';
+    this.state = { ...this.state, synchronization: 'unknown' };
+    this.notifyState();
     if (connection.capabilities.facelets) void connection.sendCommand({ type: 'REQUEST_FACELETS' });
     if (connection.capabilities.battery) void connection.sendCommand({ type: 'REQUEST_BATTERY' });
   }
@@ -138,6 +144,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     await this.connection?.disconnect();
     this.connection = null;
     this.connectionState = 'disconnected';
+    this.notifyState();
   }
 
   getConnectionState(): ConnectionState {

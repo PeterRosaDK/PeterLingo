@@ -3,14 +3,18 @@ import type { ConnectionState, CubeMove, CubeState, SmartCubeAdapter, Unsubscrib
 
 export class MockSmartCubeAdapter implements SmartCubeAdapter {
   private connectionState: ConnectionState = 'disconnected';
-  private state: CubeState = {
-    facelets: SOLVED_FACELETS,
-    algorithm: '',
-    moveCount: 0,
-    synchronization: 'synchronized',
-  };
+  private state: CubeState;
   private handlers = new Set<(move: CubeMove) => void>();
   private stateHandlers = new Set<(state: CubeState) => void>();
+
+  constructor(facelets: string = SOLVED_FACELETS) {
+    this.state = {
+      facelets,
+      algorithm: '',
+      moveCount: 0,
+      synchronization: 'synchronized',
+    };
+  }
 
   isSupported(): boolean {
     return true;
@@ -18,10 +22,12 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
 
   async connect(): Promise<void> {
     this.connectionState = 'connected';
+    this.notifyState();
   }
 
   async disconnect(): Promise<void> {
     this.connectionState = 'disconnected';
+    this.notifyState();
   }
 
   getConnectionState(): ConnectionState {

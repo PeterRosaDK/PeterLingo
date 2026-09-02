@@ -73,6 +73,11 @@ On iPhone/iPad:
 4. Open **Roux → GoCube-diagnostik**.
 5. Tap **Forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
 
+After that first approval, PeterLingo makes one quiet startup attempt to reconnect the remembered
+cube without opening the chooser. This depends on browser support for `getDevices()` and can fail
+when the cube is asleep, out of range, or already used by another app; diagnostics keeps both a
+remembered-device button and the explicit chooser as fallbacks.
+
 See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
 has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
 under verification.

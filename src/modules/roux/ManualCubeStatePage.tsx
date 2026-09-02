@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
+import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import { describeMove, solveFacelets, validateFacelets, type CubeSolution } from './faceletSolver';
+import { consumeLiveMove, type PendingHalfTurn } from './liveSolutionTracking';
 
 const COLORS = ['U', 'R', 'F', 'D', 'L', 'B'] as const;
 type FaceColor = (typeof COLORS)[number];
@@ -84,7 +87,13 @@ export function withCanonicalCenters(facelets: string): string {
   return stickers.join('');
 }
 
-export function ManualCubeStatePage() {
+interface ManualCubeStatePageProps {
+  cubeAdapter?: SmartCubeAdapter;
+}
+
+export function ManualCubeStatePage({
+  cubeAdapter = physicalCubeAdapter,
+}: ManualCubeStatePageProps = {}) {
   const location = useLocation();
   const supplied = (location.state as { facelets?: unknown } | null)?.facelets;
   const search = new URLSearchParams(location.search);
@@ -103,7 +112,18 @@ export function ManualCubeStatePage() {
   const [solution, setSolution] = useState<CubeSolution | null>(null);
   const [completedMoves, setCompletedMoves] = useState(0);
   const [manualEditorOpen, setManualEditorOpen] = useState(!directSolve);
+  const [cubeConnection, setCubeConnection] = useState<ConnectionState>(() =>
+    cubeAdapter.getConnectionState()
+  );
+  const [liveTrackingMessage, setLiveTrackingMessage] = useState('');
   const directSolveStarted = useRef(false);
+  const solveRequest = useRef(0);
+  const solutionRef = useRef<CubeSolution | null>(null);
+  const completedMovesRef = useRef(0);
+  const faceletsRef = useRef(facelets);
+  const pendingHalfTurn = useRef<PendingHalfTurn | null>(null);
+  const liveBaselineChecked = useRef(false);
+  const replanAfterMove = useRef<{ previousFacelets: string | null } | null>(null);
   const currentMove = solution?.moves[completedMoves] ?? '';
   const currentFace = COLORS.includes(currentMove[0] as FaceColor)
     ? (currentMove[0] as FaceColor)
@@ -136,26 +156,34 @@ export function ManualCubeStatePage() {
     setCopyStatus('');
     setSolveStatus('idle');
     setSolution(null);
+    solutionRef.current = null;
+    completedMovesRef.current = 0;
     setCompletedMoves(0);
   };
 
   const replaceFacelets = (nextFacelets: string) => {
-    setFacelets(withCanonicalCenters(nextFacelets));
+    const canonical = withCanonicalCenters(nextFacelets);
+    faceletsRef.current = canonical;
+    setFacelets(canonical);
     setCopyStatus('');
     setSolveStatus('idle');
     setSolveMessage('');
     setSolution(null);
+    solutionRef.current = null;
+    completedMovesRef.current = 0;
     setCompletedMoves(0);
   };
 
-  const saveAndSolve = useCallback(async () => {
-    const validation = validateFacelets(facelets);
+  const solveCubeState = useCallback(async (nextFacelets: string, liveUpdate = false) => {
+    const validation = validateFacelets(nextFacelets);
     if (!validation.ok) {
       setSolveStatus('error');
       setSolveMessage(validation.message);
       return;
     }
-    const saved = { facelets, savedAt: new Date().toISOString() };
+    const request = solveRequest.current + 1;
+    solveRequest.current = request;
+    const saved = { facelets: nextFacelets, savedAt: new Date().toISOString() };
     try {
       localStorage.setItem(SAVED_CUBE_KEY, JSON.stringify(saved));
     } catch {
@@ -164,13 +192,24 @@ export function ManualCubeStatePage() {
       return;
     }
     setSavedCube(saved);
+    faceletsRef.current = nextFacelets;
+    setFacelets(nextFacelets);
     setSolveStatus('working');
-    setSolveMessage('Kontrollerer stillingen og beregner en redningsløsning …');
+    setSolveMessage(
+      liveUpdate
+        ? 'Cubens live-tilstand ændrede ruten. Beregner en ny løsning …'
+        : 'Kontrollerer stillingen og beregner en redningsløsning …'
+    );
     setSolution(null);
+    solutionRef.current = null;
+    completedMovesRef.current = 0;
     setCompletedMoves(0);
+    pendingHalfTurn.current = null;
     try {
-      const nextSolution = await solveFacelets(facelets);
+      const nextSolution = await solveFacelets(nextFacelets);
+      if (request !== solveRequest.current) return;
       setSolution(nextSolution);
+      solutionRef.current = nextSolution;
       setSolveStatus('ready');
       setSolveMessage(
         nextSolution.moves.length
@@ -178,10 +217,16 @@ export function ManualCubeStatePage() {
           : 'Stillingen er allerede løst.'
       );
     } catch (error) {
+      if (request !== solveRequest.current) return;
       setSolveStatus('error');
       setSolveMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
     }
-  }, [facelets]);
+  }, []);
+
+  const saveAndSolve = useCallback(
+    () => solveCubeState(facelets, false),
+    [facelets, solveCubeState]
+  );
 
   useEffect(() => {
     if (!directSolve || directSolveStarted.current) return;
@@ -192,6 +237,91 @@ export function ManualCubeStatePage() {
     }, 0);
     return () => window.clearTimeout(timeout);
   }, [directSolve, saveAndSolve]);
+
+  useEffect(() => {
+    faceletsRef.current = facelets;
+  }, [facelets]);
+
+  useEffect(() => {
+    solutionRef.current = solution;
+  }, [solution]);
+
+  useEffect(() => {
+    completedMovesRef.current = completedMoves;
+  }, [completedMoves]);
+
+  useEffect(() => {
+    if (!directSolve) return;
+
+    const inspectState = (nextState: CubeState | null) => {
+      const connection = cubeAdapter.getConnectionState();
+      setCubeConnection(connection);
+      if (connection !== 'connected') {
+        liveBaselineChecked.current = false;
+        pendingHalfTurn.current = null;
+        return;
+      }
+      if (nextState?.synchronization !== 'synchronized' || !nextState.facelets) return;
+
+      const pendingReplan = replanAfterMove.current;
+      if (
+        pendingReplan &&
+        (pendingReplan.previousFacelets === null ||
+          nextState.facelets !== pendingReplan.previousFacelets)
+      ) {
+        replanAfterMove.current = null;
+        liveBaselineChecked.current = true;
+        setLiveTrackingMessage('Det registrerede træk afveg. Ruten tilpasses cubens nye tilstand.');
+        void solveCubeState(nextState.facelets, true);
+        return;
+      }
+
+      if (!liveBaselineChecked.current) {
+        liveBaselineChecked.current = true;
+        if (nextState.facelets !== faceletsRef.current) {
+          setLiveTrackingMessage('GoCube har en nyere tilstand. Ruten opdateres automatisk.');
+          void solveCubeState(nextState.facelets, true);
+        }
+      }
+    };
+
+    const offMove = cubeAdapter.subscribeToMoves((move) => {
+      if (cubeAdapter.getConnectionState() !== 'connected') return;
+      const activeSolution = solutionRef.current;
+      const moveIndex = completedMovesRef.current;
+      const expected = activeSolution?.moves[moveIndex];
+      if (!activeSolution || !expected) return;
+
+      const result = consumeLiveMove(expected, move.notation, pendingHalfTurn.current);
+      pendingHalfTurn.current = result.pending;
+      if (result.status === 'matched') {
+        const nextIndex = Math.min(activeSolution.moves.length, moveIndex + 1);
+        completedMovesRef.current = nextIndex;
+        setCompletedMoves(nextIndex);
+        setLiveTrackingMessage(
+          nextIndex === activeSolution.moves.length
+            ? 'Alle løsningens træk er registreret af GoCube.'
+            : `Trækket blev registreret. Klar til trin ${nextIndex + 1}.`
+        );
+      } else if (result.status === 'halfway') {
+        setLiveTrackingMessage('Første kvartdrejning registreret. Fortsæt samme vej til 180°.');
+      } else if (result.status === 'cancelled') {
+        setLiveTrackingMessage('De to kvartdrejninger ophævede hinanden. Prøv halvgangen igen.');
+      } else {
+        replanAfterMove.current = {
+          previousFacelets: cubeAdapter.getCubeState()?.facelets ?? null,
+        };
+        setLiveTrackingMessage('Et andet træk blev registreret. Venter på cubens nye tilstand …');
+      }
+    });
+    const offState = cubeAdapter.subscribeToState?.(inspectState);
+    inspectState(cubeAdapter.getCubeState());
+
+    return () => {
+      offMove();
+      offState?.();
+    };
+  }, [cubeAdapter, directSolve, solveCubeState]);
 
   const copyFacelets = async () => {
     const report = reported
@@ -410,6 +540,24 @@ export function ManualCubeStatePage() {
             uret” skal altid aflæses, som du ser den farvede side forfra.
           </p>
 
+          {directSolve && (
+            <div className={`live-tracking-status ${cubeConnection === 'connected' ? 'good' : ''}`}>
+              <span className={`status-pill ${cubeConnection === 'connected' ? 'good' : ''}`}>
+                {cubeConnection === 'connected'
+                  ? 'GoCube følger med'
+                  : cubeConnection === 'connecting'
+                    ? 'Genforbinder GoCube …'
+                    : 'Manuel bekræftelse'}
+              </span>
+              <p role="status">
+                {liveTrackingMessage ||
+                  (cubeConnection === 'connected'
+                    ? 'Lav trækket på den fysiske cube. Guiden går automatisk videre, når GoCube registrerer det.'
+                    : 'GoCube er ikke forbundet. Brug knapperne nedenfor, eller gå tilbage og genforbind den.')}
+              </p>
+            </div>
+          )}
+
           {completedMoves < solution.moves.length ? (
             <div className="current-solve-step">
               <div className={`solve-face color-${currentFace}`} aria-hidden="true">
@@ -437,34 +585,40 @@ export function ManualCubeStatePage() {
             />
           </div>
           <div className="button-row">
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => setCompletedMoves((current) => Math.max(0, current - 1))}
-              disabled={completedMoves === 0}
-            >
-              Forrige træk
-            </button>
-            {completedMoves < solution.moves.length && (
-              <button
-                type="button"
-                className="button primary"
-                onClick={() =>
-                  setCompletedMoves((current) => Math.min(solution.moves.length, current + 1))
-                }
-              >
-                Jeg har lavet trækket
-              </button>
+            {cubeConnection !== 'connected' && (
+              <>
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => setCompletedMoves((current) => Math.max(0, current - 1))}
+                  disabled={completedMoves === 0}
+                >
+                  Forrige træk
+                </button>
+                {completedMoves < solution.moves.length && (
+                  <button
+                    type="button"
+                    className="button primary"
+                    onClick={() =>
+                      setCompletedMoves((current) => Math.min(solution.moves.length, current + 1))
+                    }
+                  >
+                    Jeg har lavet trækket
+                  </button>
+                )}
+              </>
             )}
-            {completedMoves === solution.moves.length && solution.moves.length > 0 && (
-              <button
-                type="button"
-                className="button secondary"
-                onClick={() => setCompletedMoves(0)}
-              >
-                Vis løsningen fra begyndelsen
-              </button>
-            )}
+            {completedMoves === solution.moves.length &&
+              solution.moves.length > 0 &&
+              cubeConnection !== 'connected' && (
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => setCompletedMoves(0)}
+                >
+                  Vis løsningen fra begyndelsen
+                </button>
+              )}
           </div>
           <details className="technical-facelets">
             <summary>Vis hele den tekniske trækrække</summary>

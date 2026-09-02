@@ -8,6 +8,8 @@ describe('GoCubeMoveCapture', () => {
     const onClear = vi.fn();
     const { rerender } = render(<GoCubeMoveCapture connected history={[]} onClear={onClear} />);
 
+    expect(screen.getByText(/Det røde center er øverst/)).toBeVisible();
+    expect(screen.queryByText(/højre yderlag/)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Start måling af R' }));
     expect(onClear).toHaveBeenCalledOnce();
     expect(screen.getByRole('status')).toHaveTextContent('Udfør nu R præcis én gang');

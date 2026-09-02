@@ -2824,6 +2824,24 @@ p {
   color: var(--ink-soft);
   font-size: 0.76rem;
 }
+.live-tracking-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.live-tracking-status.good {
+  border-color: color-mix(in srgb, var(--success) 34%, var(--line));
+  background: color-mix(in srgb, var(--success) 8%, var(--bg));
+}
+.live-tracking-status p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+}
 .current-solve-step {
   display: grid;
   grid-template-columns: 132px 1fr;
@@ -3870,6 +3888,10 @@ p {
   .live-solve-summary,
   .live-solve-summary > div {
     align-items: stretch;
+    flex-direction: column;
+  }
+  .live-tracking-status {
+    align-items: flex-start;
     flex-direction: column;
   }
   .current-solve-step {

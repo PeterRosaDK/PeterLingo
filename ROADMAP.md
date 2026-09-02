@@ -4,7 +4,7 @@
 
 Shared architecture and five functional thin slices: PWA shell, IndexedDB/JSON portability, FSRS boundary, adaptive session seed, Doomsday lesson, BCS drill with full local deck, Pi windows/diagnostic scaffold, cubing.js + smart-cube diagnostics, and Hørelære audio/touch instruments.
 
-Physical GoCube validation is deliberately still open.
+The remaining physical GoCube device matrix and M-move normalization are deliberately still open.
 
 ## Milestone 1 — Hardware & Roux
 
@@ -14,9 +14,9 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
-- Keep an approved connection alive during navigation inside PeterLingo. Evaluate Web Bluetooth
-  `getDevices()` for prompt-free reconnection after reload only where the browser and Beacio path
-  support it; retain an explicit user action and chooser fallback.
+- Keep an approved connection alive during navigation inside PeterLingo. A single prompt-free
+  startup reconnection through Web Bluetooth `getDevices()` is now implemented where the browser
+  supports it; explicit remembered-device reconnection and the chooser remain fallbacks.
 - Use the white GO centre toward the learner with the logo upright as the repeatable physical test
   frame, while keeping the finished Roux analysis colour-neutral.
 - Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
@@ -30,8 +30,9 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   cube legality, verifies the cubing.js two-phase result against the input state, and presents the
   route one colour-based move at a time. Phase-aware Roux solving remains open.
 - A connected, synchronized GoCube can now send its live state directly into that recovery guide;
-  calculation starts automatically, while manual colour entry and explicit synchronization checks
-  remain fallback tools.
+  calculation starts automatically and matching physical turns advance the guide without a button.
+  Half-turns consume two matching quarter-turn packets, and an unexpected turn replans from the next
+  hardware snapshot. Manual confirmation, colour entry, and synchronization checks remain fallbacks.
 - Give the solver two explicit optimization profiles. **Solve for me** may use the full available
   repertoire and return the best verified route found, without claiming mathematical optimality.
   **Teach me Roux** starts with a deliberately small beginner repertoire and favours recognizable,

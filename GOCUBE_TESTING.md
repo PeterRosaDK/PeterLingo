@@ -1,8 +1,9 @@
 # Physical GoCube verification checklist
 
-Desktop pairing has physically succeeded, but state accuracy and the complete matrix are **not yet
-verified**. Run this checklist separately on each target below and record date, OS/browser version,
-GoCube model/firmware if visible, and the result.
+Desktop pairing, state accuracy, outer-turn tracking, and one complete recovery have physically
+succeeded. M-move normalization and the complete device matrix are **not yet verified**. Run this
+checklist separately on each target below and record date, OS/browser version, GoCube model/firmware
+if visible, and the result.
 
 ## Before each run
 
@@ -12,8 +13,8 @@ GoCube model/firmware if visible, and the result.
 4. Open **Fag → Roux → Åbn GoCube-diagnostik**.
 5. Hold the white GO centre toward you with the logo upright. Keep this reference grip while
    comparing colours and testing slice moves.
-6. Confirm the warning says that connection is confirmed while state and move synchronization are
-   still being verified.
+6. Confirm the warning says that ordinary outer-turn tracking is confirmed while M moves remain the
+   next verification step.
 
 ## iPhone Safari + Beacio
 
@@ -28,7 +29,7 @@ GoCube model/firmware if visible, and the result.
    then confirm **Husket af browseren** names the cube and **Genforbind GoCube** reconnects without
    opening a new chooser. A remembered cube can still be asleep, out of range, or occupied by
    another app; the following connection message must distinguish that from missing permission.
-8. If the displayed colors do not match, tap **Læs cuben igen**. Do not use solved-state reset while
+8. If the displayed colors do not match, tap **Kontrollér synkronisering**. Do not use solved-state reset while
    the physical cube is mixed.
    If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
    stickers, and copy the comparison report before making more turns.
@@ -43,7 +44,11 @@ GoCube model/firmware if visible, and the result.
 13. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
     before calibrating the electronics. Never use this to make a mixed cube appear solved.
 14. Tap **Afbryd**; confirm no later physical turn is logged.
-15. Reconnect manually and repeat four moves. There must be no automatic request-device prompt or silent retry.
+15. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
+    without opening a chooser. If that fails, reconnect manually and repeat four moves.
+16. Start **Løs den aflæste cube** and perform the shown move physically. A quarter-turn should
+    advance immediately; a half-turn should advance only after its second matching quarter-turn.
+    Disconnect the cube and confirm that the manual step buttons return.
 
 ## iPad Safari + Beacio
 
@@ -62,8 +67,10 @@ facelet net remain usable without horizontal page overflow.
 - Beacio absent/disabled on iOS: PeterLingo must show Danish enable/install guidance while every non-BLE page still works.
 - HTTP/insecure context: diagnostics must explain HTTPS/localhost.
 - User cancels the chooser: no false “connected” state.
-- Cube sleeps or moves out of range: UI returns to a truthful disconnected/error state; no automatic chooser or retry.
-- Refresh while disconnected: no chooser appears without a new tap.
+- Cube sleeps or moves out of range: UI returns to a truthful disconnected/error state; no chooser
+  opens and there is no repeated retry loop.
+- Refresh while disconnected: at most one quiet remembered-device attempt occurs; no chooser appears
+  without a new tap.
 
 ## Completion evidence
 

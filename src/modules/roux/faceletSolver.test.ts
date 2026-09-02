@@ -32,10 +32,10 @@ describe('facelet solver', () => {
 
   it('describes notation with center colors and human directions', () => {
     expect(describeMove("R'")).toBe(
-      'Hold siden med det røde center direkte mod dig. Drej kun denne side en kvart omgang mod uret, sådan som du ser den.'
+      'Hold siden med det røde center direkte mod dig. Drej kun laget omkring dette center en kvart omgang mod uret, sådan som du ser det forfra.'
     );
     expect(describeMove('U2')).toBe(
-      'Drej kun siden med det hvide center en halv omgang (180°). Ved en halv omgang er retningen ligegyldig.'
+      'Hold siden med det hvide center direkte mod dig. Drej kun denne side en halv omgang (180°). Retningen er ligegyldig.'
     );
   });
 });
