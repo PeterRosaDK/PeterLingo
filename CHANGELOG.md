@@ -6,6 +6,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the physical GoCube calibration flow as exact revision `03ac51a` at
+  `https://3bcfbf4f.peterlingo.pages.dev`; the Access-protected custom domain points at the same
+  production deployment.
 - Resumed physical GoCube validation after a successful desktop connection; diagnostics now
   separates re-reading physical state, clearing only the local move log, and explicitly confirmed
   solved-state calibration. The physical facelet net no longer pretends a solved-start 3D history
