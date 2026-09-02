@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CubeMove } from '../../hardware/smartcube/types';
+import { notationExplanation } from './cubeNotation';
 
 interface CaptureResult {
   expected: string;
@@ -16,32 +17,32 @@ const instructions = [
   {
     notation: 'R',
     detail:
-      'Behold den hvide GO-side mod dig med logoet opret. Det røde center er øverst: drej det røde toplag 90° med uret, set direkte mod den røde side ovenfra.',
+      'Behold den hvide GO-side mod dig med logoet opret. Det røde center er nederst: drej det røde bundlag 90° med uret, set direkte mod den røde side nedefra.',
   },
   {
     notation: "R'",
     detail:
-      'Behold samme greb. Drej det røde toplag 90° mod uret, set direkte mod den røde side ovenfra.',
+      'Behold samme greb. Drej det røde bundlag 90° mod uret, set direkte mod den røde side nedefra.',
   },
   {
     notation: 'L',
     detail:
-      'Behold samme greb. Det orange center er nederst: drej det orange bundlag 90° med uret, set direkte mod den orange side nedefra.',
+      'Behold samme greb. Det orange center er øverst: drej det orange toplag 90° med uret, set direkte mod den orange side ovenfra.',
   },
   {
     notation: "L'",
     detail:
-      'Behold samme greb. Drej det orange bundlag 90° mod uret, set direkte mod den orange side nedefra.',
+      'Behold samme greb. Drej det orange toplag 90° mod uret, set direkte mod den orange side ovenfra.',
   },
   {
     notation: 'M',
     detail:
-      'Behold samme greb. Drej kun midterlaget mellem det røde top- og orange bundlag i samme retning som L.',
+      'Behold samme greb. Drej kun midterlaget mellem det orange top- og røde bundlag i samme retning som L.',
   },
   {
     notation: "M'",
     detail:
-      'Behold samme greb. Drej kun midterlaget mellem det røde top- og orange bundlag modsat M-retningen.',
+      'Behold samme greb. Drej kun midterlaget mellem det orange top- og røde bundlag modsat M-retningen.',
   },
 ] as const;
 
@@ -95,6 +96,9 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
             Træk {step + 1} af {instructions.length}
           </span>
           <strong>{instruction.notation}</strong>
+          <small className="capture-notation-meaning">
+            {instruction.notation[0]} = {notationExplanation(instruction.notation)}
+          </small>
           <p>{instruction.detail}</p>
           {!capturing ? (
             <button

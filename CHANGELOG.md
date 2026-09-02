@@ -14,8 +14,10 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   the device chooser; a sleeping cube or unsupported browser falls back to the existing manual
   connection flow.
 - Replaced spatially misleading `R`/`L` instructions with fixed center colors. In the agreed white
-  GO-side-forward grip, the red R layer is explicitly the top layer and M is the horizontal middle
-  layer; solve directions are always read facing the named center.
+  GO-side-forward grip, the orange L layer is explicitly on top, the red R layer is on the bottom,
+  and M is the horizontal middle layer; solve directions are always read facing the named center.
+- Expanded `U/R/F/D/L/B/M` beside the notation guide, GoCube calibration, live diagnostics, and
+  recovery steps—for example, `B = Back (bag)`—while keeping center colors as the practical anchor.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube

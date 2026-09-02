@@ -1,13 +1,5 @@
 import { Link } from 'react-router-dom';
-
-const faces = [
-  { notation: 'U', name: 'Hvid', description: 'laget med det hvide center' },
-  { notation: 'R', name: 'Rød', description: 'laget med det røde center' },
-  { notation: 'F', name: 'Grøn', description: 'laget med det grønne center' },
-  { notation: 'D', name: 'Gul', description: 'laget med det gule center' },
-  { notation: 'L', name: 'Orange', description: 'laget med det orange center' },
-  { notation: 'B', name: 'Blå', description: 'laget med det blå center' },
-] as const;
+import { OUTER_CUBE_NOTATION } from './cubeNotation';
 
 function CubeNet({ active }: { active?: string }) {
   return (
@@ -51,9 +43,9 @@ export function CubeNotationHelpPage() {
           <p className="eyebrow">Vores fælles greb</p>
           <h2>Hvid GO-side mod dig · logoet opret</h2>
           <p>
-            Behold dette greb gennem hele kalibreringen. I dette greb vender R-lagets røde center
-            opad; R betyder altså ikke “laget på din højre hånd”. Bogstaverne er faste navne på
-            centerfarverne.
+            Behold dette greb gennem hele kalibreringen. I dette greb er det orange L-lag øverst,
+            mens det røde R-lag er nederst. R betyder altså ikke “laget på din højre hånd”.
+            Bogstaverne er faste navne på centerfarverne.
           </p>
         </div>
         <CubeNet active="U" />
@@ -114,14 +106,20 @@ export function CubeNotationHelpPage() {
             <h2 id="faces-title">Bogstavet vælger en centerfarve</h2>
           </div>
         </div>
+        <p className="notation-rule">
+          Bogstaverne kommer fra de engelske navne i standardgrebet. Brug dem som huskeord, men brug
+          centerfarven til at finde det rigtige lag, når cuben holdes på en anden måde.
+        </p>
         <div className="face-legend">
-          {faces.map((face) => (
+          {OUTER_CUBE_NOTATION.map((face) => (
             <article key={face.notation}>
               <CubeNet active={face.notation} />
               <div>
                 <strong>{face.notation}</strong>
-                <h3>{face.name}</h3>
-                <p>{face.description}</p>
+                <h3>
+                  {face.english} · {face.danish}
+                </h3>
+                <p>{face.layer}</p>
               </div>
             </article>
           ))}
@@ -134,8 +132,8 @@ export function CubeNotationHelpPage() {
           <h2 id="middle-title">M er det vandrette midterlag i GO-grebet</h2>
           <p>
             M-laget ligger mellem det orange L-lag og det røde R-lag. Med GO-logoet mod dig er det
-            det vandrette midterlag. Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den
-            modsatte vej. Drej kun midten—hold de to yderlag stille.
+            det vandrette midterlag mellem orange top og rød bund. Retningen for <b>M</b> følger et
+            L-træk; <b>M′</b> går den modsatte vej. Drej kun midten—hold de to yderlag stille.
           </p>
           <p className="guidance">
             GoCube kan rapportere et fysisk M-træk som to næsten samtidige ydertræk. Derfor måler

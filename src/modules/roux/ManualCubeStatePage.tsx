@@ -4,6 +4,7 @@ import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
 import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import { describeMove, solveFacelets, validateFacelets, type CubeSolution } from './faceletSolver';
+import { notationExplanation } from './cubeNotation';
 import { consumeLiveMove, type PendingHalfTurn } from './liveSolutionTracking';
 
 const COLORS = ['U', 'R', 'F', 'D', 'L', 'B'] as const;
@@ -569,7 +570,9 @@ export function ManualCubeStatePage({
                 </p>
                 <strong>{COLOR_NAMES[currentFace]} side</strong>
                 <p>{describeMove(currentMove)}</p>
-                <small>Teknisk navn: {currentMove}</small>
+                <small>
+                  Notation: {currentMove} · {currentMove[0]} = {notationExplanation(currentMove)}
+                </small>
               </div>
             </div>
           ) : (

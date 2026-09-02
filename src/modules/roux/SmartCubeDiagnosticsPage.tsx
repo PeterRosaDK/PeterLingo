@@ -9,6 +9,7 @@ import type {
   RememberedCube,
 } from '../../hardware/smartcube/types';
 import { CubeFaceletNet } from './CubeFaceletNet';
+import { notationExplanation } from './cubeNotation';
 import { validateFacelets } from './faceletSolver';
 import { GoCubeMoveCapture } from './GoCubeMoveCapture';
 
@@ -288,7 +289,11 @@ export function SmartCubeDiagnosticsPage() {
             </div>
             <div>
               <dt>Sidste træk</dt>
-              <dd>{history.at(-1)?.notation ?? '—'}</dd>
+              <dd>
+                {history.at(-1)
+                  ? `${history.at(-1)?.notation} · ${notationExplanation(history.at(-1)?.notation ?? '')}`
+                  : '—'}
+              </dd>
             </div>
             <div>
               <dt>Husket af browseren</dt>
@@ -456,6 +461,7 @@ export function SmartCubeDiagnosticsPage() {
                 <span key={`${move.timestamp}-${index}`}>
                   {move.notation}
                   <small>
+                    {notationExplanation(move.notation)} ·{' '}
                     {new Date(move.timestamp).toLocaleTimeString('da-DK')}
                     {delta === null ? '' : ` · +${delta} ms`}
                   </small>

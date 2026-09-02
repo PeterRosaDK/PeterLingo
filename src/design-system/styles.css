@@ -2273,6 +2273,12 @@ p {
   font-size: clamp(3rem, 8vw, 5rem);
   line-height: 1;
 }
+.capture-instruction .capture-notation-meaning {
+  display: block;
+  margin: -2px auto 12px;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
 .capture-instruction > p,
 .capture-complete > p {
   margin: 0 auto 18px;
