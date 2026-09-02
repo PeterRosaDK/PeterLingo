@@ -20,17 +20,17 @@ export function RouxPage() {
           <div className="stage-heading">
             <div>
               <p className="eyebrow">Fælles testgreb</p>
-              <h2>Hvid GO-side mod dig</h2>
+              <h2>Hvid GO-side op · grøn mod dig</h2>
             </div>
             <span className="status-pill good">GoCube klar</span>
           </div>
           <div className="roux-reference-mark" aria-hidden="true">
-            <span>GO</span>
-            <i>↑</i>
+            <span>GRØN</span>
+            <i>HVID GO ↑</i>
           </div>
           <p>
-            Hold den hvide midterplade mod dig og logoet opret, når vi tester farver og M-træk.
-            Grebet er et målepunkt — ikke en begrænsning af den senere farveneutrale Roux-løsning.
+            Hold den hvide GO-side opad og den grønne centerflade mod dig. Så følger R, L, U, D, F
+            og B den almindelige notation, og GoCubens rå ydertræk skal bruge samme bogstav.
           </p>
           <Link className="button primary" to="/fag/roux/diagnostik">
             Forbind og kontrollér GoCube

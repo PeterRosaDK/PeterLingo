@@ -63,6 +63,8 @@ returning to the app.
 
 PeterLingo imports `@beacio/core/auto` before the React application or any Bluetooth capability check. The real adapter uses the generic API from `smartcube-web-bluetooth`, pinned to a reviewed commit supporting GoCube/Rubik's Connected.
 
+All calibration and notation teaching uses one fixed, WCA-compatible reference orientation: white/GO upward and green toward the learner. In that grip, `U` is white, `R` red, `F` green, `D` yellow, `L` orange, and `B` blue. Keep that grip unless the app explicitly introduces a whole-cube rotation.
+
 Beacio is only needed for Safari on iPhone/iPad. On Mac, do not install Beacio; open PeterLingo in a current Chrome or Edge browser, which supplies Web Bluetooth directly. Desktop Safari and Firefox are not supported for this path.
 
 On iPhone/iPad:

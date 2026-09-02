@@ -114,7 +114,7 @@ export function SmartCubeDiagnosticsPage() {
     setBattery((await adapter.getBatteryLevel?.()) ?? null);
     await refreshRememberedCubes();
     setMessage(
-      'Forbindelsen er oprettet. Hold den hvide GO-side mod dig med logoet opret, og sammenlign farvenettet.'
+      'Forbindelsen er oprettet. Hold den hvide GO-side opad og den grønne side mod dig, og sammenlign farvenettet.'
     );
   };
 
@@ -208,11 +208,11 @@ export function SmartCubeDiagnosticsPage() {
       <section className="cube-reference-grip" aria-labelledby="reference-grip-title">
         <div>
           <p className="eyebrow">Fælles nulpunkt</p>
-          <h2 id="reference-grip-title">Hvid GO-side mod dig · logoet opret</h2>
+          <h2 id="reference-grip-title">Hvid GO-side op · grøn side mod dig</h2>
         </div>
         <p>
-          Brug dette greb, når vi sammenligner farver og navngiver M-træk. Den senere Roux-motor
-          skal stadig kunne løse og undervise uafhængigt af farvevalg.
+          Dette er standardgrebet: F er grøn foran, B er blå bagpå, R er rød til højre, L er orange
+          til venstre, U er hvid ovenpå, og D er gul nedenunder. Behold grebet under målingen.
         </p>
         <Link className="button secondary" to="/fag/roux/notation">
           Hvad betyder R, R′ og M?

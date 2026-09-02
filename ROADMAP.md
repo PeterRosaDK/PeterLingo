@@ -17,12 +17,13 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 - Keep an approved connection alive during navigation inside PeterLingo. A single prompt-free
   startup reconnection through Web Bluetooth `getDevices()` is now implemented where the browser
   supports it; explicit remembered-device reconnection and the chooser remain fallbacks.
-- Use the white GO centre toward the learner with the logo upright as the repeatable physical test
-  frame, while keeping the finished Roux analysis colour-neutral.
+- Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
+  In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
+  `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.
 - Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
   outer-move signatures before normalising them into Roux slice moves. A guided
-  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration; it now saves explicit mappings
-  between the instructed hand move and the raw GoCube event sequence on the current device.
+  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration. Outer moves must match their
+  standard letter in the fixed grip; only M/M′ retain device-specific multi-event evidence.
 - Build a phase-aware Roux solver that can return any validated physical state to solved, expose
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback

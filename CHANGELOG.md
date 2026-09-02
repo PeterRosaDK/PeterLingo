@@ -13,10 +13,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added one silent startup attempt to reconnect an already browser-approved GoCube. It never opens
   the device chooser; a sleeping cube or unsupported browser falls back to the existing manual
   connection flow.
-- Corrected the calibration coordinate system. In the white GO-side-forward grip, orange is on top
-  and red is on the bottom, while R/L remain the spatial right/left layers and M is the vertical
-  middle layer. Recovery instructions remain color-based because the solver uses a separate
-  internal coordinate system.
+- Replaced the rotated white-front test grip with the conventional white/GO-up, green-front frame.
+  It gives one stable mapping—green F, blue B, red R, orange L, white U, yellow D—shared by standard
+  notation, cubing.js, and GoCubens raw outer moves.
 - Expanded `U/R/F/D/L/B/M` beside the notation guide and GoCube calibration—for example,
   `B = Back (bag)`—while explicitly labelling hardware events and recovery codes as technical raw
   values instead of misleadingly translating them as hand instructions.
@@ -24,10 +23,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   superseded after physical correction of the coordinate-system distinction.
 - Deployed the corrected hand-relative notation and raw-code separation as exact revision
   `084143a` at `https://16c63cec.peterlingo.pages.dev`.
-- Made **Sådan taler GoCube** interpret differing letters as calibration evidence instead of an
-  apparent error. It now presents the performed hand move and hardware code separately, shows an
-  explicit mapping such as `R → B`, and saves each confirmed mapping locally for the remaining
-  outer- and M-move measurements.
+- Revision `40dbf07` briefly treated `R → B` as a calibration mapping. It was superseded after
+  choosing the conventional fixed orientation: outer letters must now match, and a mismatch gives
+  an explicit grip correction. Only M/M′ are allowed to produce multi-event hardware evidence.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
@@ -78,9 +76,10 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   separates re-reading physical state, clearing only the local move log, and explicitly confirmed
   solved-state calibration. The physical facelet net no longer pretends a solved-start 3D history
   is the authoritative state.
-- Replaced user-facing mock-cube controls with a physical GoCube reference grip: white GO centre
-  toward the learner and logo upright. Raw move timing now supports an evidence-based `M`/`M'`
-  mapping; the mock adapter remains available only as an automated test seam.
+- Replaced user-facing mock-cube controls with a physical GoCube reference grip. The initial
+  white-front test frame was later superseded by the conventional white-up, green-front standard.
+  Raw move timing supports an evidence-based `M`/`M'` mapping; the mock adapter remains available
+  only as an automated test seam.
 - Added a guided six-step GoCube capture flow for `R`, `R'`, `L`, `L'`, `M`, and `M'` that records
   the exact raw move names and millisecond gaps before any slice-move normalization is introduced.
 - Kept an approved GoCube connection alive while navigating between PeterLingo routes, avoiding a

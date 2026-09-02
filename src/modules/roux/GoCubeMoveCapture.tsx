@@ -13,7 +13,7 @@ interface GoCubeMoveCaptureProps {
   onClear: () => void;
 }
 
-const CALIBRATION_KEY = 'peterlingo:gocube-move-calibration:v1';
+const CALIBRATION_KEY = 'peterlingo:gocube-move-calibration:v2';
 
 function rawSequence(moves: CubeMove[]): string {
   return moves.map((move) => move.notation).join(' + ');
@@ -53,32 +53,32 @@ const instructions = [
   {
     notation: 'R',
     detail:
-      'Behold den hvide GO-side mod dig med logoet opret. Drej laget på din højre hånd 90° med uret, når du ser direkte på højre side. Vi måler, hvilken rå kode GoCube sender.',
+      'Hold hvid/GO opad og grøn mod dig. Det røde lag er nu til højre. Drej det 90° med uret, når du ser direkte på den røde side.',
   },
   {
     notation: "R'",
     detail:
-      'Behold samme greb. Drej laget på din højre hånd 90° mod uret, når du ser direkte på højre side.',
+      'Behold hvid/GO opad og grøn mod dig. Drej det røde lag til højre 90° mod uret, når du ser direkte på den røde side.',
   },
   {
     notation: 'L',
     detail:
-      'Behold samme greb. Drej laget på din venstre hånd 90° med uret, når du ser direkte på venstre side.',
+      'Behold hvid/GO opad og grøn mod dig. Det orange lag er til venstre. Drej det 90° med uret, når du ser direkte på den orange side.',
   },
   {
     notation: "L'",
     detail:
-      'Behold samme greb. Drej laget på din venstre hånd 90° mod uret, når du ser direkte på venstre side.',
+      'Behold hvid/GO opad og grøn mod dig. Drej det orange lag til venstre 90° mod uret, når du ser direkte på den orange side.',
   },
   {
     notation: 'M',
     detail:
-      'Behold samme greb. Drej kun det lodrette midterlag mellem venstre og højre side i samme retning som L.',
+      'Behold hvid/GO opad og grøn mod dig. Drej kun det lodrette midterlag mellem orange og rød i samme retning som L.',
   },
   {
     notation: "M'",
     detail:
-      'Behold samme greb. Drej kun det lodrette midterlag mellem venstre og højre side modsat M-retningen.',
+      'Behold hvid/GO opad og grøn mod dig. Drej kun det lodrette midterlag mellem orange og rød modsat M-retningen.',
   },
 ] as const;
 
@@ -94,6 +94,12 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
   const [capturing, setCapturing] = useState(false);
   const instruction = instructions[step];
   const currentRawSequence = rawSequence(history);
+  const isOuterTurn = step < 4;
+  const outerTurnMatches =
+    !isOuterTurn || (history.length === 1 && history[0]?.notation === instruction?.notation);
+  const hasMismatchedOuterTurn =
+    Boolean(instruction) && capturing && history.length > 0 && !outerTurnMatches;
+  const canSaveCapture = history.length > 0 && outerTurnMatches;
 
   const startCapture = () => {
     onClear();
@@ -138,9 +144,9 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
         </span>
       </div>
       <p>
-        Venstre side er det træk, du udfører i GO-grebet. Højre side er GoCubens rå kode. De to
-        bogstaver må gerne være forskellige: hvis du udfører R og GoCube skriver B, har vi netop
-        fundet oversættelsen R → B. Vi måler yderlagene først og derefter M/M′.
+        Brug standardgrebet: hvid/GO opad og grøn mod dig. Så skal et almindeligt ydertræk have
+        samme bogstav hos dig og GoCube. Hvis R bliver til B, vender cuben forkert. M/M′ måles
+        bagefter, fordi GoCube kan sende dem som to rå ydertræk.
       </p>
 
       {instruction ? (
@@ -169,31 +175,48 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
                 <span>
                   GoCube skriver: <b>{history.length ? currentRawSequence : 'venter …'}</b>
                 </span>
-                {history.length > 0 && (
+                {history.length > 0 && outerTurnMatches && isOuterTurn && (
                   <strong>
-                    Fundet oversættelse: {instruction.notation} → {currentRawSequence}
+                    Bekræftet: {instruction.notation} → {currentRawSequence}
+                  </strong>
+                )}
+                {history.length > 0 && !isOuterTurn && (
+                  <strong>
+                    M-måling: {instruction.notation} → {currentRawSequence}
+                  </strong>
+                )}
+                {hasMismatchedOuterTurn && (
+                  <strong className="capture-mismatch">
+                    Stop: {instruction.notation} → {currentRawSequence} betyder, at referencegrebet
+                    ikke passer. Læg hvid/GO opad og vend grøn mod dig.
                   </strong>
                 )}
               </p>
-              <button
-                type="button"
-                className="button primary"
-                onClick={saveCapture}
-                disabled={history.length === 0}
-              >
-                {history.length
-                  ? `Gem oversættelsen ${instruction.notation} → ${currentRawSequence} og fortsæt`
-                  : 'Gem oversættelsen og fortsæt'}
-              </button>
+              {hasMismatchedOuterTurn ? (
+                <button type="button" className="button secondary" onClick={onClear}>
+                  Ryd og prøv {instruction.notation} igen
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="button primary"
+                  onClick={saveCapture}
+                  disabled={!canSaveCapture}
+                >
+                  {history.length
+                    ? `Gem målingen ${instruction.notation} → ${currentRawSequence} og fortsæt`
+                    : 'Gem målingen og fortsæt'}
+                </button>
+              )}
             </>
           )}
         </div>
       ) : (
         <div className="capture-complete">
-          <strong>Oversættelsestabellen er gemt på denne enhed.</strong>
+          <strong>Målerækken er gemt på denne enhed.</strong>
           <p>
-            Resultaterne nedenfor viser forskellen mellem dine håndtræk og GoCubens rå koder. M/M′
-            skal stadig vurderes særskilt, fordi de kan bestå af to rå hændelser.
+            Ydertrækkene bekræfter standardgrebet. M/M′ skal stadig vurderes særskilt, fordi de kan
+            bestå af to rå hændelser.
           </p>
           <button type="button" className="button secondary" onClick={restart}>
             Start målerækken forfra
@@ -202,7 +225,7 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
       )}
 
       {results.length > 0 && (
-        <div className="capture-results" aria-label="Gemt oversættelse mellem håndtræk og GoCube">
+        <div className="capture-results" aria-label="Gemte GoCube-målinger">
           {results.map((result) => (
             <div key={result.expected}>
               <strong>

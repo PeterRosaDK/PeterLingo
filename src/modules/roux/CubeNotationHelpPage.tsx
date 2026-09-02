@@ -41,11 +41,12 @@ export function CubeNotationHelpPage() {
       <section className="notation-reference">
         <div>
           <p className="eyebrow">Vores fælles greb</p>
-          <h2>Hvid GO-side mod dig · logoet opret</h2>
+          <h2>Hvid GO-side op · grøn side mod dig</h2>
           <p>
-            Behold dette greb gennem hele kalibreringen. Den orange flade er øverst, og den røde er
-            nederst. Bogstaverne beskriver placeringen i dette greb: R er siden på din højre hånd,
-            og L er siden på din venstre hånd.
+            Dette standardgreb gør bogstaverne entydige: grøn er F foran, blå er B bagpå, rød er R
+            til højre, orange er L til venstre, hvid/GO er U ovenpå, og gul er D nedenunder. Behold
+            grebet gennem hele kalibreringen. Drej ikke hele cuben, medmindre appen senere viser en
+            hel-cube-rotation udtrykkeligt.
           </p>
         </div>
         <CubeNet active="F" />
@@ -129,11 +130,11 @@ export function CubeNotationHelpPage() {
       <section className="notation-section middle-slice-section" aria-labelledby="middle-title">
         <div>
           <p className="eyebrow">Roux-specialiteten</p>
-          <h2 id="middle-title">M er det lodrette midterlag i GO-grebet</h2>
+          <h2 id="middle-title">M er det lodrette midterlag i standardgrebet</h2>
           <p>
-            M-laget ligger mellem venstre L-lag og højre R-lag. Med GO-logoet mod dig er det det
-            lodrette midterlag. Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den modsatte
-            vej. Drej kun midten—hold de to yderlag stille.
+            M-laget ligger mellem det orange L-lag til venstre og det røde R-lag til højre.
+            Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den modsatte vej. Drej kun
+            midten—hold de to yderlag stille.
           </p>
           <p className="guidance">
             GoCube kan rapportere et fysisk M-træk som to næsten samtidige ydertræk. Derfor måler

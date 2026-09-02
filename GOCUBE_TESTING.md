@@ -11,8 +11,8 @@ if visible, and the result.
 2. Close other apps/tabs that may own its Bluetooth connection.
 3. Serve PeterLingo over HTTPS or use `localhost` on desktop.
 4. Open **Fag → Roux → Åbn GoCube-diagnostik**.
-5. Hold the white GO centre toward you with the logo upright. Keep this reference grip while
-   comparing colours and testing slice moves.
+5. Hold the white GO centre upward and the green centre toward you. Keep this standard reference
+   grip while comparing colours and testing moves: green F, blue B, red R, orange L, white U, yellow D.
 6. Confirm the warning says that ordinary outer-turn tracking is confirmed while M moves remain the
    next verification step.
 
@@ -33,7 +33,8 @@ if visible, and the result.
    the physical cube is mixed.
    If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
    stickers, and copy the comparison report before making more turns.
-9. Turn `R`, `U`, `R'`, `U'` slowly. Confirm every move appears once, in the correct direction and order.
+9. Turn `R`, `U`, `R'`, `U'` slowly. Confirm every outer move appears once with the same letter and
+   direction. `R → B` means the cube is not in the standard reference grip.
 10. Tap **Ryd kun loggen**, make one isolated physical `M`, and record both raw move names and the
     displayed millisecond gap. Repeat from a cleared log with one `M'`. Do not yet assume which
     pair corresponds to which normalized slice direction.

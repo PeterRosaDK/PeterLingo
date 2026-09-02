@@ -115,7 +115,7 @@ test('daily stars reward practice rather than correctness', async ({ page }) => 
 test('Roux presents the physical reference grip and keeps the notation drill', async ({ page }) => {
   await page.goto('/fag/roux');
   await expect(page.getByRole('heading', { name: 'Roux', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Hvid GO-side mod dig' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Hvid GO-side op · grøn mod dig' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Forbind og kontrollér GoCube' })).toBeVisible();
   await expect(page.getByText('Beacio skal ikke installeres på Mac.')).toBeVisible();
   const handDrill = page.locator('.roux-move-drill');
@@ -128,7 +128,9 @@ test('Roux presents the physical reference grip and keeps the notation drill', a
 
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
-  await expect(page.getByRole('heading', { name: /Hvid GO-side mod dig/ })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /Hvid GO-side op · grøn side mod dig/ })
+  ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Find og forbind GoCube' })).toBeVisible();
   await expect(page.getByText('Husket af browseren')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
@@ -139,7 +141,7 @@ test('GoCube diagnostics exposes only the physical connection flow', async ({ pa
   await expect(
     page.getByText('Forbind GoCube ovenfor for at løse eller kontrollere den.')
   ).toBeVisible();
-  await expect(page.getByText(/derefter M\/M′/)).toBeVisible();
+  await expect(page.getByText(/M\/M′ måles bagefter/)).toBeVisible();
   await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
 });
@@ -153,10 +155,10 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   await expect(page.getByText('Er det R1?')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Back · bag' })).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'M er det lodrette midterlag i GO-grebet' })
+    page.getByRole('heading', { name: 'M er det lodrette midterlag i standardgrebet' })
   ).toBeVisible();
-  await expect(page.getByText(/M-laget ligger mellem venstre L-lag og højre R-lag/)).toBeVisible();
-  await expect(page.getByText(/orange flade er øverst.*røde er nederst/)).toBeVisible();
+  await expect(page.getByText(/M-laget ligger mellem det orange L-lag.*røde R-lag/)).toBeVisible();
+  await expect(page.getByText(/grøn er F foran.*blå er B bagpå.*rød er R/)).toBeVisible();
   await page.getByRole('link', { name: 'Tilbage til GoCube-målingen' }).click();
   await expect(page.getByRole('heading', { name: 'GoCube-diagnostik' })).toBeVisible();
 });
