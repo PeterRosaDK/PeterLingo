@@ -13,6 +13,42 @@ interface GoCubeMoveCaptureProps {
   onClear: () => void;
 }
 
+const CALIBRATION_KEY = 'peterlingo:gocube-move-calibration:v1';
+
+function rawSequence(moves: CubeMove[]): string {
+  return moves.map((move) => move.notation).join(' + ');
+}
+
+function loadResults(): CaptureResult[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(CALIBRATION_KEY) ?? '[]') as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (result): result is CaptureResult =>
+        typeof result === 'object' &&
+        result !== null &&
+        typeof (result as CaptureResult).expected === 'string' &&
+        Array.isArray((result as CaptureResult).moves) &&
+        (result as CaptureResult).moves.every(
+          (move) =>
+            typeof move?.notation === 'string' &&
+            typeof move.timestamp === 'number' &&
+            (move.source === 'bluetooth' || move.source === 'mock')
+        )
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveResults(results: CaptureResult[]): void {
+  try {
+    localStorage.setItem(CALIBRATION_KEY, JSON.stringify(results));
+  } catch {
+    // Calibration remains usable for the current page if local storage is unavailable.
+  }
+}
+
 const instructions = [
   {
     notation: 'R',
@@ -47,10 +83,17 @@ const instructions = [
 ] as const;
 
 export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCaptureProps) {
-  const [step, setStep] = useState(0);
+  const [results, setResults] = useState<CaptureResult[]>(() => loadResults());
+  const [step, setStep] = useState(() => {
+    const saved = loadResults();
+    const firstMissing = instructions.findIndex(
+      (instruction) => !saved.some((result) => result.expected === instruction.notation)
+    );
+    return firstMissing < 0 ? instructions.length : firstMissing;
+  });
   const [capturing, setCapturing] = useState(false);
-  const [results, setResults] = useState<CaptureResult[]>([]);
   const instruction = instructions[step];
+  const currentRawSequence = rawSequence(history);
 
   const startCapture = () => {
     onClear();
@@ -59,10 +102,14 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
 
   const saveCapture = () => {
     if (!instruction || history.length === 0) return;
-    setResults((current) => [
-      ...current.filter((result) => result.expected !== instruction.notation),
-      { expected: instruction.notation, moves: [...history] },
-    ]);
+    setResults((current) => {
+      const next = [
+        ...current.filter((result) => result.expected !== instruction.notation),
+        { expected: instruction.notation, moves: [...history] },
+      ];
+      saveResults(next);
+      return next;
+    });
     setCapturing(false);
     setStep((current) => current + 1);
   };
@@ -72,6 +119,11 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
     setStep(0);
     setCapturing(false);
     setResults([]);
+    try {
+      localStorage.removeItem(CALIBRATION_KEY);
+    } catch {
+      // The visible reset still works for this page.
+    }
   };
 
   return (
@@ -86,8 +138,9 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
         </span>
       </div>
       <p>
-        Vi måler yderlagene først og derefter M/M′. Du starter og gemmer hver måling manuelt, så
-        appen ikke gætter på, om GoCube sender én eller to rå hændelser.
+        Venstre side er det træk, du udfører i GO-grebet. Højre side er GoCubens rå kode. De to
+        bogstaver må gerne være forskellige: hvis du udfører R og GoCube skriver B, har vi netop
+        fundet oversættelsen R → B. Vi måler yderlagene først og derefter M/M′.
       </p>
 
       {instruction ? (
@@ -112,10 +165,15 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
           ) : (
             <>
               <p className="capture-now" role="status">
-                Udfør nu {instruction.notation} præcis én gang. Rå registrering:{' '}
-                <b>
-                  {history.length ? history.map((move) => move.notation).join(' · ') : 'venter …'}
-                </b>
+                <span>Dit håndtræk: {instruction.notation}</span>
+                <span>
+                  GoCube skriver: <b>{history.length ? currentRawSequence : 'venter …'}</b>
+                </span>
+                {history.length > 0 && (
+                  <strong>
+                    Fundet oversættelse: {instruction.notation} → {currentRawSequence}
+                  </strong>
+                )}
               </p>
               <button
                 type="button"
@@ -123,15 +181,20 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
                 onClick={saveCapture}
                 disabled={history.length === 0}
               >
-                Gem måling og fortsæt
+                {history.length
+                  ? `Gem oversættelsen ${instruction.notation} → ${currentRawSequence} og fortsæt`
+                  : 'Gem oversættelsen og fortsæt'}
               </button>
             </>
           )}
         </div>
       ) : (
         <div className="capture-complete">
-          <strong>Målerækken er færdig.</strong>
-          <p>Resultaterne nedenfor kan bruges til at fastlægge M/M′-normaliseringen.</p>
+          <strong>Oversættelsestabellen er gemt på denne enhed.</strong>
+          <p>
+            Resultaterne nedenfor viser forskellen mellem dine håndtræk og GoCubens rå koder. M/M′
+            skal stadig vurderes særskilt, fordi de kan bestå af to rå hændelser.
+          </p>
           <button type="button" className="button secondary" onClick={restart}>
             Start målerækken forfra
           </button>
@@ -139,12 +202,14 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
       )}
 
       {results.length > 0 && (
-        <div className="capture-results" aria-label="Gemte rå GoCube-målinger">
+        <div className="capture-results" aria-label="Gemt oversættelse mellem håndtræk og GoCube">
           {results.map((result) => (
             <div key={result.expected}>
-              <strong>Du udførte {result.expected}</strong>
+              <strong>
+                {result.expected} → {rawSequence(result.moves)}
+              </strong>
               <span>
-                GoCube sendte{' '}
+                Dit håndtræk: {result.expected} · rå GoCube-kode:{' '}
                 {result.moves
                   .map((move, index) => {
                     const previous = result.moves[index - 1];

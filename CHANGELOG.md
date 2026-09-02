@@ -24,6 +24,10 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   superseded after physical correction of the coordinate-system distinction.
 - Deployed the corrected hand-relative notation and raw-code separation as exact revision
   `084143a` at `https://16c63cec.peterlingo.pages.dev`.
+- Made **Sådan taler GoCube** interpret differing letters as calibration evidence instead of an
+  apparent error. It now presents the performed hand move and hardware code separately, shows an
+  explicit mapping such as `R → B`, and saves each confirmed mapping locally for the remaining
+  outer- and M-move measurements.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube

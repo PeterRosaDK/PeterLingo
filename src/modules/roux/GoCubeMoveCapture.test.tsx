@@ -5,6 +5,7 @@ import { GoCubeMoveCapture } from './GoCubeMoveCapture';
 
 describe('GoCubeMoveCapture', () => {
   it('records the raw event before advancing to the next instructed move', () => {
+    localStorage.clear();
     const onClear = vi.fn();
     const { rerender } = render(<GoCubeMoveCapture connected history={[]} onClear={onClear} />);
 
@@ -13,14 +14,17 @@ describe('GoCubeMoveCapture', () => {
     expect(screen.queryByText(/højre yderlag/)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Start måling af R' }));
     expect(onClear).toHaveBeenCalledOnce();
-    expect(screen.getByRole('status')).toHaveTextContent('Udfør nu R præcis én gang');
+    expect(screen.getByRole('status')).toHaveTextContent('Dit håndtræk: R');
 
-    const move: CubeMove = { notation: 'R', timestamp: 100, source: 'bluetooth' };
+    const move: CubeMove = { notation: 'B', timestamp: 100, source: 'bluetooth' };
     rerender(<GoCubeMoveCapture connected history={[move]} onClear={onClear} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Gem måling og fortsæt' }));
+    expect(screen.getByRole('status')).toHaveTextContent('GoCube skriver: B');
+    expect(screen.getByRole('status')).toHaveTextContent('Fundet oversættelse: R → B');
+    fireEvent.click(screen.getByRole('button', { name: 'Gem oversættelsen R → B og fortsæt' }));
 
-    expect(screen.getByText('Du udførte R')).toBeVisible();
-    expect(screen.getByText('GoCube sendte R')).toBeVisible();
+    expect(screen.getByText('R → B')).toBeVisible();
+    expect(screen.getByText('Dit håndtræk: R · rå GoCube-kode: B')).toBeVisible();
+    expect(localStorage.getItem('peterlingo:gocube-move-calibration:v1')).toContain('"B"');
     expect(screen.getByRole('button', { name: "Start måling af R'" })).toBeVisible();
   });
 });

@@ -2286,10 +2286,15 @@ p {
   color: var(--ink-soft);
 }
 .capture-instruction .capture-now {
+  display: grid;
+  gap: 5px;
   padding: 11px 14px;
   border-radius: 10px;
   background: var(--surface);
   color: var(--ink);
+}
+.capture-instruction .capture-now strong {
+  color: var(--brand);
 }
 .capture-results {
   display: grid;

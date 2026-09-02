@@ -21,7 +21,8 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   frame, while keeping the finished Roux analysis colour-neutral.
 - Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
   outer-move signatures before normalising them into Roux slice moves. A guided
-  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration.
+  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration; it now saves explicit mappings
+  between the instructed hand move and the raw GoCube event sequence on the current device.
 - Build a phase-aware Roux solver that can return any validated physical state to solved, expose
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback
