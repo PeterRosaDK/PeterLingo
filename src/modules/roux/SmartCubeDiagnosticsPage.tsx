@@ -203,19 +203,9 @@ export function SmartCubeDiagnosticsPage() {
                 Forbind GoCube
               </button>
             ) : (
-              <>
-                <button type="button" className="button secondary" onClick={disconnect}>
-                  Afbryd
-                </button>
-                <button
-                  type="button"
-                  className="button secondary"
-                  onClick={() => void readPhysicalState()}
-                  disabled={actionPending}
-                >
-                  Læs cuben igen
-                </button>
-              </>
+              <button type="button" className="button secondary" onClick={disconnect}>
+                Afbryd
+              </button>
             )}
           </div>
           <p className="connection-message" role="status">
@@ -235,13 +225,31 @@ export function SmartCubeDiagnosticsPage() {
             Mellem de fulde aflæsninger sender cuben sine træk, og biblioteket fører nettet frem.
             Det er mere pålideligt end en 3D-terning, der altid antager en løst startstilling.
           </p>
-          <Link
-            className="button secondary"
-            to="/fag/roux/manuel-tilstand"
-            state={{ facelets: state?.facelets ?? null }}
-          >
-            Indtast den fysiske tilstand manuelt
-          </Link>
+          <div className="button-row">
+            <button
+              type="button"
+              className="button primary"
+              onClick={() => void readPhysicalState()}
+              disabled={connection !== 'connected' || actionPending}
+              title={
+                connection === 'connected'
+                  ? 'Bed GoCube om en ny fuld farveaflæsning'
+                  : 'Forbind GoCube først'
+              }
+            >
+              Læs cuben igen
+            </button>
+            <Link
+              className="button secondary"
+              to="/fag/roux/manuel-tilstand"
+              state={{ facelets: state?.facelets ?? null }}
+            >
+              Indtast den fysiske tilstand manuelt
+            </Link>
+          </div>
+          {connection !== 'connected' && (
+            <p className="facelet-note">Forbind GoCube ovenfor for at aktivere genaflæsningen.</p>
+          )}
         </div>
         <div className="diagnostic-panel">
           <h2>Logisk state</h2>

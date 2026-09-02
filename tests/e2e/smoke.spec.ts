@@ -132,6 +132,11 @@ test('GoCube diagnostics exposes only the physical connection flow', async ({ pa
   await expect(page.getByRole('button', { name: 'Forbind GoCube' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Start måling af R' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeDisabled();
+  await expect(
+    page.getByText('Forbind GoCube ovenfor for at aktivere genaflæsningen.')
+  ).toBeVisible();
   await expect(page.getByText(/derefter M\/M′/)).toBeVisible();
   await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
