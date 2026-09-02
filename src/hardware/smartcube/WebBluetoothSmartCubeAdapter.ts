@@ -60,14 +60,15 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       if (!device) {
         throw new Error('Den tidligere godkendte GoCube findes ikke længere i denne browser.');
       }
+      const approvedDevice = device;
       const protocol = getRegisteredProtocols().find((candidate) =>
-        candidate.matchesDevice(device)
+        candidate.matchesDevice(approvedDevice)
       );
       if (!protocol) {
         throw new Error('Den huskede Bluetooth-enhed genkendes ikke som en understøttet cube.');
       }
-      onStatus?.(`GoCube er husket. Forsøger at kontakte ${device.name ?? 'enheden'}…`);
-      const connection = await protocol.connect(device, undefined, {
+      onStatus?.(`GoCube er husket. Forsøger at kontakte ${approvedDevice.name ?? 'enheden'}…`);
+      const connection = await protocol.connect(approvedDevice, undefined, {
         serviceUuids: new Set<string>(),
         onStatus,
       });

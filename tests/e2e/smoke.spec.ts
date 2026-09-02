@@ -166,11 +166,12 @@ test('manual cube state entry cycles stickers and reports color-count difference
   ).toBeVisible();
   await expect(page.getByText('9 af hver farve')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Hvid side, felt 1: hvid' }).click();
+  await page.getByRole('button', { name: 'Hvid side, øverst til venstre: hvid' }).click();
   await expect(page.getByText('Farveantal stemmer ikke endnu')).toBeVisible();
   await expect(page.getByText(/rød:/)).toContainText('10/9');
   await expect(page.getByText(/hvid:/)).toContainText('8/9');
-  expect(await page.getByLabel(/54 tegn/).inputValue()).toMatch(/^RU{8}R{9}/);
+  await page.getByText('Vis teknisk kode til fejlsøgning').click();
+  expect(await page.getByLabel('Teknisk 54-tegnskode').inputValue()).toMatch(/^RU{8}R{9}/);
 });
 
 test('Hørelære teaches, tests all three presentations, and exposes four instruments', async ({

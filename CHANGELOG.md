@@ -6,6 +6,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Removed the internal `U/R/F/D/L/B` labels from manual cube entry. The learner now works only with
+  named center colors and plain-language positions; the machine code is hidden in an optional
+  technical disclosure.
 - Added remembered-device detection through Web Bluetooth `getDevices()`. Previously approved
   GoCubes now get a direct reconnect action without a new chooser, while separate status text makes
   clear that remembered permission does not prove the physical cube is awake or reachable.

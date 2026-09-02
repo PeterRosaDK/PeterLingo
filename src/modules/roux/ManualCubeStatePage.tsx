@@ -14,6 +14,18 @@ const COLOR_NAMES: Record<FaceColor, string> = {
   B: 'blå',
 };
 
+const POSITION_NAMES = [
+  'øverst til venstre',
+  'øverst i midten',
+  'øverst til højre',
+  'midt til venstre',
+  'i centrum',
+  'midt til højre',
+  'nederst til venstre',
+  'nederst i midten',
+  'nederst til højre',
+] as const;
+
 const FACES = [
   { code: 'U', center: 'Hvid', top: 'blå side opad' },
   { code: 'R', center: 'Rød', top: 'hvid side opad' },
@@ -64,7 +76,7 @@ export function ManualCubeStatePage() {
         .map((color, index) =>
           color === reported[index]
             ? null
-            : `${FACES[Math.floor(index / 9)]?.code}${(index % 9) + 1}`
+            : `${FACES[Math.floor(index / 9)]?.center.toLowerCase()} side · ${POSITION_NAMES[index % 9]}`
         )
         .filter((label): label is string => label !== null)
     : [];
@@ -99,8 +111,8 @@ export function ManualCubeStatePage() {
         <p className="eyebrow">Roux · diagnostisk reservevej</p>
         <h1>Fortæl hvordan cuben faktisk ser ud</h1>
         <p>
-          Klik på et felt for at skifte farve. Centrene kan ikke ændres. Siden løser ikke cuben; den
-          laver en præcis manuel tilstand, som kan sammenlignes med GoCubens aflæsning.
+          Du skal kun tænke på farver—ikke på bogstaver som U, R og F. Klik på et felt for at skifte
+          farve. Centrene kan ikke ændres.
         </p>
       </header>
 
@@ -119,32 +131,35 @@ export function ManualCubeStatePage() {
             {countIsCorrect ? '9 af hver farve' : 'Farveantal stemmer ikke endnu'}
           </span>
         </div>
-        <p className="manual-entry-guidance">
-          Hold den nævnte centerfarve mod dig og den angivne naboside opad. Klik gentagne gange på
-          et felt for at gå gennem hvid, rød, grøn, gul, orange og blå.
-        </p>
+        <ol className="manual-entry-steps">
+          <li>Find siden med den centerfarve, der står over det lille gitter.</li>
+          <li>Hold den side direkte mod dig.</li>
+          <li>Drej hele cuben, så den nævnte naboside vender opad.</li>
+          <li>Kopiér de ni farver præcis, som du ser dem. Klik igen for næste farve.</li>
+        </ol>
         <div className="manual-face-grid">
           {FACES.map((face, faceIndex) => (
             <article key={face.code}>
               <header>
-                <strong>{face.center}</strong>
-                <span>{face.top}</span>
+                <strong>{face.center} center mod dig</strong>
+                <span>Vend så {face.top}</span>
               </header>
               <div className="manual-face" aria-label={`${face.center} side`}>
                 {Array.from({ length: 9 }, (_, stickerIndex) => {
                   const index = faceIndex * 9 + stickerIndex;
                   const color = facelets[index] as FaceColor;
                   const isCenter = stickerIndex === 4;
+                  const position = POSITION_NAMES[stickerIndex];
                   return (
                     <button
                       type="button"
                       className={`color-${color} ${isCenter ? 'center' : ''}`}
-                      aria-label={`${face.center} side, felt ${stickerIndex + 1}: ${COLOR_NAMES[color]}${isCenter ? ', fast center' : ''}`}
+                      aria-label={`${face.center} side, ${position}: ${COLOR_NAMES[color]}${isCenter ? ', fast center' : ''}`}
                       disabled={isCenter}
                       onClick={() => cycleSticker(index)}
                       key={index}
                     >
-                      {isCenter ? face.code : ''}
+                      {isCenter ? <span aria-hidden="true">●</span> : ''}
                     </button>
                   );
                 })}
@@ -177,10 +192,17 @@ export function ManualCubeStatePage() {
             </span>
           ))}
         </div>
-        <label className="facelet-output">
-          54 tegn i rækkefølgen U, R, F, D, L, B
-          <textarea value={facelets} readOnly rows={3} />
-        </label>
+        <details className="technical-facelets">
+          <summary>Vis teknisk kode til fejlsøgning</summary>
+          <p>
+            Her bruger softwaren bogstaver som farvekoder: U er hvid, R er rød, F er grøn, D er gul,
+            L er orange, og B er blå. Du behøver ikke bruge eller forstå dem for at tegne cuben.
+          </p>
+          <label className="facelet-output">
+            Teknisk 54-tegnskode
+            <textarea value={facelets} readOnly rows={3} />
+          </label>
+        </details>
         <div className="button-row">
           <button type="button" className="button primary" onClick={() => void copyFacelets()}>
             {reported ? 'Kopiér sammenligningen' : 'Kopiér tilstanden'}

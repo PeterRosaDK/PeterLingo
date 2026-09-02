@@ -2606,9 +2606,16 @@ p {
   font-size: 0.8rem;
   font-weight: 650;
 }
-.manual-entry-guidance {
+.manual-entry-steps {
   max-width: 820px;
+  margin: 18px 0 0;
+  padding-left: 22px;
   color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.manual-entry-steps li + li {
+  margin-top: 4px;
 }
 .manual-face-grid {
   display: grid;
@@ -2665,6 +2672,15 @@ p {
 .manual-face button.center {
   cursor: not-allowed;
   opacity: 1;
+}
+.manual-face button.center span {
+  color: rgba(18, 29, 25, 0.42);
+  font-size: 0.7rem;
+}
+.manual-face button.center.color-R span,
+.manual-face button.center.color-F span,
+.manual-face button.center.color-B span {
+  color: rgba(255, 255, 255, 0.68);
 }
 .manual-state-summary {
   display: grid;
@@ -2732,6 +2748,23 @@ p {
   font-size: 0.78rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
+}
+.technical-facelets {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.technical-facelets summary {
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+.technical-facelets > p {
+  margin: 12px 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
 }
 .manual-state-actions {
   justify-content: flex-start;

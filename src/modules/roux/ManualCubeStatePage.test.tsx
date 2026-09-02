@@ -29,9 +29,9 @@ describe('manual cube state', () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hvid side, felt 1: hvid' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hvid side, øverst til venstre: hvid' }));
     expect(screen.getByText('1 felt afviger fra GoCubens aflæsning.')).toBeVisible();
-    expect(screen.getByText('Afvigende positioner: U1')).toBeVisible();
+    expect(screen.getByText('Afvigende positioner: hvid side · øverst til venstre')).toBeVisible();
     expect(screen.getByRole('button', { name: 'Kopiér sammenligningen' })).toBeVisible();
   });
 });
