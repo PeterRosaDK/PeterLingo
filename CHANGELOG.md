@@ -8,6 +8,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 - Clarified recovery turns: the target centre faces the learner, the neighbouring top colour is
   irrelevant, turn direction is read from that face, and either direction works for a half-turn.
+- Deployed the clarified physical orientation guidance as exact revision `18f6e8e` at
+  `https://f1d14849.peterlingo.pages.dev`.
 - Added a device-local saved manual cube state and a **Gem og lav løsning** action. Manual input is
   now checked for valid pieces, orientations, and permutation parity before solving.
 - Added a verified cubing.js two-phase recovery guide that presents one colour-based turn at a
