@@ -10,6 +10,7 @@ import type {
   SmartCubeAdapter,
 } from '../../hardware/smartcube/types';
 import { CubeFaceletNet } from './CubeFaceletNet';
+import { validateFacelets } from './faceletSolver';
 import { GoCubeMoveCapture } from './GoCubeMoveCapture';
 
 // Keep the approved connection alive while the user moves between PeterLingo routes.
@@ -62,6 +63,13 @@ export function SmartCubeDiagnosticsPage() {
       ? 'Den eksisterende GoCube-forbindelse i PeterLingo er genbrugt.'
       : environment.guidance
   );
+  const liveFacelets = state?.facelets ?? null;
+  const liveStateIsSolvable = liveFacelets ? validateFacelets(liveFacelets).ok : false;
+  const canSolveLiveState =
+    connection === 'connected' && state?.synchronization === 'synchronized' && liveStateIsSolvable;
+  const liveSolveSearch = liveFacelets
+    ? `?${new URLSearchParams({ facelets: liveFacelets, solve: '1' }).toString()}`
+    : '';
 
   const refreshRememberedCubes = useCallback(async () => {
     if (!adapter.getRememberedCubes) {
@@ -151,12 +159,12 @@ export function SmartCubeDiagnosticsPage() {
 
   const readPhysicalState = async () => {
     setActionPending(true);
-    setMessage('Beder GoCube om en ny, fuld farveaflæsning …');
+    setMessage('Kontrollerer den løbende tilstand mod GoCube …');
     try {
       await adapter.requestState?.();
       setState(adapter.getCubeState());
       setMessage(
-        'Ny aflæsning er bestilt. Sammenlign farvenettet med den fysiske terning; handlingen ændrer ikke terningens referencepunkt.'
+        'Synkroniseringskontrollen er bestilt. Handlingen ændrer ikke GoCubens referencepunkt.'
       );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Tilstanden kunne ikke genindlæses.');
@@ -200,7 +208,7 @@ export function SmartCubeDiagnosticsPage() {
         </p>
       </header>
       <div className="diagnostic-warning">
-        ⚠ Fysisk forbindelse bekræftet · farvetilstand og træksynkronisering verificeres nu
+        ✓ Live-tracking af almindelige ydertræk bekræftet · M-træk verificeres som næste trin
       </div>
       <section className="cube-reference-grip" aria-labelledby="reference-grip-title">
         <div>
@@ -350,34 +358,49 @@ export function SmartCubeDiagnosticsPage() {
             {state?.synchronization ?? 'unknown'}
           </span>
           <p className="facelet-note">
-            Ved forbindelse og “Læs cuben igen” kommer en fuld 54-felters tilstand fra hardwaren.
-            Mellem de fulde aflæsninger sender cuben sine træk, og biblioteket fører nettet frem.
-            Det er mere pålideligt end en 3D-terning, der altid antager en løst startstilling.
+            Farvenettet følger GoCube løbende under dine træk. Synkroniseringskontrollen nedenfor er
+            kun en reserve ved genforbindelse, et mistet træk eller mistanke om en afvigelse.
           </p>
           <div className="button-row">
+            {canSolveLiveState ? (
+              <Link className="button primary" to={`/fag/roux/manuel-tilstand${liveSolveSearch}`}>
+                Løs den aflæste cube
+              </Link>
+            ) : (
+              <button type="button" className="button primary" disabled>
+                Løs den aflæste cube
+              </button>
+            )}
             <button
               type="button"
-              className="button primary"
+              className="button secondary"
               onClick={() => void readPhysicalState()}
               disabled={connection !== 'connected' || actionPending}
               title={
                 connection === 'connected'
-                  ? 'Bed GoCube om en ny fuld farveaflæsning'
+                  ? 'Kontrollér den løbende tilstand mod GoCube'
                   : 'Forbind GoCube først'
               }
             >
-              Læs cuben igen
+              Kontrollér synkronisering
             </button>
             <Link
               className="button secondary"
               to="/fag/roux/manuel-tilstand"
               state={{ facelets: state?.facelets ?? null }}
             >
-              Indtast den fysiske tilstand manuelt
+              Ret eller indtast farver manuelt
             </Link>
           </div>
+          {connection === 'connected' && !liveStateIsSolvable && (
+            <p className="facelet-note">
+              Løsning aktiveres, når GoCube har leveret en fuld, fysisk gyldig tilstand.
+            </p>
+          )}
           {connection !== 'connected' && (
-            <p className="facelet-note">Forbind GoCube ovenfor for at aktivere genaflæsningen.</p>
+            <p className="facelet-note">
+              Forbind GoCube ovenfor for at løse eller kontrollere den.
+            </p>
           )}
         </div>
         <div className="diagnostic-panel">

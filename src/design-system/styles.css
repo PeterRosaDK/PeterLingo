@@ -2705,6 +2705,27 @@ p {
   font-size: 0.7rem;
   overflow-wrap: anywhere;
 }
+.live-solve-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+.live-solve-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.live-solve-summary p,
+.live-solve-summary .solve-message {
+  margin: 0;
+}
 .color-counts {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -3845,6 +3866,11 @@ p {
   }
   .color-counts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .live-solve-summary,
+  .live-solve-summary > div {
+    align-items: stretch;
+    flex-direction: column;
   }
   .current-solve-step {
     grid-template-columns: 1fr;

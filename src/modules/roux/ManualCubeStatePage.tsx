@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
 import { describeMove, solveFacelets, validateFacelets, type CubeSolution } from './faceletSolver';
@@ -87,9 +87,11 @@ export function withCanonicalCenters(facelets: string): string {
 export function ManualCubeStatePage() {
   const location = useLocation();
   const supplied = (location.state as { facelets?: unknown } | null)?.facelets;
-  const reported = isFacelets(supplied) ? supplied : null;
-  const linkedFacelets = new URLSearchParams(location.search).get('facelets');
+  const search = new URLSearchParams(location.search);
+  const linkedFacelets = search.get('facelets');
   const imported = isFacelets(linkedFacelets) ? linkedFacelets : null;
+  const directSolve = search.get('solve') === '1' && imported !== null;
+  const reported = isFacelets(supplied) ? supplied : directSolve ? imported : null;
   const [savedCube, setSavedCube] = useState<SavedCubeState | null>(() => loadSavedCube());
   const startingState = withCanonicalCenters(
     imported ?? reported ?? savedCube?.facelets ?? SOLVED_FACELETS
@@ -100,6 +102,8 @@ export function ManualCubeStatePage() {
   const [solveMessage, setSolveMessage] = useState('');
   const [solution, setSolution] = useState<CubeSolution | null>(null);
   const [completedMoves, setCompletedMoves] = useState(0);
+  const [manualEditorOpen, setManualEditorOpen] = useState(!directSolve);
+  const directSolveStarted = useRef(false);
   const currentMove = solution?.moves[completedMoves] ?? '';
   const currentFace = COLORS.includes(currentMove[0] as FaceColor)
     ? (currentMove[0] as FaceColor)
@@ -144,7 +148,7 @@ export function ManualCubeStatePage() {
     setCompletedMoves(0);
   };
 
-  const saveAndSolve = async () => {
+  const saveAndSolve = useCallback(async () => {
     const validation = validateFacelets(facelets);
     if (!validation.ok) {
       setSolveStatus('error');
@@ -177,7 +181,17 @@ export function ManualCubeStatePage() {
       setSolveStatus('error');
       setSolveMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
     }
-  };
+  }, [facelets]);
+
+  useEffect(() => {
+    if (!directSolve || directSolveStarted.current) return;
+    const timeout = window.setTimeout(() => {
+      if (directSolveStarted.current) return;
+      directSolveStarted.current = true;
+      void saveAndSolve();
+    }, 0);
+    return () => window.clearTimeout(timeout);
+  }, [directSolve, saveAndSolve]);
 
   const copyFacelets = async () => {
     const report = reported
@@ -198,144 +212,182 @@ export function ManualCubeStatePage() {
   return (
     <div className="page manual-cube-page">
       <header className="page-heading">
-        <p className="eyebrow">Roux · diagnostisk reservevej</p>
-        <h1>Fortæl hvordan cuben faktisk ser ud</h1>
+        <p className="eyebrow">
+          {directSolve ? 'Roux · live GoCube' : 'Roux · diagnostisk reservevej'}
+        </p>
+        <h1>{directSolve ? 'Løs den aflæste cube' : 'Fortæl hvordan cuben faktisk ser ud'}</h1>
         <p>
-          Du skal kun tænke på farver—ikke på bogstaver som U, R og F. Klik på et felt for at skifte
-          farve. Centrene kan ikke ændres.
+          {directSolve
+            ? 'GoCubens løbende tilstand er overført direkte. Løsningen beregnes automatisk.'
+            : 'Du skal kun tænke på farver—ikke på bogstaver som U, R og F. Klik på et felt for at skifte farve. Centrene kan ikke ændres.'}
         </p>
       </header>
 
-      <div className="manual-state-warning">
-        Brug kun dette som kontrol. En korrekt automatisk aflæsning er stadig et krav, før live
-        solving og Roux-træning aktiveres.
-      </div>
-
-      <section className="manual-entry-card" aria-labelledby="manual-entry-title">
-        <div className="stage-heading">
+      {directSolve && !manualEditorOpen && (
+        <section className="live-solve-summary" aria-label="Overført GoCube-tilstand">
           <div>
-            <p className="eyebrow">Seks sider · ni felter</p>
-            <h2 id="manual-entry-title">Indtast én side ad gangen</h2>
+            <span className="status-pill good">Live-tilstand modtaget</span>
+            {solveMessage ? (
+              <p className={`solve-message ${solveStatus}`} role="status">
+                {solveMessage}
+              </p>
+            ) : (
+              <p>GoCube er klar. Beregner løsningen …</p>
+            )}
           </div>
-          <span className={`status-pill ${countIsCorrect ? 'good' : ''}`}>
-            {countIsCorrect ? '9 af hver farve' : 'Farveantal stemmer ikke endnu'}
-          </span>
-        </div>
-        <ol className="manual-entry-steps">
-          <li>Find siden med den centerfarve, der står over det lille gitter.</li>
-          <li>Hold den side direkte mod dig.</li>
-          <li>Drej hele cuben, så den nævnte naboside vender opad.</li>
-          <li>Kopiér de ni farver præcis, som du ser dem. Klik igen for næste farve.</li>
-        </ol>
-        <div className="manual-face-grid">
-          {FACES.map((face, faceIndex) => (
-            <article key={face.code}>
-              <header>
-                <strong>{face.center} center mod dig</strong>
-                <span>Vend så {face.top}</span>
-              </header>
-              <div className="manual-face" aria-label={`${face.center} side`}>
-                {Array.from({ length: 9 }, (_, stickerIndex) => {
-                  const index = faceIndex * 9 + stickerIndex;
-                  const color = facelets[index] as FaceColor;
-                  const isCenter = stickerIndex === 4;
-                  const position = POSITION_NAMES[stickerIndex];
-                  return (
-                    <button
-                      type="button"
-                      className={`color-${color} ${isCenter ? 'center' : ''}`}
-                      aria-label={`${face.center} side, ${position}: ${COLOR_NAMES[color]}${isCenter ? ', fast center' : ''}`}
-                      disabled={isCenter || solveStatus === 'working'}
-                      onClick={() => cycleSticker(index)}
-                      key={index}
-                    >
-                      {isCenter ? <span aria-hidden="true">●</span> : ''}
-                    </button>
-                  );
-                })}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="manual-state-summary" aria-labelledby="manual-summary-title">
-        <div>
-          <p className="eyebrow">Kontrol</p>
-          <h2 id="manual-summary-title">Manuel tilstand</h2>
-          <p>
-            {differences === null
-              ? 'Siden blev åbnet uden en GoCube-aflæsning at sammenligne med.'
-              : differences === 0
-                ? 'Den manuelle tilstand er endnu identisk med GoCubens aflæsning.'
-                : `${differences} ${differences === 1 ? 'felt afviger' : 'felter afviger'} fra GoCubens aflæsning.`}
-          </p>
-          {differenceLabels.length > 0 && (
-            <p className="difference-labels">Afvigende positioner: {differenceLabels.join(', ')}</p>
-          )}
-        </div>
-        <div className="color-counts" aria-label="Antal felter per farve">
-          {COLORS.map((color) => (
-            <span className={counts[color] === 9 ? 'good' : ''} key={color}>
-              <i className={`color-${color}`} />
-              {COLOR_NAMES[color]}: <b>{counts[color]}</b>/9
-            </span>
-          ))}
-        </div>
-        <details className="technical-facelets">
-          <summary>Vis teknisk kode til fejlsøgning</summary>
-          <p>
-            Her bruger softwaren bogstaver som farvekoder: U er hvid, R er rød, F er grøn, D er gul,
-            L er orange, og B er blå. Du behøver ikke bruge eller forstå dem for at tegne cuben.
-          </p>
-          <label className="facelet-output">
-            Teknisk 54-tegnskode
-            <textarea value={facelets} readOnly rows={3} />
-          </label>
-        </details>
-        <div className="button-row">
           <button
             type="button"
-            className="button primary"
-            onClick={() => void saveAndSolve()}
-            disabled={solveStatus === 'working'}
+            className="button secondary"
+            onClick={() => setManualEditorOpen(true)}
           >
-            {solveStatus === 'working' ? 'Beregner løsning …' : 'Gem og lav løsning'}
+            Farverne passer ikke …
           </button>
-          <button type="button" className="button secondary" onClick={() => void copyFacelets()}>
-            {reported ? 'Kopiér sammenligningen' : 'Kopiér tilstanden'}
-          </button>
-          {reported && facelets !== reported && (
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => replaceFacelets(reported)}
-            >
-              Gendan GoCubens forslag
-            </button>
-          )}
-          {savedCube && facelets !== savedCube.facelets && (
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => replaceFacelets(savedCube.facelets)}
-            >
-              Gendan senest gemte tilstand
-            </button>
-          )}
-        </div>
-        <p className="local-cube-save-note">
-          Gemmes kun på denne enhed. Cubens øjeblikstilstand hører ikke til din cloudbaserede
-          læringshistorik.
-          {savedCube ? ` Senest gemt ${new Date(savedCube.savedAt).toLocaleString('da-DK')}.` : ''}
-        </p>
-        {copyStatus && <p role="status">{copyStatus}</p>}
-        {solveMessage && (
-          <p className={`solve-message ${solveStatus}`} role="status">
-            {solveMessage}
-          </p>
-        )}
-      </section>
+        </section>
+      )}
+
+      {manualEditorOpen && (
+        <>
+          <div className="manual-state-warning">
+            Manuel farveredigering er en reserve, hvis GoCubens løbende tilstand ikke passer med den
+            fysiske cube.
+          </div>
+
+          <section className="manual-entry-card" aria-labelledby="manual-entry-title">
+            <div className="stage-heading">
+              <div>
+                <p className="eyebrow">Seks sider · ni felter</p>
+                <h2 id="manual-entry-title">Indtast én side ad gangen</h2>
+              </div>
+              <span className={`status-pill ${countIsCorrect ? 'good' : ''}`}>
+                {countIsCorrect ? '9 af hver farve' : 'Farveantal stemmer ikke endnu'}
+              </span>
+            </div>
+            <ol className="manual-entry-steps">
+              <li>Find siden med den centerfarve, der står over det lille gitter.</li>
+              <li>Hold den side direkte mod dig.</li>
+              <li>Drej hele cuben, så den nævnte naboside vender opad.</li>
+              <li>Kopiér de ni farver præcis, som du ser dem. Klik igen for næste farve.</li>
+            </ol>
+            <div className="manual-face-grid">
+              {FACES.map((face, faceIndex) => (
+                <article key={face.code}>
+                  <header>
+                    <strong>{face.center} center mod dig</strong>
+                    <span>Vend så {face.top}</span>
+                  </header>
+                  <div className="manual-face" aria-label={`${face.center} side`}>
+                    {Array.from({ length: 9 }, (_, stickerIndex) => {
+                      const index = faceIndex * 9 + stickerIndex;
+                      const color = facelets[index] as FaceColor;
+                      const isCenter = stickerIndex === 4;
+                      const position = POSITION_NAMES[stickerIndex];
+                      return (
+                        <button
+                          type="button"
+                          className={`color-${color} ${isCenter ? 'center' : ''}`}
+                          aria-label={`${face.center} side, ${position}: ${COLOR_NAMES[color]}${isCenter ? ', fast center' : ''}`}
+                          disabled={isCenter || solveStatus === 'working'}
+                          onClick={() => cycleSticker(index)}
+                          key={index}
+                        >
+                          {isCenter ? <span aria-hidden="true">●</span> : ''}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="manual-state-summary" aria-labelledby="manual-summary-title">
+            <div>
+              <p className="eyebrow">Kontrol</p>
+              <h2 id="manual-summary-title">Manuel tilstand</h2>
+              <p>
+                {differences === null
+                  ? 'Siden blev åbnet uden en GoCube-aflæsning at sammenligne med.'
+                  : differences === 0
+                    ? 'Den manuelle tilstand er endnu identisk med GoCubens aflæsning.'
+                    : `${differences} ${differences === 1 ? 'felt afviger' : 'felter afviger'} fra GoCubens aflæsning.`}
+              </p>
+              {differenceLabels.length > 0 && (
+                <p className="difference-labels">
+                  Afvigende positioner: {differenceLabels.join(', ')}
+                </p>
+              )}
+            </div>
+            <div className="color-counts" aria-label="Antal felter per farve">
+              {COLORS.map((color) => (
+                <span className={counts[color] === 9 ? 'good' : ''} key={color}>
+                  <i className={`color-${color}`} />
+                  {COLOR_NAMES[color]}: <b>{counts[color]}</b>/9
+                </span>
+              ))}
+            </div>
+            <details className="technical-facelets">
+              <summary>Vis teknisk kode til fejlsøgning</summary>
+              <p>
+                Her bruger softwaren bogstaver som farvekoder: U er hvid, R er rød, F er grøn, D er
+                gul, L er orange, og B er blå. Du behøver ikke bruge eller forstå dem for at tegne
+                cuben.
+              </p>
+              <label className="facelet-output">
+                Teknisk 54-tegnskode
+                <textarea value={facelets} readOnly rows={3} />
+              </label>
+            </details>
+            <div className="button-row">
+              <button
+                type="button"
+                className="button primary"
+                onClick={() => void saveAndSolve()}
+                disabled={solveStatus === 'working'}
+              >
+                {solveStatus === 'working' ? 'Beregner løsning …' : 'Gem og lav løsning'}
+              </button>
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => void copyFacelets()}
+              >
+                {reported ? 'Kopiér sammenligningen' : 'Kopiér tilstanden'}
+              </button>
+              {reported && facelets !== reported && (
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => replaceFacelets(reported)}
+                >
+                  Gendan GoCubens forslag
+                </button>
+              )}
+              {savedCube && facelets !== savedCube.facelets && (
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => replaceFacelets(savedCube.facelets)}
+                >
+                  Gendan senest gemte tilstand
+                </button>
+              )}
+            </div>
+            <p className="local-cube-save-note">
+              Gemmes kun på denne enhed. Cubens øjeblikstilstand hører ikke til din cloudbaserede
+              læringshistorik.
+              {savedCube
+                ? ` Senest gemt ${new Date(savedCube.savedAt).toLocaleString('da-DK')}.`
+                : ''}
+            </p>
+            {copyStatus && <p role="status">{copyStatus}</p>}
+            {solveMessage && (
+              <p className={`solve-message ${solveStatus}`} role="status">
+                {solveMessage}
+              </p>
+            )}
+          </section>
+        </>
+      )}
 
       {solution && (
         <section className="cube-rescue-solution" aria-labelledby="rescue-solution-title">

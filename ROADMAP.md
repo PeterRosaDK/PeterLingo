@@ -8,9 +8,9 @@ Physical GoCube validation is deliberately still open.
 
 ## Milestone 1 — Hardware & Roux
 
-Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop connection has
-physically succeeded; state accuracy, reset/calibration, moves, synchronization, and the remaining
-device matrix are still under active verification.
+Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop connection,
+reset/calibration, and live facelet tracking through ordinary outer turns have been physically
+confirmed by Peter. M-move normalization and the remaining device matrix are still open.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
@@ -29,6 +29,9 @@ device matrix are still under active verification.
 - The first recovery fallback is implemented for manually entered states: it checks full physical
   cube legality, verifies the cubing.js two-phase result against the input state, and presents the
   route one colour-based move at a time. Phase-aware Roux solving remains open.
+- A connected, synchronized GoCube can now send its live state directly into that recovery guide;
+  calculation starts automatically, while manual colour entry and explicit synchronization checks
+  remain fallback tools.
 - Give the solver two explicit optimization profiles. **Solve for me** may use the full available
   repertoire and return the best verified route found, without claiming mathematical optimality.
   **Teach me Roux** starts with a deliberately small beginner repertoire and favours recognizable,

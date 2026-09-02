@@ -123,7 +123,7 @@ test('Roux presents the physical reference grip and keeps the notation drill', a
     await handDrill.getByRole('button', { name: move, exact: true }).click();
   await expect(handDrill.getByRole('status')).toContainText('Sekvensen sad rigtigt');
   await page.getByRole('link', { name: 'Åbn GoCube-diagnostik' }).click();
-  await expect(page.getByText(/fysisk forbindelse bekræftet/i)).toBeVisible();
+  await expect(page.getByText(/live-tracking af almindelige ydertræk bekræftet/i)).toBeVisible();
 });
 
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
@@ -133,10 +133,11 @@ test('GoCube diagnostics exposes only the physical connection flow', async ({ pa
   await expect(page.getByText('Husket af browseren')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Start måling af R' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Løs den aflæste cube' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeDisabled();
   await expect(
-    page.getByText('Forbind GoCube ovenfor for at aktivere genaflæsningen.')
+    page.getByText('Forbind GoCube ovenfor for at løse eller kontrollere den.')
   ).toBeVisible();
   await expect(page.getByText(/derefter M\/M′/)).toBeVisible();
   await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
@@ -160,7 +161,7 @@ test('manual cube state entry cycles stickers and reports color-count difference
   page,
 }) => {
   await page.goto('/fag/roux/diagnostik');
-  await page.getByRole('link', { name: 'Indtast den fysiske tilstand manuelt' }).click();
+  await page.getByRole('link', { name: 'Ret eller indtast farver manuelt' }).click();
   await expect(
     page.getByRole('heading', { name: 'Fortæl hvordan cuben faktisk ser ud' })
   ).toBeVisible();
@@ -172,6 +173,20 @@ test('manual cube state entry cycles stickers and reports color-count difference
   await expect(page.getByText(/hvid:/)).toContainText('8/9');
   await page.getByText('Vis teknisk kode til fejlsøgning').click();
   expect(await page.getByLabel('Teknisk 54-tegnskode').inputValue()).toMatch(/^RU{8}R{9}/);
+});
+
+test('live GoCube state opens and solves without manual input', async ({ page }) => {
+  const physicalState = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
+  await page.goto(`/fag/roux/manuel-tilstand?facelets=${physicalState}&solve=1`);
+
+  await expect(page.getByRole('heading', { name: 'Løs den aflæste cube' })).toBeVisible();
+  await expect(page.getByText('Live-tilstand modtaget')).toBeVisible();
+  await expect(page.getByText(/Stillingen er fysisk mulig/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('heading', { name: 'Trin for trin tilbage til løst' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Gem og lav løsning' })).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Farverne passer ikke …' }).click();
+  await expect(page.getByRole('heading', { name: 'Indtast én side ad gangen' })).toBeVisible();
 });
 
 test('manual cube state saves locally and produces verified color-based rescue steps', async ({
