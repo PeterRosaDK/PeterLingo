@@ -22,6 +22,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   values instead of misleadingly translating them as hand instructions.
 - Revision `88a7ab4` briefly exposed the incorrect color-based R/L calibration wording and was
   superseded after physical correction of the coordinate-system distinction.
+- Deployed the corrected hand-relative notation and raw-code separation as exact revision
+  `084143a` at `https://16c63cec.peterlingo.pages.dev`.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
