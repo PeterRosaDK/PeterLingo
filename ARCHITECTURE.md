@@ -106,7 +106,11 @@ The Doomsday implementation uses `CalendarSystem`. Milestone 0 supplies a prolep
 
 `@beacio/core/auto` runs before the application module graph. `requestDevice()` is called immediately from the diagnostics button handler—never from mount, a timer, or retry loop. Missing BLE leaves all non-hardware learning usable.
 
-The fixed-orientation First Block detector checks the DLF, DBL, DL, FL, and BL cubies in URFDLB facelet order. Color-neutral/orientation-independent recognition belongs to Milestone 1.
+The fixed-orientation First Block detector checks the DLF, DBL, DL, FL, and BL cubies in URFDLB
+facelet order. It reports all five target pieces separately, recognizes the front square as an
+intermediate goal, and lets a synchronized GoCube complete the first physical training unit
+without a confirmation button. Color-neutral/orientation-independent recognition belongs to
+Milestone 1.
 
 ## Cube visualization
 

@@ -4,8 +4,24 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+### Added
+
+- Added the first complete Roux teaching slice: a short standard-grip check, a four-step First Block
+  lesson, an accurate 1×2×3 target visual, the five orange-yellow target pieces, front-square and
+  back-pair subgoals, live GoCube progress, automatic completion, and a labelled manual fallback.
+- Connected the existing `roux:first-block-intro` and `roux:cube-orientation` daily units to the new
+  executable lesson and added a separate `roux:first-block-live` practice unit.
+- Added a copyable GoCube calibration report containing every raw R/R′/L/L′/M/M′ event and its
+  inter-event timing, while keeping hardware data local until the user explicitly shares it.
+
 ### Changed
 
+- Replaced the abstract M/M′ calibration wording with the visible rule “green middle column down”
+  and “green middle column up”; beginners may use whichever finger makes a clean quarter turn.
+- Removed the dead-end daily-session behavior where the First Block and orientation units could be
+  selected but had no matching exercise capable of completing them.
+- Made the default IndexedDB repository lazy so injected in-memory repositories can exercise the
+  complete learning flow without touching browser persistence.
 - Made the connected GoCube authoritative during recovery: correctly registered physical turns now
   advance the guide automatically, half-turns wait for both quarter-turn packets, and an unexpected
   turn triggers recalculation from the next synchronized hardware state. Manual step buttons appear

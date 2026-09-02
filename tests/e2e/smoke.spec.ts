@@ -126,6 +126,34 @@ test('Roux presents the physical reference grip and keeps the notation drill', a
   await expect(page.getByText(/live-tracking af almindelige ydertræk bekræftet/i)).toBeVisible();
 });
 
+test('First Block has a complete beginner lesson and manual practice fallback', async ({
+  page,
+}) => {
+  await page.goto('/fag/roux/first-block');
+  await expect(page.getByRole('heading', { name: 'First Block', level: 1 })).toBeVisible();
+  await expect(page.getByText('Orange til venstre · gul i bunden').first()).toBeVisible();
+
+  await page.getByRole('button', { name: 'Grøn', exact: true }).click();
+  await page.getByRole('button', { name: 'Næste', exact: true }).click();
+  await page.getByRole('button', { name: 'Orange', exact: true }).click();
+  await page.getByRole('button', { name: 'Næste', exact: true }).click();
+  await page.getByRole('button', { name: 'Nederst', exact: true }).click();
+  await page.getByRole('button', { name: 'Afslut grebstjek' }).click();
+  await expect(page.getByText('Grebet er på plads.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.getByText('gul · orange · grøn').first()).toBeVisible();
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.getByText('= forreste firkant')).toBeVisible();
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.getByText('= First Block')).toBeVisible();
+  await page.getByRole('button', { name: 'Jeg er klar til at bygge blokken' }).click();
+
+  await page.getByRole('button', { name: 'Start uden GoCube' }).click();
+  await page.getByRole('button', { name: 'Min First Block er samlet' }).click();
+  await expect(page.getByText('First Block gennemført')).toBeVisible();
+});
+
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
   await expect(

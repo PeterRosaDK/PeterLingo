@@ -179,6 +179,14 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
+    id: 'roux:first-block-live',
+    discipline: 'roux',
+    title: 'First Block med den fysiske cube',
+    stage: 'unassisted',
+    estimatedSeconds: 180,
+    isNew: true,
+  },
+  {
     id: 'music-ear:interval:3:ascending',
     discipline: 'music-ear',
     title: 'Lille terts melodisk opad',

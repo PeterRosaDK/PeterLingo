@@ -33,15 +33,21 @@ interface DataContextValue {
 }
 
 const DataContext = createContext<DataContextValue | null>(null);
-const browserRepository = new IndexedDbLearningRepository();
+let browserRepository: IndexedDbLearningRepository | null = null;
+
+function getBrowserRepository(): IndexedDbLearningRepository {
+  browserRepository ??= new IndexedDbLearningRepository();
+  return browserRepository;
+}
 
 export function DataProvider({
   children,
-  repository = browserRepository,
+  repository,
 }: {
   children: ReactNode;
   repository?: LearningRepository;
 }) {
+  const activeRepository = useMemo(() => repository ?? getBrowserRepository(), [repository]);
   const [snapshot, setSnapshot] = useState(createEmptySnapshot);
   const [ready, setReady] = useState(false);
   const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>('local');
@@ -50,9 +56,9 @@ export function DataProvider({
   const rerunRequested = useRef(false);
 
   const refresh = useCallback(async () => {
-    setSnapshot(await repository.load());
+    setSnapshot(await activeRepository.load());
     setReady(true);
-  }, [repository]);
+  }, [activeRepository]);
 
   const syncNow = useCallback(async () => {
     if (!cloudSyncEnabled()) {
@@ -65,7 +71,7 @@ export function DataProvider({
     }
 
     setSyncStatus('syncing');
-    const operation = synchronizeRepository(repository)
+    const operation = synchronizeRepository(activeRepository)
       .then((result) => {
         setSnapshot(result.snapshot);
         setCloudAttemptCount(result.cloudAttemptCount);
@@ -97,11 +103,11 @@ export function DataProvider({
         queueMicrotask(() => void syncNow());
       }
     }
-  }, [repository]);
+  }, [activeRepository]);
 
   useEffect(() => {
     let active = true;
-    void repository.load().then((loaded) => {
+    void activeRepository.load().then((loaded) => {
       if (!active) return;
       setSnapshot(loaded);
       setReady(true);
@@ -109,7 +115,7 @@ export function DataProvider({
     return () => {
       active = false;
     };
-  }, [repository]);
+  }, [activeRepository]);
 
   useEffect(() => {
     if (!ready) return;
@@ -123,8 +129,16 @@ export function DataProvider({
   }, [syncNow]);
 
   const value = useMemo(
-    () => ({ repository, snapshot, ready, syncStatus, cloudAttemptCount, refresh, syncNow }),
-    [repository, snapshot, ready, syncStatus, cloudAttemptCount, refresh, syncNow]
+    () => ({
+      repository: activeRepository,
+      snapshot,
+      ready,
+      syncStatus,
+      cloudAttemptCount,
+      refresh,
+      syncNow,
+    }),
+    [activeRepository, snapshot, ready, syncStatus, cloudAttemptCount, refresh, syncNow]
   );
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

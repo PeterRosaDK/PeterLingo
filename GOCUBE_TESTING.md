@@ -38,16 +38,19 @@ if visible, and the result.
 10. Tap **Ryd kun loggen**, make one isolated physical `M`, and record both raw move names and the
     displayed millisecond gap. Repeat from a cleared log with one `M'`. Do not yet assume which
     pair corresponds to which normalized slice direction.
-11. Compare the physical cube, facelet net, raw facelets, logical move count, and synchronization label.
+11. Complete the guided sequence and tap **Kopiér målerapport**. Paste the full report into the
+    development thread; the browser-local confirmation alone does not make the mapping available
+    to the codebase or cloud sync.
+12. Compare the physical cube, facelet net, raw facelets, logical move count, and synchronization label.
     Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
     the integration advances that state from the received move packets.
-12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
-13. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
+13. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
+14. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
     before calibrating the electronics. Never use this to make a mixed cube appear solved.
-14. Tap **Afbryd**; confirm no later physical turn is logged.
-15. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
+15. Tap **Afbryd**; confirm no later physical turn is logged.
+16. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
     without opening a chooser. If that fails, reconnect manually and repeat four moves.
-16. Start **Løs den aflæste cube** and perform the shown move physically. A quarter-turn should
+17. Start **Løs den aflæste cube** and perform the shown move physically. A quarter-turn should
     advance immediately; a half-turn should advance only after its second matching quarter-turn.
     Disconnect the cube and confirm that the manual step buttons return.
 

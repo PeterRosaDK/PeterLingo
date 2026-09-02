@@ -23,7 +23,8 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 - Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
   outer-move signatures before normalising them into Roux slice moves. A guided
   `R/R'/L/L'/M/M'` capture flow is implemented for this calibration. Outer moves must match their
-  standard letter in the fixed grip; only M/M′ retain device-specific multi-event evidence.
+  standard letter in the fixed grip; only M/M′ retain device-specific multi-event evidence. The
+  locally saved sequence can now be copied as an exact report with inter-event timing.
 - Build a phase-aware Roux solver that can return any validated physical state to solved, expose
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback
@@ -42,6 +43,12 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 - Add orientation-independent First Block and Second Block detection.
 - Build phase-aware guidance for First Square/First Block, Second Block, CMLL, and LSE, including
   stage timing and explanations of why a suggested move advances the current Roux phase.
+- The first fixed-orientation teaching slice is implemented: a registered grip check, a four-part
+  beginner explanation of the five orange-yellow target pieces, First Square and back-pair
+  subgoals, piece-by-piece live GoCube recognition, automatic completion, and an explicitly
+  self-reported offline fallback. It deliberately uses outer turns until M/M′ normalization is
+  physically confirmed. Generated phase setup, move-level coaching, and orientation independence
+  remain open.
 - Add a phase launcher that prepares the physical cube for any unlocked phase, plus an always
   available guided preview of later phases. Balance daily phase repetitions directly so First
   Block practice cannot starve Second Block, CMLL, or LSE of examples.

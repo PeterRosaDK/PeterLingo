@@ -15,7 +15,7 @@ import {
   type SmartCubeProtocol,
 } from 'smartcube-web-bluetooth';
 import { MockSmartCubeAdapter } from './MockSmartCubeAdapter';
-import { isFixedLeftFirstBlockSolved, SOLVED_FACELETS } from './state';
+import { fixedLeftFirstBlockProgress, isFixedLeftFirstBlockSolved, SOLVED_FACELETS } from './state';
 import { WebBluetoothSmartCubeAdapter } from './WebBluetoothSmartCubeAdapter';
 
 afterEach(() => {
@@ -48,6 +48,25 @@ describe('smart-cube adapters', () => {
     expect(
       isFixedLeftFirstBlockSolved(`${SOLVED_FACELETS.slice(0, 27)}X${SOLVED_FACELETS.slice(28)}`)
     ).toBe(false);
+  });
+
+  it('reports the two First Block subgoals piece by piece', () => {
+    expect(fixedLeftFirstBlockProgress('X'.repeat(54)).valid).toBe(false);
+    expect(fixedLeftFirstBlockProgress(SOLVED_FACELETS)).toEqual({
+      valid: true,
+      solvedPieceIds: ['front-corner', 'front-edge', 'bottom-edge', 'back-corner', 'back-edge'],
+      frontSquareComplete: true,
+      complete: true,
+    });
+
+    const withoutBackPair = [...SOLVED_FACELETS];
+    withoutBackPair[33] = 'X';
+    withoutBackPair[50] = 'X';
+    expect(fixedLeftFirstBlockProgress(withoutBackPair.join(''))).toMatchObject({
+      solvedPieceIds: ['front-corner', 'front-edge', 'bottom-edge'],
+      frontSquareComplete: true,
+      complete: false,
+    });
   });
 
   it('gracefully reports unsupported browsers before requesting a device', async () => {

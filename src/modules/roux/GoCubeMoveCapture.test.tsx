@@ -1,9 +1,23 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { CubeMove } from '../../hardware/smartcube/types';
-import { GoCubeMoveCapture } from './GoCubeMoveCapture';
+import { formatGoCubeCalibrationReport, GoCubeMoveCapture } from './GoCubeMoveCapture';
 
 describe('GoCubeMoveCapture', () => {
+  it('formats the locally saved raw events as a shareable calibration report', () => {
+    expect(
+      formatGoCubeCalibrationReport([
+        {
+          expected: 'M',
+          moves: [
+            { notation: "L'", timestamp: 100, source: 'bluetooth' },
+            { notation: 'R', timestamp: 107, source: 'bluetooth' },
+          ],
+        },
+      ])
+    ).toContain("M → L' + R | L' · R (+7 ms)");
+  });
+
   it('records the raw event before advancing to the next instructed move', () => {
     localStorage.clear();
     const onClear = vi.fn();

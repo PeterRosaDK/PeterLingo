@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { CubeMove } from '../../hardware/smartcube/types';
 import { notationExplanation } from './cubeNotation';
 
-interface CaptureResult {
+export interface CaptureResult {
   expected: string;
   moves: CubeMove[];
 }
@@ -17,6 +17,32 @@ const CALIBRATION_KEY = 'peterlingo:gocube-move-calibration:v2';
 
 function rawSequence(moves: CubeMove[]): string {
   return moves.map((move) => move.notation).join(' + ');
+}
+
+function timedSequence(moves: CubeMove[]): string {
+  return moves
+    .map((move, index) => {
+      const previous = moves[index - 1];
+      const delta = previous ? Math.max(0, Math.round(move.timestamp - previous.timestamp)) : null;
+      return `${move.notation}${delta === null ? '' : ` (+${delta} ms)`}`;
+    })
+    .join(' · ');
+}
+
+export function formatGoCubeCalibrationReport(results: CaptureResult[]): string {
+  const byExpected = new Map(results.map((result) => [result.expected, result]));
+  return [
+    'GoCube-målerapport v2',
+    'Reference: hvid/GO op · grøn mod brugeren',
+    ...instructions.flatMap((instruction) => {
+      const result = byExpected.get(instruction.notation);
+      return result
+        ? [
+            `${instruction.notation} → ${rawSequence(result.moves)} | ${timedSequence(result.moves)}`,
+          ]
+        : [];
+    }),
+  ].join('\n');
 }
 
 function loadResults(): CaptureResult[] {
@@ -73,12 +99,12 @@ const instructions = [
   {
     notation: 'M',
     detail:
-      'Behold hvid/GO opad og grøn mod dig. Drej kun det lodrette midterlag mellem orange og rød i samme retning som L.',
+      'Behold hvid/GO opad og grøn mod dig. Flyt den grønne midterkolonne nedad. Brug gerne pegefingeren og lav ét rent kvartdrej.',
   },
   {
     notation: "M'",
     detail:
-      'Behold hvid/GO opad og grøn mod dig. Drej kun det lodrette midterlag mellem orange og rød modsat M-retningen.',
+      'Behold hvid/GO opad og grøn mod dig. Flyt den grønne midterkolonne opad. Brug den fingerteknik, der føles naturlig.',
   },
 ] as const;
 
@@ -92,6 +118,7 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
     return firstMissing < 0 ? instructions.length : firstMissing;
   });
   const [capturing, setCapturing] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('');
   const instruction = instructions[step];
   const currentRawSequence = rawSequence(history);
   const isOuterTurn = step < 4;
@@ -129,6 +156,15 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
       localStorage.removeItem(CALIBRATION_KEY);
     } catch {
       // The visible reset still works for this page.
+    }
+  };
+
+  const copyReport = async () => {
+    try {
+      await navigator.clipboard.writeText(formatGoCubeCalibrationReport(results));
+      setCopyStatus('Målerapporten er kopieret. Indsæt den direkte i din næste besked.');
+    } catch {
+      setCopyStatus('Kopiering blev afvist. Resultaterne nedenfor kan kopieres manuelt.');
     }
   };
 
@@ -216,11 +252,18 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
           <strong>Målerækken er gemt på denne enhed.</strong>
           <p>
             Ydertrækkene bekræfter standardgrebet. M/M′ skal stadig vurderes særskilt, fordi de kan
-            bestå af to rå hændelser.
+            bestå af to rå hændelser. Målingen er lokal og skal kopieres, før den kan bruges i
+            PeterLingos normalisering.
           </p>
-          <button type="button" className="button secondary" onClick={restart}>
-            Start målerækken forfra
-          </button>
+          <div className="button-row">
+            <button type="button" className="button primary" onClick={() => void copyReport()}>
+              Kopiér målerapport
+            </button>
+            <button type="button" className="button secondary" onClick={restart}>
+              Start målerækken forfra
+            </button>
+          </div>
+          {copyStatus && <p role="status">{copyStatus}</p>}
         </div>
       )}
 
@@ -232,16 +275,7 @@ export function GoCubeMoveCapture({ connected, history, onClear }: GoCubeMoveCap
                 {result.expected} → {rawSequence(result.moves)}
               </strong>
               <span>
-                Dit håndtræk: {result.expected} · rå GoCube-kode:{' '}
-                {result.moves
-                  .map((move, index) => {
-                    const previous = result.moves[index - 1];
-                    const delta = previous
-                      ? Math.max(0, Math.round(move.timestamp - previous.timestamp))
-                      : null;
-                    return `${move.notation}${delta === null ? '' : ` (+${delta} ms)`}`;
-                  })
-                  .join(' · ')}
+                Dit håndtræk: {result.expected} · rå GoCube-kode: {timedSequence(result.moves)}
               </span>
             </div>
           ))}

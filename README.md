@@ -84,6 +84,12 @@ See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification.
 has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
 under verification.
 
+The first real Roux teaching slice lives at **Roux → Begynd First Block**. It teaches the fixed
+orange-yellow left block as a front square plus a back pair, records the orientation and lesson
+units, and watches the five target cubies live when a synchronized GoCube is connected. Manual
+completion remains available as an explicitly self-reported offline fallback. This first slice
+uses only outer turns until Peter's copied M/M′ calibration report has been interpreted.
+
 ## Learning data
 
 Substantive data lives first in IndexedDB, behind `LearningRepository`; the UI never accesses the

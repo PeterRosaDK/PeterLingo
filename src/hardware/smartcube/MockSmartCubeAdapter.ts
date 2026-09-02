@@ -96,6 +96,15 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
     this.notifyState();
   }
 
+  setFacelets(facelets: string): void {
+    this.state = {
+      ...this.state,
+      facelets,
+      synchronization: 'synchronized',
+    };
+    this.notifyState();
+  }
+
   private notifyState(): void {
     const state = this.getCubeState();
     for (const handler of this.stateHandlers) handler(state);

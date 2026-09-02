@@ -35,6 +35,9 @@ export function RouxPage() {
           <Link className="button primary" to="/fag/roux/diagnostik">
             Forbind og kontrollér GoCube
           </Link>
+          <Link className="button secondary" to="/fag/roux/first-block">
+            Begynd First Block
+          </Link>
           <Link className="button secondary" to="/fag/roux/notation">
             Lær cubens notation
           </Link>
@@ -46,7 +49,7 @@ export function RouxPage() {
               <b>01</b>
               <div>
                 <strong>First Block</strong>
-                <span>Find par og byg 1×2×3 intuitivt.</span>
+                <span>Åben nu: find par og byg 1×2×3 intuitivt.</span>
               </div>
             </li>
             <li>

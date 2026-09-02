@@ -16,12 +16,14 @@ import {
   type SessionSelectionInput,
 } from '../learning/sessions/sessionSelector';
 
-const unitRoute = (discipline: string) =>
-  discipline === 'cards'
-    ? '/fag/kort'
-    : discipline === 'music-ear'
-      ? '/fag/hoerelaere'
-      : `/fag/${discipline}`;
+const unitRoute = (unit: { discipline: string; id: string }) =>
+  unit.id.startsWith('roux:first-block') || unit.id === 'roux:cube-orientation'
+    ? '/fag/roux/first-block'
+    : unit.discipline === 'cards'
+      ? '/fag/kort'
+      : unit.discipline === 'music-ear'
+        ? '/fag/hoerelaere'
+        : `/fag/${unit.discipline}`;
 
 function ReadySessionPage() {
   const { snapshot, repository, refresh } = useLearningData();
@@ -137,7 +139,7 @@ function ReadySessionPage() {
           </Link>
         </section>
       ) : nextUnit ? (
-        <Link className="button start-button compact-start" to={unitRoute(nextUnit.discipline)}>
+        <Link className="button start-button compact-start" to={unitRoute(nextUnit)}>
           <span>
             {progress.completedCount ? 'Fortsæt med næste øvelse' : 'Begynd første øvelse'}
           </span>
