@@ -18,6 +18,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 - Replaced the abstract M/M′ calibration wording with the visible rule “green middle column down”
   and “green middle column up”; beginners may use whichever finger makes a clean quarter turn.
+- Deployed the first complete First Block teaching slice as exact revision `0d2c337` at
+  `https://c2d805e4.peterlingo.pages.dev`.
 - Removed the dead-end daily-session behavior where the First Block and orientation units could be
   selected but had no matching exercise capable of completing them.
 - Made the default IndexedDB repository lazy so injected in-memory repositories can exercise the
