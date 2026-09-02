@@ -11,6 +11,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added a manual six-face state editor as a diagnostic fallback. It starts from GoCubens reported
   facelets, locks the physical centres, checks the six colour counts, reports field-by-field
   differences, and produces a copyable 54-character state without claiming cube legality.
+- Deployed the notation guide and manual GoCube comparison as exact revision `3a5f9c0` at
+  `https://7271ae56.peterlingo.pages.dev`; the Access-protected custom domain points at the same
+  production deployment.
 - Deployed the physical GoCube calibration flow as exact revision `03ac51a` at
   `https://3bcfbf4f.peterlingo.pages.dev`; the Access-protected custom domain points at the same
   production deployment.
