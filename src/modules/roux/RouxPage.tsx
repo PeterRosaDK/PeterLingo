@@ -35,6 +35,9 @@ export function RouxPage() {
           <Link className="button primary" to="/fag/roux/diagnostik">
             Forbind og kontrollér GoCube
           </Link>
+          <Link className="button secondary" to="/fag/roux/notation">
+            Lær cubens notation
+          </Link>
         </section>
         <aside className="roux-progress">
           <p className="eyebrow">Læringsrækkefølge</p>

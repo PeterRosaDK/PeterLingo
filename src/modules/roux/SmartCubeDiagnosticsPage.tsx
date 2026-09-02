@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { WebBluetoothSmartCubeAdapter } from '../../hardware/smartcube/WebBluetoothSmartCubeAdapter';
 import { detectBluetoothEnvironment } from '../../hardware/smartcube/environment';
 import type {
@@ -135,6 +136,9 @@ export function SmartCubeDiagnosticsPage() {
           Brug dette greb, når vi sammenligner farver og navngiver M-træk. Den senere Roux-motor
           skal stadig kunne løse og undervise uafhængigt af farvevalg.
         </p>
+        <Link className="button secondary" to="/fag/roux/notation">
+          Hvad betyder R, R′ og M?
+        </Link>
       </section>
       <section className="diagnostic-grid">
         <div className="diagnostic-panel">
@@ -231,6 +235,13 @@ export function SmartCubeDiagnosticsPage() {
             Mellem de fulde aflæsninger sender cuben sine træk, og biblioteket fører nettet frem.
             Det er mere pålideligt end en 3D-terning, der altid antager en løst startstilling.
           </p>
+          <Link
+            className="button secondary"
+            to="/fag/roux/manuel-tilstand"
+            state={{ facelets: state?.facelets ?? null }}
+          >
+            Indtast den fysiske tilstand manuelt
+          </Link>
         </div>
         <div className="diagnostic-panel">
           <h2>Logisk state</h2>

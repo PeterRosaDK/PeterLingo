@@ -6,6 +6,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Added a visual Danish cube-notation guide for `R`, `R'`, `R2`, all six outer faces, `M`, and
+  short algorithms, including an explicit explanation that prime is not the number one.
+- Added a manual six-face state editor as a diagnostic fallback. It starts from GoCubens reported
+  facelets, locks the physical centres, checks the six colour counts, reports field-by-field
+  differences, and produces a copyable 54-character state without claiming cube legality.
 - Deployed the physical GoCube calibration flow as exact revision `03ac51a` at
   `https://3bcfbf4f.peterlingo.pages.dev`; the Access-protected custom domain points at the same
   production deployment.

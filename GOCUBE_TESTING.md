@@ -26,6 +26,8 @@ GoCube model/firmware if visible, and the result.
 7. Select the GoCube. Confirm detected name/protocol and battery if supported.
 8. If the displayed colors do not match, tap **Læs cuben igen**. Do not use solved-state reset while
    the physical cube is mixed.
+   If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
+   stickers, and copy the comparison report before making more turns.
 9. Turn `R`, `U`, `R'`, `U'` slowly. Confirm every move appears once, in the correct direction and order.
 10. Tap **Ryd kun loggen**, make one isolated physical `M`, and record both raw move names and the
     displayed millisecond gap. Repeat from a cleared log with one `M'`. Do not yet assume which

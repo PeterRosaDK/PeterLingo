@@ -137,6 +137,36 @@ test('GoCube diagnostics exposes only the physical connection flow', async ({ pa
   await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
 });
 
+test('Roux notation help distinguishes prime from the number one and explains M', async ({
+  page,
+}) => {
+  await page.goto('/fag/roux/notation');
+  await expect(page.getByRole('heading', { name: 'Cubens alfabet' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'R, R′ og R2 er ikke det samme' })).toBeVisible();
+  await expect(page.getByText('Er det R1?')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'M er det lodrette midterlag' })).toBeVisible();
+  await expect(page.getByText(/M-laget ligger mellem L og R/)).toBeVisible();
+  await page.getByRole('link', { name: 'Tilbage til GoCube-målingen' }).click();
+  await expect(page.getByRole('heading', { name: 'GoCube-diagnostik' })).toBeVisible();
+});
+
+test('manual cube state entry cycles stickers and reports color-count differences', async ({
+  page,
+}) => {
+  await page.goto('/fag/roux/diagnostik');
+  await page.getByRole('link', { name: 'Indtast den fysiske tilstand manuelt' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Fortæl hvordan cuben faktisk ser ud' })
+  ).toBeVisible();
+  await expect(page.getByText('9 af hver farve')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Hvid side, felt 1: hvid' }).click();
+  await expect(page.getByText('Farveantal stemmer ikke endnu')).toBeVisible();
+  await expect(page.getByText(/rød:/)).toContainText('10/9');
+  await expect(page.getByText(/hvid:/)).toContainText('8/9');
+  expect(await page.getByLabel(/54 tegn/).inputValue()).toMatch(/^RU{8}R{9}/);
+});
+
 test('Hørelære teaches, tests all three presentations, and exposes four instruments', async ({
   page,
 }) => {

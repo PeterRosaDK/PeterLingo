@@ -34,6 +34,16 @@ const SmartCubeDiagnosticsPage = lazy(() =>
     default: module.SmartCubeDiagnosticsPage,
   }))
 );
+const CubeNotationHelpPage = lazy(() =>
+  import('../modules/roux/CubeNotationHelpPage').then((module) => ({
+    default: module.CubeNotationHelpPage,
+  }))
+);
+const ManualCubeStatePage = lazy(() =>
+  import('../modules/roux/ManualCubeStatePage').then((module) => ({
+    default: module.ManualCubeStatePage,
+  }))
+);
 const MusicEarPage = lazy(() =>
   import('../modules/music-ear/MusicEarPage').then((module) => ({ default: module.MusicEarPage }))
 );
@@ -62,6 +72,8 @@ export function App() {
               <Route path="fag/kort" element={<CardsPage />} />
               <Route path="fag/pi" element={<PiPage />} />
               <Route path="fag/roux" element={<RouxPage />} />
+              <Route path="fag/roux/notation" element={<CubeNotationHelpPage />} />
+              <Route path="fag/roux/manuel-tilstand" element={<ManualCubeStatePage />} />
               <Route path="fag/roux/diagnostik" element={<SmartCubeDiagnosticsPage />} />
               <Route path="fag/hoerelaere" element={<MusicEarPage />} />
               <Route path="fag/musikoere" element={<Navigate replace to="/fag/hoerelaere" />} />
