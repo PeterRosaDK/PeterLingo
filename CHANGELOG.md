@@ -11,6 +11,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added a verified cubing.js two-phase recovery guide that presents one colour-based turn at a
   time, tracks progress, and keeps the technical algorithm optional. It is explicitly labelled as
   a recovery route rather than Roux instruction.
+- Deployed the validated manual recovery solver as exact revision `67f1fe6` at
+  `https://df1b462b.peterlingo.pages.dev`.
 - Removed the internal `U/R/F/D/L/B` labels from manual cube entry. The learner now works only with
   named center colors and plain-language positions; the machine code is hidden in an optional
   technical disclosure.
