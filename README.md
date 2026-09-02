@@ -71,9 +71,11 @@ On iPhone/iPad:
 2. Enable its Safari extension under **Indstillinger → Apps → Safari → Udvidelser**.
 3. Allow it for the PeterLingo site and reload the page.
 4. Open **Roux → GoCube-diagnostik**.
-5. Tap **Fysisk GoCube**, then tap **Forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
+5. Tap **Forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
 
-See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. The physical path is implemented but not yet hardware-verified.
+See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
+has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
+under verification.
 
 ## Learning data
 

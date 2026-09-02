@@ -2,19 +2,45 @@
 
 ## Milestone 0 — Foundation (0.1.0)
 
-Shared architecture and five functional thin slices: PWA shell, IndexedDB/JSON portability, FSRS boundary, adaptive session seed, Doomsday lesson, BCS drill with full local deck, Pi windows/diagnostic scaffold, cubing.js + real/mock smart-cube diagnostics, and Hørelære audio/touch instruments.
+Shared architecture and five functional thin slices: PWA shell, IndexedDB/JSON portability, FSRS boundary, adaptive session seed, Doomsday lesson, BCS drill with full local deck, Pi windows/diagnostic scaffold, cubing.js + smart-cube diagnostics, and Hørelære audio/touch instruments.
 
 Physical GoCube validation is deliberately still open.
 
 ## Milestone 1 — Hardware & Roux
 
-Status: paused pending the manufacturer's response to the deeply discharged GoCube battery. Do not bypass the charger's battery-safety protection. Roux remains a permanent PeterLingo subject; if this GoCube cannot be restored, physical work resumes with a replacement cube. Until then, retain the existing mock diagnostics and let the other subjects progress.
+Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop connection has
+physically succeeded; state accuracy, reset/calibration, moves, synchronization, and the remaining
+device matrix are still under active verification.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
+- Keep an approved connection alive during navigation inside PeterLingo. Evaluate Web Bluetooth
+  `getDevices()` for prompt-free reconnection after reload only where the browser and Beacio path
+  support it; retain an explicit user action and chooser fallback.
+- Use the white GO centre toward the learner with the logo upright as the repeatable physical test
+  frame, while keeping the finished Roux analysis colour-neutral.
+- Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
+  outer-move signatures before normalising them into Roux slice moves. A guided
+  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration.
+- Build a phase-aware Roux solver that can return any validated physical state to solved, expose
+  its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
+  Keep the existing two-phase solver available only as an explicitly labelled recovery fallback
+  and verification oracle, not as a Roux solution.
+- Give the solver two explicit optimization profiles. **Solve for me** may use the full available
+  repertoire and return the best verified route found, without claiming mathematical optimality.
+  **Teach me Roux** starts with a deliberately small beginner repertoire and favours recognizable,
+  executable steps over move-count optimization.
 - Add orientation-independent First Block and Second Block detection.
-- Build guided First Square/First Block/Second Block exercises and stage timing.
-- Inspect GPL-compatible Roux solver code only if it improves concrete pedagogy; isolate any reused code and record exact provenance.
+- Build phase-aware guidance for First Square/First Block, Second Block, CMLL, and LSE, including
+  stage timing and explanations of why a suggested move advances the current Roux phase.
+- Add a phase launcher that prepares the physical cube for any unlocked phase, plus an always
+  available guided preview of later phases. Balance daily phase repetitions directly so First
+  Block practice cannot starve Second Block, CMLL, or LSE of examples.
+- Use an algorithm ladder: add one higher-value CMLL/LSE shortcut only after its prerequisite is
+  fluent, explain the expected move/time saving, and retain the simpler route as a fallback. Track
+  full-solve and phase times so sub-one-minute progress reflects actual physical solves.
+- Keep solver integration behind the existing cubing.js boundary; record exact provenance and
+  licence details for any additional solver code.
 
 ## Milestone 2 — Doomsday curriculum
 

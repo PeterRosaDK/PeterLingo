@@ -54,6 +54,24 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
     return 'mock';
   }
 
+  async requestState(): Promise<void> {
+    this.notifyState();
+  }
+
+  clearTracking(): void {
+    this.state = {
+      ...this.state,
+      algorithm: '',
+      moveCount: 0,
+      synchronization: this.state.facelets ? 'synchronized' : 'unknown',
+    };
+    this.notifyState();
+  }
+
+  async calibrateSolvedState(): Promise<void> {
+    this.reset();
+  }
+
   emitMove(notation: string, timestamp = Date.now()): void {
     if (this.connectionState !== 'connected') throw new Error('Mock-terningen er ikke forbundet.');
     const move: CubeMove = { notation, timestamp, source: 'mock' };
@@ -69,6 +87,11 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
       moveCount: 0,
       synchronization: 'synchronized',
     };
-    for (const handler of this.stateHandlers) handler(this.getCubeState());
+    this.notifyState();
+  }
+
+  private notifyState(): void {
+    const state = this.getCubeState();
+    for (const handler of this.stateHandlers) handler(state);
   }
 }

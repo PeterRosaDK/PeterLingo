@@ -112,23 +112,29 @@ test('daily stars reward practice rather than correctness', async ({ page }) => 
   await expect(piCard.getByLabel('1 af 3 stjerner i dag')).toBeVisible();
 });
 
-test('Roux mock state reaches the live move log', async ({ page }) => {
+test('Roux presents the physical reference grip and keeps the notation drill', async ({ page }) => {
   await page.goto('/fag/roux');
   await expect(page.getByRole('heading', { name: 'Roux', exact: true })).toBeVisible();
-  const fullscreenAvailable = await page
-    .locator('.cube-stage')
-    .evaluate((element) => Boolean((element as HTMLElement).requestFullscreen));
-  if (fullscreenAvailable)
-    await expect(page.getByRole('button', { name: /Terning \+ træk i fuld skærm/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Hvid GO-side mod dig' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Forbind og kontrollér GoCube' })).toBeVisible();
   await expect(page.getByText('Beacio skal ikke installeres på Mac.')).toBeVisible();
-  await page.locator('.cube-stage .move-pad button').first().click();
-  await expect(page.locator('.move-history span')).toContainText('R');
   const handDrill = page.locator('.roux-move-drill');
   for (const move of ['R', 'U', "R'"])
     await handDrill.getByRole('button', { name: move, exact: true }).click();
   await expect(handDrill.getByRole('status')).toContainText('Sekvensen sad rigtigt');
   await page.getByRole('link', { name: 'Åbn GoCube-diagnostik' }).click();
-  await expect(page.getByText(/fysisk GoCube endnu ikke verificeret/i)).toBeVisible();
+  await expect(page.getByText(/fysisk forbindelse bekræftet/i)).toBeVisible();
+});
+
+test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
+  await page.goto('/fag/roux/diagnostik');
+  await expect(page.getByRole('heading', { name: /Hvid GO-side mod dig/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Forbind GoCube' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Start måling af R' })).toBeDisabled();
+  await expect(page.getByText(/derefter M\/M′/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
 });
 
 test('Hørelære teaches, tests all three presentations, and exposes four instruments', async ({

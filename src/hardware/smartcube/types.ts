@@ -24,6 +24,9 @@ export interface SmartCubeAdapter {
   getCubeState(): CubeState | null;
   subscribeToMoves(handler: (move: CubeMove) => void): Unsubscribe;
   subscribeToState?(handler: (state: CubeState) => void): Unsubscribe;
+  requestState?(): Promise<void>;
+  clearTracking?(): void;
+  calibrateSolvedState?(): Promise<void>;
   getBatteryLevel?(): Promise<number | null>;
   getDeviceName?(): string | null;
   getProtocolName?(): string | null;

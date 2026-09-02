@@ -3,7 +3,7 @@ import {
   type SmartCubeConnection,
   type SmartCubeEvent,
 } from 'smartcube-web-bluetooth';
-import { appendMove } from './state';
+import { appendMove, SOLVED_FACELETS } from './state';
 import type { ConnectionState, CubeMove, CubeState, SmartCubeAdapter, Unsubscribe } from './types';
 
 export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
@@ -87,6 +87,48 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   subscribeToState(handler: (state: CubeState) => void): Unsubscribe {
     this.stateHandlers.add(handler);
     return () => this.stateHandlers.delete(handler);
+  }
+
+  async requestState(): Promise<void> {
+    const connection = this.connection;
+    if (!connection || this.connectionState !== 'connected')
+      throw new Error('Forbind GoCube, før tilstanden genindlæses.');
+    if (!connection.capabilities.facelets)
+      throw new Error('Denne terning kan ikke rapportere sin fulde tilstand.');
+    this.state = { ...this.state, synchronization: 'unknown' };
+    this.notifyState();
+    await connection.sendCommand({ type: 'REQUEST_FACELETS' });
+  }
+
+  clearTracking(): void {
+    this.state = {
+      ...this.state,
+      algorithm: '',
+      moveCount: 0,
+      synchronization: this.state.facelets ? 'synchronized' : 'unknown',
+    };
+    this.notifyState();
+  }
+
+  async calibrateSolvedState(): Promise<void> {
+    const connection = this.connection;
+    if (!connection || this.connectionState !== 'connected')
+      throw new Error('Forbind GoCube, før den kalibreres.');
+    if (!connection.capabilities.reset)
+      throw new Error('Denne terning understøtter ikke nulstilling af referencepunktet.');
+    await connection.sendCommand({ type: 'REQUEST_RESET' });
+    this.state = {
+      facelets: SOLVED_FACELETS,
+      algorithm: '',
+      moveCount: 0,
+      synchronization: 'synchronized',
+    };
+    this.notifyState();
+  }
+
+  private notifyState(): void {
+    const state = this.getCubeState();
+    for (const handler of this.stateHandlers) handler(state);
   }
 
   async getBatteryLevel(): Promise<number | null> {

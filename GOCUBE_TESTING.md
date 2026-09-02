@@ -1,6 +1,8 @@
 # Physical GoCube verification checklist
 
-Milestone 0 is software-ready but **not physically verified**. Run this checklist separately on each target below and record date, OS/browser version, GoCube model/firmware if visible, and the result.
+Desktop pairing has physically succeeded, but state accuracy and the complete matrix are **not yet
+verified**. Run this checklist separately on each target below and record date, OS/browser version,
+GoCube model/firmware if visible, and the result.
 
 ## Before each run
 
@@ -8,7 +10,10 @@ Milestone 0 is software-ready but **not physically verified**. Run this checklis
 2. Close other apps/tabs that may own its Bluetooth connection.
 3. Serve PeterLingo over HTTPS or use `localhost` on desktop.
 4. Open **Fag → Roux → Åbn GoCube-diagnostik**.
-5. Confirm the warning still says physical validation is pending.
+5. Hold the white GO centre toward you with the logo upright. Keep this reference grip while
+   comparing colours and testing slice moves.
+6. Confirm the warning says that connection is confirmed while state and move synchronization are
+   still being verified.
 
 ## iPhone Safari + Beacio
 
@@ -17,18 +22,27 @@ Milestone 0 is software-ready but **not physically verified**. Run this checklis
 3. Enable Beacio and allow it on the PeterLingo website.
 4. Force-reload PeterLingo.
 5. In diagnostics confirm: browser is iOS Safari, secure context is **Ja**, Web Bluetooth is **Tilgængelig**, Beacio is **Aktiv/polyfill fundet**.
-6. Tap **Fysisk GoCube**.
-7. Tap **Forbind GoCube** once. Do not navigate away while the chooser is open.
-8. Select the GoCube. Confirm detected name/protocol and battery if supported.
+6. Tap **Forbind GoCube** once. Do not navigate away while the chooser is open.
+7. Select the GoCube. Confirm detected name/protocol and battery if supported.
+8. If the displayed colors do not match, tap **Læs cuben igen**. Do not use solved-state reset while
+   the physical cube is mixed.
 9. Turn `R`, `U`, `R'`, `U'` slowly. Confirm every move appears once, in the correct direction and order.
-10. Compare the physical cube, 3D cube, raw facelets, logical move count, and synchronization label.
-11. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
-12. Tap **Afbryd**; confirm no later physical turn is logged.
-13. Reconnect manually and repeat four moves. There must be no automatic request-device prompt or silent retry.
+10. Tap **Ryd kun loggen**, make one isolated physical `M`, and record both raw move names and the
+    displayed millisecond gap. Repeat from a cleared log with one `M'`. Do not yet assume which
+    pair corresponds to which normalized slice direction.
+11. Compare the physical cube, facelet net, raw facelets, logical move count, and synchronization label.
+    Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
+    the integration advances that state from the received move packets.
+12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
+13. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
+    before calibrating the electronics. Never use this to make a mixed cube appear solved.
+14. Tap **Afbryd**; confirm no later physical turn is logged.
+15. Reconnect manually and repeat four moves. There must be no automatic request-device prompt or silent retry.
 
 ## iPad Safari + Beacio
 
-Repeat the iPhone procedure in both portrait and landscape. Also confirm the diagnostics and 3D cube remain usable without horizontal page overflow.
+Repeat the iPhone procedure in both portrait and landscape. Also confirm the diagnostics and
+facelet net remain usable without horizontal page overflow.
 
 ## Desktop Chrome or Edge
 

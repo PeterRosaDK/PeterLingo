@@ -1,60 +1,50 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
 import { WebBluetoothSmartCubeAdapter } from '../../hardware/smartcube/WebBluetoothSmartCubeAdapter';
 import { detectBluetoothEnvironment } from '../../hardware/smartcube/environment';
-import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
 import type {
   ConnectionState,
   CubeMove,
   CubeState,
   SmartCubeAdapter,
 } from '../../hardware/smartcube/types';
-import { CubeViewer } from './CubeViewer';
+import { CubeFaceletNet } from './CubeFaceletNet';
+import { GoCubeMoveCapture } from './GoCubeMoveCapture';
+
+// Keep the approved connection alive while the user moves between PeterLingo routes.
+// A full page reload still follows the browser's Web Bluetooth permission model.
+const physicalCubeAdapter: SmartCubeAdapter = new WebBluetoothSmartCubeAdapter();
 
 export function SmartCubeDiagnosticsPage() {
   const environment = useMemo(() => detectBluetoothEnvironment(), []);
-  const [mode, setMode] = useState<'real' | 'mock'>('mock');
-  const [adapter, setAdapter] = useState<SmartCubeAdapter>(() => new MockSmartCubeAdapter());
-  const [connection, setConnection] = useState<ConnectionState>('disconnected');
-  const [state, setState] = useState<CubeState | null>(() => ({
-    facelets: SOLVED_FACELETS,
-    algorithm: '',
-    moveCount: 0,
-    synchronization: 'synchronized',
-  }));
+  const adapter = physicalCubeAdapter;
+  const [connection, setConnection] = useState<ConnectionState>(() => adapter.getConnectionState());
+  const [state, setState] = useState<CubeState | null>(() => adapter.getCubeState());
   const [history, setHistory] = useState<CubeMove[]>([]);
   const [battery, setBattery] = useState<number | null>(null);
-  const [message, setMessage] = useState(environment.guidance);
+  const [actionPending, setActionPending] = useState(false);
+  const [message, setMessage] = useState(() =>
+    adapter.getConnectionState() === 'connected'
+      ? 'Den eksisterende GoCube-forbindelse i PeterLingo er genbrugt.'
+      : environment.guidance
+  );
 
   useEffect(() => {
     const offMove = adapter.subscribeToMoves((move) => {
       setHistory((current) => [...current, move]);
       setState(adapter.getCubeState());
     });
-    const offState = adapter.subscribeToState?.(setState);
+    const offState = adapter.subscribeToState?.((nextState) => {
+      setState(nextState);
+      setConnection(adapter.getConnectionState());
+    });
+    if (adapter.getConnectionState() === 'connected') {
+      void adapter.getBatteryLevel?.().then((level) => setBattery(level ?? null));
+    }
     return () => {
       offMove();
       offState?.();
-      void adapter.disconnect();
     };
   }, [adapter]);
-
-  const changeMode = (next: 'real' | 'mock') => {
-    void adapter.disconnect();
-    const nextAdapter: SmartCubeAdapter =
-      next === 'real' ? new WebBluetoothSmartCubeAdapter() : new MockSmartCubeAdapter();
-    setAdapter(nextAdapter);
-    setMode(next);
-    setConnection('disconnected');
-    setState(nextAdapter.getCubeState());
-    setHistory([]);
-    setBattery(null);
-    setMessage(
-      next === 'real'
-        ? environment.guidance
-        : 'Mock-tilstanden virker uden Bluetooth og ændrer ingen fysisk terning.'
-    );
-  };
 
   // This handler deliberately calls connect() immediately. requestDevice remains in this user gesture.
   const connect = () => {
@@ -67,9 +57,7 @@ export function SmartCubeDiagnosticsPage() {
         setState(adapter.getCubeState());
         setBattery((await adapter.getBatteryLevel?.()) ?? null);
         setMessage(
-          mode === 'real'
-            ? 'Forbindelsen er oprettet i software. Drej nu en fysisk side og kontrollér loggen.'
-            : 'Mock-terningen er klar.'
+          'Forbindelsen er oprettet. Hold den hvide GO-side mod dig med logoet opret, og sammenlign farvenettet.'
         );
       })
       .catch((error: unknown) => {
@@ -84,8 +72,48 @@ export function SmartCubeDiagnosticsPage() {
       setMessage('Forbindelsen er lukket.');
     });
   };
-  const mock = adapter instanceof MockSmartCubeAdapter ? adapter : null;
 
+  const readPhysicalState = async () => {
+    setActionPending(true);
+    setMessage('Beder GoCube om en ny, fuld farveaflæsning …');
+    try {
+      await adapter.requestState?.();
+      setState(adapter.getCubeState());
+      setMessage(
+        'Ny aflæsning er bestilt. Sammenlign farvenettet med den fysiske terning; handlingen ændrer ikke terningens referencepunkt.'
+      );
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Tilstanden kunne ikke genindlæses.');
+    } finally {
+      setActionPending(false);
+    }
+  };
+
+  const clearTracking = () => {
+    adapter.clearTracking?.();
+    setState(adapter.getCubeState());
+    setHistory([]);
+    setMessage('Den lokale trækhistorik er ryddet. GoCubens fysiske reference er ikke ændret.');
+  };
+
+  const calibrateSolvedState = async () => {
+    const physicallySolved = window.confirm(
+      'Brug kun denne nulstilling, når alle seks fysiske sider er ensfarvede. GoCube får besked på at regne den aktuelle fysiske stilling som løst. Er terningen fysisk løst nu?'
+    );
+    if (!physicallySolved) return;
+    setActionPending(true);
+    setMessage('Kalibrerer GoCubens nuværende fysiske stilling som løst …');
+    try {
+      await adapter.calibrateSolvedState?.();
+      setState(adapter.getCubeState());
+      setHistory([]);
+      setMessage('GoCube er nulstillet til den fysisk løste stilling. Drej én side som kontrol.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'GoCube kunne ikke nulstilles.');
+    } finally {
+      setActionPending(false);
+    }
+  };
   return (
     <div className="page diagnostics-page">
       <header className="page-heading">
@@ -96,16 +124,18 @@ export function SmartCubeDiagnosticsPage() {
         </p>
       </header>
       <div className="diagnostic-warning">
-        ⚠ Softwareimplementeret · fysisk GoCube endnu ikke verificeret
+        ⚠ Fysisk forbindelse bekræftet · farvetilstand og træksynkronisering verificeres nu
       </div>
-      <div className="segmented">
-        <button className={mode === 'mock' ? 'active' : ''} onClick={() => changeMode('mock')}>
-          Mock-terning
-        </button>
-        <button className={mode === 'real' ? 'active' : ''} onClick={() => changeMode('real')}>
-          Fysisk GoCube
-        </button>
-      </div>
+      <section className="cube-reference-grip" aria-labelledby="reference-grip-title">
+        <div>
+          <p className="eyebrow">Fælles nulpunkt</p>
+          <h2 id="reference-grip-title">Hvid GO-side mod dig · logoet opret</h2>
+        </div>
+        <p>
+          Brug dette greb, når vi sammenligner farver og navngiver M-træk. Den senere Roux-motor
+          skal stadig kunne løse og undervise uafhængigt af farvevalg.
+        </p>
+      </section>
       <section className="diagnostic-grid">
         <div className="diagnostic-panel">
           <h2>Miljø</h2>
@@ -166,12 +196,22 @@ export function SmartCubeDiagnosticsPage() {
           <div className="button-row">
             {connection !== 'connected' ? (
               <button type="button" className="button primary" onClick={connect}>
-                Forbind {mode === 'real' ? 'GoCube' : 'mock'}
+                Forbind GoCube
               </button>
             ) : (
-              <button type="button" className="button secondary" onClick={disconnect}>
-                Afbryd
-              </button>
+              <>
+                <button type="button" className="button secondary" onClick={disconnect}>
+                  Afbryd
+                </button>
+                <button
+                  type="button"
+                  className="button secondary"
+                  onClick={() => void readPhysicalState()}
+                  disabled={actionPending}
+                >
+                  Læs cuben igen
+                </button>
+              </>
             )}
           </div>
           <p className="connection-message" role="status">
@@ -179,13 +219,18 @@ export function SmartCubeDiagnosticsPage() {
           </p>
         </div>
         <div className="diagnostic-panel cube-diagnostic">
-          <h2>Visuel state</h2>
-          <CubeViewer algorithm={state?.algorithm ?? ''} compact />
+          <h2>Aflæst fysisk tilstand</h2>
+          <CubeFaceletNet facelets={state?.facelets ?? null} />
           <span
             className={`status-pill ${state?.synchronization === 'synchronized' ? 'good' : ''}`}
           >
             {state?.synchronization ?? 'unknown'}
           </span>
+          <p className="facelet-note">
+            Ved forbindelse og “Læs cuben igen” kommer en fuld 54-felters tilstand fra hardwaren.
+            Mellem de fulde aflæsninger sender cuben sine træk, og biblioteket fører nettet frem.
+            Det er mere pålideligt end en 3D-terning, der altid antager en løst startstilling.
+          </p>
         </div>
         <div className="diagnostic-panel">
           <h2>Logisk state</h2>
@@ -199,27 +244,58 @@ export function SmartCubeDiagnosticsPage() {
               <dd className="facelets">{state?.facelets ?? 'Ikke rapporteret'}</dd>
             </div>
           </dl>
-          {mock && connection === 'connected' && (
-            <div className="move-pad mini">
-              {['R', "R'", 'U', "U'", 'M', "M'"].map((move) => (
-                <button type="button" key={move} onClick={() => mock.emitMove(move)}>
-                  {move}
-                </button>
-              ))}
+          {connection === 'connected' && (
+            <div className="diagnostic-reset-actions">
+              <button type="button" className="button secondary" onClick={clearTracking}>
+                Ryd kun loggen
+              </button>
+              <button
+                type="button"
+                className="button danger"
+                onClick={() => void calibrateSolvedState()}
+                disabled={actionPending}
+              >
+                Nulstil efter fysisk løsning …
+              </button>
             </div>
+          )}
+          {connection === 'connected' && (
+            <p className="reset-guidance">
+              Nulstilling løser ikke en blandet terning. Den må først bruges, når terningen fysisk
+              er løst; ellers lærer elektronikken en forkert nulstilling.
+            </p>
           )}
         </div>
       </section>
+      <GoCubeMoveCapture
+        connected={connection === 'connected'}
+        history={history}
+        onClear={clearTracking}
+      />
       <section className="move-history">
-        <h2>Komplet trækhistorik</h2>
+        <h2>Rå trækhistorik</h2>
+        <p className="move-history-note">
+          Prøv ét M-træk fra referencegrebet. Hvis GoCube sender to ydertræk, viser +0 ms eller en
+          meget lille afstand, at de hører sammen. Vi normaliserer først til M/M′, når retningen er
+          fysisk bekræftet.
+        </p>
         <div>
           {history.length ? (
-            history.map((move, index) => (
-              <span key={`${move.timestamp}-${index}`}>
-                {move.notation}
-                <small>{new Date(move.timestamp).toLocaleTimeString('da-DK')}</small>
-              </span>
-            ))
+            history.map((move, index) => {
+              const previous = history[index - 1];
+              const delta = previous
+                ? Math.max(0, Math.round(move.timestamp - previous.timestamp))
+                : null;
+              return (
+                <span key={`${move.timestamp}-${index}`}>
+                  {move.notation}
+                  <small>
+                    {new Date(move.timestamp).toLocaleTimeString('da-DK')}
+                    {delta === null ? '' : ` · +${delta} ms`}
+                  </small>
+                </span>
+              );
+            })
           ) : (
             <p>Ingen træk registreret.</p>
           )}

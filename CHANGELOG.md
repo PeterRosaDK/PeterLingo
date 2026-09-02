@@ -6,6 +6,22 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Resumed physical GoCube validation after a successful desktop connection; diagnostics now
+  separates re-reading physical state, clearing only the local move log, and explicitly confirmed
+  solved-state calibration. The physical facelet net no longer pretends a solved-start 3D history
+  is the authoritative state.
+- Replaced user-facing mock-cube controls with a physical GoCube reference grip: white GO centre
+  toward the learner and logo upright. Raw move timing now supports an evidence-based `M`/`M'`
+  mapping; the mock adapter remains available only as an automated test seam.
+- Added a guided six-step GoCube capture flow for `R`, `R'`, `L`, `L'`, `M`, and `M'` that records
+  the exact raw move names and millisecond gaps before any slice-move normalization is introduced.
+- Kept an approved GoCube connection alive while navigating between PeterLingo routes, avoiding a
+  new browser chooser merely because the diagnostics page was temporarily left.
+- Documented the actual state stream in the diagnostics: full 54-facelet hardware snapshots at
+  connection/re-read, with move-by-move state advancement between snapshots.
+- Split the planned Roux engine into “Solve for me,” using the best verified route found, and
+  “Teach me Roux,” which starts with a minimal algorithm repertoire and unlocks shortcuts only
+  after demonstrated fluency.
 - Made the home greeting follow the device's local time: Godnat before 07, Godmorgen until 11,
   Goddag until 18, and Godaften for the rest of the evening.
 - Started Milestone 6 daily intelligence with response-time-calibrated duration estimates, a clear
@@ -51,7 +67,7 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   while keeping the whole block scheduled until it is secure.
 - Expanded the verified local Pi source from 100 to 500 decimals while retaining 100 as a milestone.
 - Added three daily effort stars per subject; attempts with mistakes or hints count equally, and a
-  small mock Roux sequence makes its stars achievable without physical hardware.
+  notation-based Roux hand drill makes its stars achievable without physical hardware.
 - Expanded Richard Osterlind's BCS into ten adaptive BCS/MBCS skills, including independent
   card-to-position and position-to-card recall, cyclic cuts, and removed-card handling.
 - Corrected the teaching sequence to Osterlind's own two-stage value calculation and removed an

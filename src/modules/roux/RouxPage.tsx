@@ -1,56 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
-import type { CubeMove, CubeState } from '../../hardware/smartcube/types';
-import { isFixedLeftFirstBlockSolved } from '../../hardware/smartcube/state';
 import { CubeViewer } from './CubeViewer';
 import { RouxMoveDrill } from './RouxMoveDrill';
 
-const moves = ['R', "R'", 'U', "U'", 'L', "L'", 'M', "M'"];
-
 export function RouxPage() {
-  const [adapter] = useState(() => new MockSmartCubeAdapter());
-  const [cubeState, setCubeState] = useState<CubeState>(() => adapter.getCubeState());
-  const [history, setHistory] = useState<CubeMove[]>([]);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [fullscreenAvailable, setFullscreenAvailable] = useState(
-    () => typeof HTMLElement !== 'undefined' && Boolean(HTMLElement.prototype.requestFullscreen)
-  );
-  const stage = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    void adapter.connect();
-    const unsubscribeMove = adapter.subscribeToMoves((move) =>
-      setHistory((current) => [...current, move])
-    );
-    const unsubscribeState = adapter.subscribeToState((state) => setCubeState(state));
-    return () => {
-      unsubscribeMove();
-      unsubscribeState();
-      void adapter.disconnect();
-    };
-  }, [adapter]);
-
-  useEffect(() => {
-    const updateFullscreen = () => setFullscreen(document.fullscreenElement === stage.current);
-    document.addEventListener('fullscreenchange', updateFullscreen);
-    return () => document.removeEventListener('fullscreenchange', updateFullscreen);
-  }, []);
-
-  const reset = () => {
-    adapter.reset();
-    setHistory([]);
-  };
-  const firstBlock = cubeState.facelets ? isFixedLeftFirstBlockSolved(cubeState.facelets) : null;
-  const toggleFullscreen = async () => {
-    try {
-      if (document.fullscreenElement === stage.current) await document.exitFullscreen();
-      else await stage.current?.requestFullscreen();
-    } catch {
-      setFullscreenAvailable(false);
-    }
-  };
-
   return (
     <div className="page subject-page roux-page">
       <header className="subject-hero ice">
@@ -64,38 +16,25 @@ export function RouxPage() {
         </div>
       </header>
       <div className="roux-layout">
-        <section className="cube-stage" ref={stage}>
+        <section className="cube-stage roux-reference-stage">
           <div className="stage-heading">
             <div>
-              <p className="eyebrow">Softwareklar mock-terning</p>
-              <h2>Prøv live state-plumbing</h2>
+              <p className="eyebrow">Fælles testgreb</p>
+              <h2>Hvid GO-side mod dig</h2>
             </div>
-            <div className="stage-tools">
-              <span className="status-pill good">Forbundet · mock</span>
-              {fullscreenAvailable && (
-                <button
-                  className="button subtle fullscreen-toggle"
-                  type="button"
-                  aria-pressed={fullscreen}
-                  onClick={() => void toggleFullscreen()}
-                >
-                  <span aria-hidden="true">{fullscreen ? '↙' : '⛶'}</span>
-                  {fullscreen ? 'Afslut fuld skærm' : 'Terning + træk i fuld skærm'}
-                </button>
-              )}
-            </div>
+            <span className="status-pill good">GoCube klar</span>
           </div>
-          <CubeViewer algorithm={cubeState.algorithm} />
-          <div className="move-pad" aria-label="Mock-træk">
-            {moves.map((move) => (
-              <button type="button" key={move} onClick={() => adapter.emitMove(move)}>
-                {move}
-              </button>
-            ))}
-            <button type="button" className="reset-move" onClick={reset}>
-              Nulstil
-            </button>
+          <div className="roux-reference-mark" aria-hidden="true">
+            <span>GO</span>
+            <i>↑</i>
           </div>
+          <p>
+            Hold den hvide midterplade mod dig og logoet opret, når vi tester farver og M-træk.
+            Grebet er et målepunkt — ikke en begrænsning af den senere farveneutrale Roux-løsning.
+          </p>
+          <Link className="button primary" to="/fag/roux/diagnostik">
+            Forbind og kontrollér GoCube
+          </Link>
         </section>
         <aside className="roux-progress">
           <p className="eyebrow">Læringsrækkefølge</p>
@@ -129,28 +68,30 @@ export function RouxPage() {
               </div>
             </li>
           </ol>
-          <div className="goal-state">
-            <span>Fast venstre First Block</span>
-            <strong>
-              {firstBlock === true
-                ? 'Genkendt'
-                : firstBlock === false
-                  ? 'Ikke løst'
-                  : 'Afventer fuld state'}
-            </strong>
-            <small>Detektoren bruger en dokumenteret fast URFDLB-orientering.</small>
-          </div>
         </aside>
       </div>
       <RouxMoveDrill />
       <section className="hardware-callout">
         <div>
           <p className="eyebrow">Fysisk GoCube</p>
-          <h2>Transporten er bygget — den fysiske prøve mangler</h2>
+          <h2>To profiler: løs for mig og lær mig Roux</h2>
           <p>
-            Diagnostikken viser browser, Beacio, batteri, moves, facelets og synkronisering uden at
-            gøre resten af PeterLingo afhængig af Bluetooth.
+            Roux-motoren skal både kunne føre en vilkårlig blanding helt hjem og stoppe ved starten
+            af en valgt fase. Derefter skal den genkende First Block, Second Block, CMLL og LSE og
+            forklare næste meningsfulde skridt. Alt skal bygge på den samme fysisk verificerede
+            tilstand.
           </p>
+          <div className="platform-guidance">
+            <span>
+              <strong>Løs for mig</strong>
+              Brug hele solverens repertoire og vis den bedste verificerede løsning, den finder.
+            </span>
+            <span>
+              <strong>Lær mig Roux</strong>
+              Begynd med få algoritmer; tilføj først nye, når de gamle er sikre og gevinsten er
+              tydelig.
+            </span>
+          </div>
           <div className="platform-guidance">
             <span>
               <strong>Mac Mini</strong>
@@ -165,18 +106,6 @@ export function RouxPage() {
         <Link className="button primary" to="/fag/roux/diagnostik">
           Åbn GoCube-diagnostik
         </Link>
-      </section>
-      <section className="move-history">
-        <h2>Trækhistorik</h2>
-        <div>
-          {history.length ? (
-            history.map((move, index) => (
-              <span key={`${move.timestamp}-${index}`}>{move.notation}</span>
-            ))
-          ) : (
-            <p>Tryk på et mock-træk ovenfor.</p>
-          )}
-        </div>
       </section>
     </div>
   );

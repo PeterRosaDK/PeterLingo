@@ -58,6 +58,6 @@ export function createEmptySnapshot(): PeterLingoSnapshot {
     attempts: [],
     sessions: [],
     diagnostics: [],
-    hardware: { preferredAdapter: 'mock' },
+    hardware: { preferredAdapter: 'real' },
   };
 }

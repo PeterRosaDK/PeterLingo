@@ -64,7 +64,7 @@ export function RouxMoveDrill() {
           <strong key={`${move}-${index}`}>{move}</strong>
         ))}
       </div>
-      <div className="move-pad compact-move-pad" aria-label="Svar med mock-træk">
+      <div className="move-pad compact-move-pad" aria-label="Svar med notationstræk">
         {moveChoices.map((move) => (
           <button
             type="button"
