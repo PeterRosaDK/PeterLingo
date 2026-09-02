@@ -129,7 +129,8 @@ test('Roux presents the physical reference grip and keeps the notation drill', a
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
   await expect(page.getByRole('heading', { name: /Hvid GO-side mod dig/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Forbind GoCube' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Find og forbind GoCube' })).toBeVisible();
+  await expect(page.getByText('Husket af browseren')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Start måling af R' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeVisible();

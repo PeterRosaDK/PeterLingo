@@ -6,6 +6,12 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Added remembered-device detection through Web Bluetooth `getDevices()`. Previously approved
+  GoCubes now get a direct reconnect action without a new chooser, while separate status text makes
+  clear that remembered permission does not prove the physical cube is awake or reachable.
+- Split Bluetooth feedback into chooser, advertisement, GATT connection, permission, and failure
+  states, with targeted guidance for a sleeping cube, a cancelled chooser, blocked permission, or a
+  cube already occupied by another app or browser tab.
 - Kept **Læs cuben igen** visible beside the physical facelet net even when Bluetooth is
   disconnected, with a clear disabled-state explanation instead of making the action disappear.
 - Deployed that GoCube reread correction as exact revision `9ea8842` at

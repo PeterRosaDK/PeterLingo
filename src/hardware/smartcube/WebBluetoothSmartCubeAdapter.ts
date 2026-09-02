@@ -1,10 +1,18 @@
 import {
   connectSmartCube,
+  getRegisteredProtocols,
   type SmartCubeConnection,
   type SmartCubeEvent,
 } from 'smartcube-web-bluetooth';
 import { appendMove, SOLVED_FACELETS } from './state';
-import type { ConnectionState, CubeMove, CubeState, SmartCubeAdapter, Unsubscribe } from './types';
+import type {
+  ConnectionState,
+  CubeMove,
+  CubeState,
+  RememberedCube,
+  SmartCubeAdapter,
+  Unsubscribe,
+} from './types';
 
 export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   private connectionState: ConnectionState = 'disconnected';
@@ -24,24 +32,84 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     return typeof navigator !== 'undefined' && 'bluetooth' in navigator;
   }
 
-  async connect(): Promise<void> {
+  async connect(onStatus?: (message: string) => void): Promise<void> {
     if (!this.isSupported()) {
       this.connectionState = 'unsupported';
       throw new Error('Web Bluetooth er ikke tilgængelig i denne browser.');
     }
     this.connectionState = 'connecting';
     try {
-      this.connection = await connectSmartCube({ onStatus: () => undefined });
-      this.subscription = this.connection.events$.subscribe((event) => this.onEvent(event));
-      this.connectionState = 'connected';
-      if (this.connection.capabilities.facelets)
-        void this.connection.sendCommand({ type: 'REQUEST_FACELETS' });
-      if (this.connection.capabilities.battery)
-        void this.connection.sendCommand({ type: 'REQUEST_BATTERY' });
+      const connection = await connectSmartCube({ onStatus });
+      this.activateConnection(connection);
     } catch (error) {
       this.connectionState = 'error';
       throw error;
     }
+  }
+
+  async connectRemembered(deviceId: string, onStatus?: (message: string) => void): Promise<void> {
+    const bluetooth = this.getBluetooth();
+    if (!bluetooth || typeof bluetooth.getDevices !== 'function') {
+      throw new Error('Browseren kan ikke genåbne tidligere godkendte Bluetooth-enheder.');
+    }
+    this.connectionState = 'connecting';
+    let device: BluetoothDevice | undefined;
+    try {
+      onStatus?.('Henter tidligere Bluetooth-tilladelse…');
+      device = (await bluetooth.getDevices()).find((candidate) => candidate.id === deviceId);
+      if (!device) {
+        throw new Error('Den tidligere godkendte GoCube findes ikke længere i denne browser.');
+      }
+      const protocol = getRegisteredProtocols().find((candidate) =>
+        candidate.matchesDevice(device)
+      );
+      if (!protocol) {
+        throw new Error('Den huskede Bluetooth-enhed genkendes ikke som en understøttet cube.');
+      }
+      onStatus?.(`GoCube er husket. Forsøger at kontakte ${device.name ?? 'enheden'}…`);
+      const connection = await protocol.connect(device, undefined, {
+        serviceUuids: new Set<string>(),
+        onStatus,
+      });
+      this.activateConnection(connection);
+    } catch (error) {
+      if (device?.gatt?.connected) device.gatt.disconnect();
+      this.connectionState = 'error';
+      throw error;
+    }
+  }
+
+  async getRememberedCubes(): Promise<RememberedCube[] | null> {
+    const bluetooth = this.getBluetooth();
+    if (!bluetooth || typeof bluetooth.getDevices !== 'function') return null;
+    const devices = await bluetooth.getDevices();
+    return devices
+      .filter((device) => {
+        const name = device.name ?? '';
+        return name.startsWith('GoCube') || name.startsWith('Rubiks');
+      })
+      .map((device) => ({ id: device.id, name: device.name ?? 'GoCube' }));
+  }
+
+  async getBluetoothAvailability(): Promise<boolean | null> {
+    const bluetooth = this.getBluetooth();
+    if (!bluetooth || typeof bluetooth.getAvailability !== 'function') return null;
+    return bluetooth.getAvailability();
+  }
+
+  private getBluetooth(): Bluetooth | null {
+    return typeof navigator !== 'undefined' && 'bluetooth' in navigator
+      ? navigator.bluetooth
+      : null;
+  }
+
+  private activateConnection(connection: SmartCubeConnection): void {
+    this.subscription?.unsubscribe();
+    this.connection = connection;
+    this.subscription = connection.events$.subscribe((event) => this.onEvent(event));
+    this.connectionState = 'connected';
+    if (connection.capabilities.facelets) void connection.sendCommand({ type: 'REQUEST_FACELETS' });
+    if (connection.capabilities.battery) void connection.sendCommand({ type: 'REQUEST_BATTERY' });
   }
 
   private onEvent(event: SmartCubeEvent): void {

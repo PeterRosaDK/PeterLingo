@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { WebBluetoothSmartCubeAdapter } from '../../hardware/smartcube/WebBluetoothSmartCubeAdapter';
 import { detectBluetoothEnvironment } from '../../hardware/smartcube/environment';
@@ -6,6 +6,7 @@ import type {
   ConnectionState,
   CubeMove,
   CubeState,
+  RememberedCube,
   SmartCubeAdapter,
 } from '../../hardware/smartcube/types';
 import { CubeFaceletNet } from './CubeFaceletNet';
@@ -15,6 +16,36 @@ import { GoCubeMoveCapture } from './GoCubeMoveCapture';
 // A full page reload still follows the browser's Web Bluetooth permission model.
 const physicalCubeAdapter: SmartCubeAdapter = new WebBluetoothSmartCubeAdapter();
 
+type RememberedCheck = 'checking' | 'ready' | 'unsupported' | 'error';
+
+function connectionErrorMessage(error: unknown, remembered: boolean): string {
+  if (!(error instanceof Error)) return 'Bluetooth-forbindelsen mislykkedes.';
+  if (error.name === 'NotFoundError') {
+    return remembered
+      ? 'Browseren husker cuben, men kunne ikke kontakte den. Drej et lag for at vække den, og prøv igen.'
+      : 'Bluetooth-vælgeren blev lukket uden en cube. Drej et lag for at vække GoCube, og søg igen.';
+  }
+  if (error.name === 'NetworkError') {
+    return remembered
+      ? 'GoCube blev genkendt, men selve forbindelsen mislykkedes. Væk cuben, og luk andre apps eller faner, der kan være forbundet til den.'
+      : 'GoCube blev valgt, men selve forbindelsen mislykkedes. Væk cuben, og luk andre apps eller faner, der kan være forbundet til den.';
+  }
+  if (error.name === 'SecurityError') {
+    return 'Browseren blokerede Bluetooth-adgangen. Kontrollér sidens Bluetooth-tilladelse ved adresselinjen.';
+  }
+  return error.message;
+}
+
+function pickerStatusMessage(status: string): string {
+  const messages: Record<string, string> = {
+    'Select your cube…': 'Browserens Bluetooth-vælger er åben. Vælg din GoCube …',
+    'Reading advertisements…': 'GoCube er valgt. Læser dens Bluetooth-oplysninger …',
+    'Connecting…': 'GoCube er fundet. Opretter selve forbindelsen …',
+    'Verifying connection…': 'Forbindelsen er oprettet. Kontrollerer data fra cuben …',
+  };
+  return messages[status] ?? status;
+}
+
 export function SmartCubeDiagnosticsPage() {
   const environment = useMemo(() => detectBluetoothEnvironment(), []);
   const adapter = physicalCubeAdapter;
@@ -23,11 +54,32 @@ export function SmartCubeDiagnosticsPage() {
   const [history, setHistory] = useState<CubeMove[]>([]);
   const [battery, setBattery] = useState<number | null>(null);
   const [actionPending, setActionPending] = useState(false);
+  const [rememberedCubes, setRememberedCubes] = useState<RememberedCube[]>([]);
+  const [rememberedCheck, setRememberedCheck] = useState<RememberedCheck>('checking');
+  const [bluetoothAvailable, setBluetoothAvailable] = useState<boolean | null>(null);
   const [message, setMessage] = useState(() =>
     adapter.getConnectionState() === 'connected'
       ? 'Den eksisterende GoCube-forbindelse i PeterLingo er genbrugt.'
       : environment.guidance
   );
+
+  const refreshRememberedCubes = useCallback(async () => {
+    if (!adapter.getRememberedCubes) {
+      setRememberedCheck('unsupported');
+      return;
+    }
+    try {
+      const devices = await adapter.getRememberedCubes();
+      if (devices === null) {
+        setRememberedCheck('unsupported');
+        return;
+      }
+      setRememberedCubes(devices);
+      setRememberedCheck('ready');
+    } catch {
+      setRememberedCheck('error');
+    }
+  }, [adapter]);
 
   useEffect(() => {
     const offMove = adapter.subscribeToMoves((move) => {
@@ -41,36 +93,59 @@ export function SmartCubeDiagnosticsPage() {
     if (adapter.getConnectionState() === 'connected') {
       void adapter.getBatteryLevel?.().then((level) => setBattery(level ?? null));
     }
+    void refreshRememberedCubes();
+    void adapter
+      .getBluetoothAvailability?.()
+      .then((available) => setBluetoothAvailable(available ?? null))
+      .catch(() => setBluetoothAvailable(null));
     return () => {
       offMove();
       offState?.();
     };
-  }, [adapter]);
+  }, [adapter, refreshRememberedCubes]);
 
   // This handler deliberately calls connect() immediately. requestDevice remains in this user gesture.
+  const completeConnection = async () => {
+    setConnection(adapter.getConnectionState());
+    setState(adapter.getCubeState());
+    setBattery((await adapter.getBatteryLevel?.()) ?? null);
+    await refreshRememberedCubes();
+    setMessage(
+      'Forbindelsen er oprettet. Hold den hvide GO-side mod dig med logoet opret, og sammenlign farvenettet.'
+    );
+  };
+
   const connect = () => {
     setConnection('connecting');
-    setMessage('Vælg din GoCube i browserens enhedsvælger …');
+    setMessage('Åbner browserens Bluetooth-vælger …');
     adapter
-      .connect()
-      .then(async () => {
-        setConnection(adapter.getConnectionState());
-        setState(adapter.getCubeState());
-        setBattery((await adapter.getBatteryLevel?.()) ?? null);
-        setMessage(
-          'Forbindelsen er oprettet. Hold den hvide GO-side mod dig med logoet opret, og sammenlign farvenettet.'
-        );
-      })
+      .connect((status) => setMessage(pickerStatusMessage(status)))
+      .then(completeConnection)
       .catch((error: unknown) => {
         setConnection(adapter.getConnectionState());
-        setMessage(error instanceof Error ? error.message : 'Forbindelsen mislykkedes.');
+        setMessage(connectionErrorMessage(error, false));
+      });
+  };
+
+  const reconnect = (device: RememberedCube) => {
+    if (!adapter.connectRemembered) return;
+    setConnection('connecting');
+    setMessage(`Browseren husker ${device.name}. Forsøger at genforbinde uden ny søgning …`);
+    adapter
+      .connectRemembered(device.id, (status) => setMessage(status))
+      .then(completeConnection)
+      .catch((error: unknown) => {
+        setConnection(adapter.getConnectionState());
+        setMessage(connectionErrorMessage(error, true));
+        void refreshRememberedCubes();
       });
   };
 
   const disconnect = () => {
     void adapter.disconnect().then(() => {
       setConnection('disconnected');
-      setMessage('Forbindelsen er lukket.');
+      setBattery(null);
+      setMessage('Forbindelsen er lukket. Browserens tilladelse til cuben er bevaret.');
     });
   };
 
@@ -161,6 +236,16 @@ export function SmartCubeDiagnosticsPage() {
               <dd>{environment.webBluetooth ? 'Tilgængelig' : 'Ikke fundet'}</dd>
             </div>
             <div>
+              <dt>Bluetooth-adapter</dt>
+              <dd>
+                {bluetoothAvailable === null
+                  ? 'Kan ikke afgøres'
+                  : bluetoothAvailable
+                    ? 'Rapporteret tilgængelig'
+                    : 'Rapporteret utilgængelig'}
+              </dd>
+            </div>
+            <div>
               <dt>Beacio</dt>
               <dd>
                 {environment.beacio === 'active'
@@ -172,6 +257,12 @@ export function SmartCubeDiagnosticsPage() {
             </div>
           </dl>
           <p className="guidance">{environment.guidance}</p>
+          {environment.webBluetooth && (
+            <p className="guidance">
+              “Rapporteret tilgængelig” betyder kun, at browseren kan bruge en Bluetooth-adapter;
+              det beviser ikke, at GoCube er tændt eller kan nås.
+            </p>
+          )}
         </div>
         <div className="diagnostic-panel">
           <h2>Forbindelse</h2>
@@ -196,18 +287,56 @@ export function SmartCubeDiagnosticsPage() {
               <dt>Sidste træk</dt>
               <dd>{history.at(-1)?.notation ?? '—'}</dd>
             </div>
+            <div>
+              <dt>Husket af browseren</dt>
+              <dd>
+                {rememberedCheck === 'checking'
+                  ? 'Kontrollerer …'
+                  : rememberedCheck === 'unsupported'
+                    ? 'Kan ikke aflæses i denne browser'
+                    : rememberedCheck === 'error'
+                      ? 'Kontrollen mislykkedes'
+                      : rememberedCubes.length
+                        ? rememberedCubes.map((device) => device.name).join(', ')
+                        : 'Ingen GoCube-tilladelse fundet'}
+              </dd>
+            </div>
           </dl>
           <div className="button-row">
-            {connection !== 'connected' ? (
-              <button type="button" className="button primary" onClick={connect}>
-                Forbind GoCube
-              </button>
-            ) : (
+            {connection === 'connected' ? (
               <button type="button" className="button secondary" onClick={disconnect}>
                 Afbryd
               </button>
+            ) : (
+              <>
+                {rememberedCubes.map((device) => (
+                  <button
+                    type="button"
+                    className="button primary"
+                    onClick={() => reconnect(device)}
+                    disabled={connection === 'connecting'}
+                    key={device.id}
+                  >
+                    Genforbind {device.name}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className={rememberedCubes.length ? 'button secondary' : 'button primary'}
+                  onClick={connect}
+                  disabled={connection === 'connecting'}
+                >
+                  {rememberedCubes.length ? 'Vælg en anden cube …' : 'Find og forbind GoCube'}
+                </button>
+              </>
             )}
           </div>
+          {rememberedCheck === 'ready' && rememberedCubes.length > 0 && (
+            <p className="guidance">
+              Browseren husker tilladelsen. Det beviser ikke, at cuben er vågen eller inden for
+              rækkevidde; det afgør genforbindelsesforsøget.
+            </p>
+          )}
           <p className="connection-message" role="status">
             {message}
           </p>

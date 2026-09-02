@@ -22,8 +22,12 @@ GoCube model/firmware if visible, and the result.
 3. Enable Beacio and allow it on the PeterLingo website.
 4. Force-reload PeterLingo.
 5. In diagnostics confirm: browser is iOS Safari, secure context is **Ja**, Web Bluetooth is **Tilgængelig**, Beacio is **Aktiv/polyfill fundet**.
-6. Tap **Forbind GoCube** once. Do not navigate away while the chooser is open.
-7. Select the GoCube. Confirm detected name/protocol and battery if supported.
+6. On first use, tap **Find og forbind GoCube** once. Do not navigate away while the chooser is
+   open. On later visits, prefer **Genforbind GoCube** when it is offered.
+7. Select the GoCube. Confirm detected name/protocol and battery if supported. Reload the page once,
+   then confirm **Husket af browseren** names the cube and **Genforbind GoCube** reconnects without
+   opening a new chooser. A remembered cube can still be asleep, out of range, or occupied by
+   another app; the following connection message must distinguish that from missing permission.
 8. If the displayed colors do not match, tap **Læs cuben igen**. Do not use solved-state reset while
    the physical cube is mixed.
    If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
