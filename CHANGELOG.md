@@ -16,6 +16,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Replaced spatially misleading `R`/`L` instructions with fixed center colors. In the agreed white
   GO-side-forward grip, the red R layer is explicitly the top layer and M is the horizontal middle
   layer; solve directions are always read facing the named center.
+- Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
+  `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
   now opens **Løs den aflæste cube** and calculates its recovery route automatically; manual colour
   entry and synchronization checking remain clearly labelled fallbacks.
