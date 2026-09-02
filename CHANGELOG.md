@@ -9,6 +9,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube
   now opens **Løs den aflæste cube** and calculates its recovery route automatically; manual colour
   entry and synchronization checking remain clearly labelled fallbacks.
+- Deployed direct live GoCube solving as exact revision `4d15634` at
+  `https://eb8166d1.peterlingo.pages.dev`.
 - Clarified recovery turns: the target centre faces the learner, the neighbouring top colour is
   irrelevant, turn direction is read from that face, and either direction works for a half-turn.
 - Deployed the clarified physical orientation guidance as exact revision `18f6e8e` at
