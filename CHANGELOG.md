@@ -8,6 +8,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 - Kept **Læs cuben igen** visible beside the physical facelet net even when Bluetooth is
   disconnected, with a clear disabled-state explanation instead of making the action disappear.
+- Deployed that GoCube reread correction as exact revision `9ea8842` at
+  `https://9f4d76a9.peterlingo.pages.dev`.
 - Added a visual Danish cube-notation guide for `R`, `R'`, `R2`, all six outer faces, `M`, and
   short algorithms, including an explicit explanation that prime is not the number one.
 - Added a manual six-face state editor as a diagnostic fallback. It starts from GoCubens reported
