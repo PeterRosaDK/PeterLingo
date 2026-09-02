@@ -352,6 +352,11 @@ export function ManualCubeStatePage() {
             Dette er en verificeret to-fase-løsning. Den er beregnet til at redde den aktuelle cube;
             den er ikke den planlagte Roux-undervisning.
           </p>
+          <p className="recovery-grip-note">
+            <strong>Sådan holder du cuben:</strong> Farven i hvert trin skal vende direkte mod dig.
+            Det er ligegyldigt, hvilken af de fire nabofarver der vender opad. “Med uret” og “mod
+            uret” skal altid aflæses, som du ser den farvede side forfra.
+          </p>
 
           {completedMoves < solution.moves.length ? (
             <div className="current-solve-step">

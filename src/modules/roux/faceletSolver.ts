@@ -229,10 +229,9 @@ export function describeMove(move: string): string {
     B: 'blå',
   };
   const face = colorByFace[move[0] ?? ''] ?? 'angivne';
-  const direction = move.endsWith('2')
-    ? 'en halv omgang (180°)'
-    : move.endsWith("'")
-      ? 'en kvart omgang mod uret'
-      : 'en kvart omgang med uret';
-  return `Se lige ind på siden med det ${face} center, og drej den ${direction}.`;
+  if (move.endsWith('2')) {
+    return `Drej kun siden med det ${face} center en halv omgang (180°). Ved en halv omgang er retningen ligegyldig.`;
+  }
+  const direction = move.endsWith("'") ? 'mod uret' : 'med uret';
+  return `Hold siden med det ${face} center direkte mod dig. Drej kun denne side en kvart omgang ${direction}, sådan som du ser den.`;
 }

@@ -182,8 +182,11 @@ test('manual cube state saves locally and produces verified color-based rescue s
   await page.getByRole('button', { name: 'Gem og lav løsning' }).click();
   await expect(page.getByText(/Stillingen er fysisk mulig/)).toBeVisible({ timeout: 20_000 });
   await expect(page.getByRole('heading', { name: 'Trin for trin tilbage til løst' })).toBeVisible();
+  await expect(page.getByText(/nabofarver der vender opad/)).toBeVisible();
   await expect(page.getByText('grøn side', { exact: true })).toBeVisible();
-  await expect(page.getByText(/en halv omgang/)).toBeVisible();
+  await expect(page.locator('.current-solve-step')).toContainText(
+    'Ved en halv omgang er retningen ligegyldig.'
+  );
   await page.getByRole('button', { name: 'Jeg har lavet trækket' }).click();
   await expect(page.getByText('rød side', { exact: true })).toBeVisible();
   await expect(page.getByText(/en kvart omgang mod uret/)).toBeVisible();
