@@ -43,12 +43,12 @@ export function CubeNotationHelpPage() {
           <p className="eyebrow">Vores fælles greb</p>
           <h2>Hvid GO-side mod dig · logoet opret</h2>
           <p>
-            Behold dette greb gennem hele kalibreringen. I dette greb er det orange L-lag øverst,
-            mens det røde R-lag er nederst. R betyder altså ikke “laget på din højre hånd”.
-            Bogstaverne er faste navne på centerfarverne.
+            Behold dette greb gennem hele kalibreringen. Den orange flade er øverst, og den røde er
+            nederst. Bogstaverne beskriver placeringen i dette greb: R er siden på din højre hånd,
+            og L er siden på din venstre hånd.
           </p>
         </div>
-        <CubeNet active="U" />
+        <CubeNet active="F" />
       </section>
 
       <section className="notation-section" aria-labelledby="suffix-title">
@@ -69,7 +69,7 @@ export function CubeNotationHelpPage() {
               ↻
             </span>
             <h3>En kvart omgang med uret</h3>
-            <p>Se direkte på siden med rødt center, og drej laget 90° med uret.</p>
+            <p>Se direkte på siden på din højre hånd, og drej laget 90° med uret.</p>
           </article>
           <article>
             <strong>R′</strong>
@@ -87,7 +87,7 @@ export function CubeNotationHelpPage() {
               ↻↻
             </span>
             <h3>En halv omgang</h3>
-            <p>Drej laget med rødt center 180°. Her er retningen ligegyldig.</p>
+            <p>Drej siden på din højre hånd 180°. Her er retningen ligegyldig.</p>
           </article>
         </div>
         <div className="prime-warning">
@@ -103,12 +103,12 @@ export function CubeNotationHelpPage() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Seks ydersider</p>
-            <h2 id="faces-title">Bogstavet vælger en centerfarve</h2>
+            <h2 id="faces-title">Bogstavet vælger en placering</h2>
           </div>
         </div>
         <p className="notation-rule">
-          Bogstaverne kommer fra de engelske navne i standardgrebet. Brug dem som huskeord, men brug
-          centerfarven til at finde det rigtige lag, når cuben holdes på en anden måde.
+          Bogstaverne kommer fra de engelske navne. De gælder, så længe du beholder referencegrebet;
+          hvis du drejer hele cuben i hænderne, flytter højre, venstre, op og ned sig også.
         </p>
         <div className="face-legend">
           {OUTER_CUBE_NOTATION.map((face) => (
@@ -119,7 +119,7 @@ export function CubeNotationHelpPage() {
                 <h3>
                   {face.english} · {face.danish}
                 </h3>
-                <p>{face.layer}</p>
+                <p>{face.position}</p>
               </div>
             </article>
           ))}
@@ -129,11 +129,11 @@ export function CubeNotationHelpPage() {
       <section className="notation-section middle-slice-section" aria-labelledby="middle-title">
         <div>
           <p className="eyebrow">Roux-specialiteten</p>
-          <h2 id="middle-title">M er det vandrette midterlag i GO-grebet</h2>
+          <h2 id="middle-title">M er det lodrette midterlag i GO-grebet</h2>
           <p>
-            M-laget ligger mellem det orange L-lag og det røde R-lag. Med GO-logoet mod dig er det
-            det vandrette midterlag mellem orange top og rød bund. Retningen for <b>M</b> følger et
-            L-træk; <b>M′</b> går den modsatte vej. Drej kun midten—hold de to yderlag stille.
+            M-laget ligger mellem venstre L-lag og højre R-lag. Med GO-logoet mod dig er det det
+            lodrette midterlag. Retningen for <b>M</b> følger et L-træk; <b>M′</b> går den modsatte
+            vej. Drej kun midten—hold de to yderlag stille.
           </p>
           <p className="guidance">
             GoCube kan rapportere et fysisk M-træk som to næsten samtidige ydertræk. Derfor måler

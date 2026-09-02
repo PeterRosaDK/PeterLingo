@@ -2,23 +2,23 @@ export interface CubeNotationEntry {
   notation: string;
   english: string;
   danish: string;
-  layer: string;
+  position: string;
 }
 
 export const OUTER_CUBE_NOTATION: readonly CubeNotationEntry[] = [
-  { notation: 'U', english: 'Up', danish: 'op', layer: 'laget med hvidt center' },
-  { notation: 'R', english: 'Right', danish: 'højre', layer: 'laget med rødt center' },
-  { notation: 'F', english: 'Front', danish: 'foran', layer: 'laget med grønt center' },
-  { notation: 'D', english: 'Down', danish: 'ned', layer: 'laget med gult center' },
-  { notation: 'L', english: 'Left', danish: 'venstre', layer: 'laget med orange center' },
-  { notation: 'B', english: 'Back', danish: 'bag', layer: 'laget med blåt center' },
+  { notation: 'U', english: 'Up', danish: 'op', position: 'toplaget' },
+  { notation: 'R', english: 'Right', danish: 'højre', position: 'laget på din højre hånd' },
+  { notation: 'F', english: 'Front', danish: 'foran', position: 'forsiden mod dig' },
+  { notation: 'D', english: 'Down', danish: 'ned', position: 'bundlaget' },
+  { notation: 'L', english: 'Left', danish: 'venstre', position: 'laget på din venstre hånd' },
+  { notation: 'B', english: 'Back', danish: 'bag', position: 'bagsiden væk fra dig' },
 ] as const;
 
 const MIDDLE_NOTATION: CubeNotationEntry = {
   notation: 'M',
   english: 'Middle',
   danish: 'midte',
-  layer: 'midterlaget mellem L og R',
+  position: 'det lodrette midterlag mellem L og R',
 };
 
 export function notationExplanation(move: string): string {
@@ -26,5 +26,5 @@ export function notationExplanation(move: string): string {
   const entry =
     OUTER_CUBE_NOTATION.find((candidate) => candidate.notation === code) ??
     (code === 'M' ? MIDDLE_NOTATION : null);
-  return entry ? `${entry.english} (${entry.danish}) · ${entry.layer}` : 'ukendt notation';
+  return entry ? `${entry.english} (${entry.danish}) · ${entry.position}` : 'ukendt notation';
 }

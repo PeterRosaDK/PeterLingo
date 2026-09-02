@@ -17,32 +17,32 @@ const instructions = [
   {
     notation: 'R',
     detail:
-      'Behold den hvide GO-side mod dig med logoet opret. Det røde center er nederst: drej det røde bundlag 90° med uret, set direkte mod den røde side nedefra.',
+      'Behold den hvide GO-side mod dig med logoet opret. Drej laget på din højre hånd 90° med uret, når du ser direkte på højre side. Vi måler, hvilken rå kode GoCube sender.',
   },
   {
     notation: "R'",
     detail:
-      'Behold samme greb. Drej det røde bundlag 90° mod uret, set direkte mod den røde side nedefra.',
+      'Behold samme greb. Drej laget på din højre hånd 90° mod uret, når du ser direkte på højre side.',
   },
   {
     notation: 'L',
     detail:
-      'Behold samme greb. Det orange center er øverst: drej det orange toplag 90° med uret, set direkte mod den orange side ovenfra.',
+      'Behold samme greb. Drej laget på din venstre hånd 90° med uret, når du ser direkte på venstre side.',
   },
   {
     notation: "L'",
     detail:
-      'Behold samme greb. Drej det orange toplag 90° mod uret, set direkte mod den orange side ovenfra.',
+      'Behold samme greb. Drej laget på din venstre hånd 90° mod uret, når du ser direkte på venstre side.',
   },
   {
     notation: 'M',
     detail:
-      'Behold samme greb. Drej kun midterlaget mellem det orange top- og røde bundlag i samme retning som L.',
+      'Behold samme greb. Drej kun det lodrette midterlag mellem venstre og højre side i samme retning som L.',
   },
   {
     notation: "M'",
     detail:
-      'Behold samme greb. Drej kun midterlaget mellem det orange top- og røde bundlag modsat M-retningen.',
+      'Behold samme greb. Drej kun det lodrette midterlag mellem venstre og højre side modsat M-retningen.',
   },
 ] as const;
 

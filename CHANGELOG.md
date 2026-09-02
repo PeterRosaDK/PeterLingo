@@ -13,13 +13,15 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added one silent startup attempt to reconnect an already browser-approved GoCube. It never opens
   the device chooser; a sleeping cube or unsupported browser falls back to the existing manual
   connection flow.
-- Replaced spatially misleading `R`/`L` instructions with fixed center colors. In the agreed white
-  GO-side-forward grip, the orange L layer is explicitly on top, the red R layer is on the bottom,
-  and M is the horizontal middle layer; solve directions are always read facing the named center.
-- Expanded `U/R/F/D/L/B/M` beside the notation guide, GoCube calibration, live diagnostics, and
-  recovery steps—for example, `B = Back (bag)`—while keeping center colors as the practical anchor.
-- Deployed the corrected GO-grip orientation and expanded notation labels as exact revision
-  `88a7ab4` at `https://a07b75cd.peterlingo.pages.dev`.
+- Corrected the calibration coordinate system. In the white GO-side-forward grip, orange is on top
+  and red is on the bottom, while R/L remain the spatial right/left layers and M is the vertical
+  middle layer. Recovery instructions remain color-based because the solver uses a separate
+  internal coordinate system.
+- Expanded `U/R/F/D/L/B/M` beside the notation guide and GoCube calibration—for example,
+  `B = Back (bag)`—while explicitly labelling hardware events and recovery codes as technical raw
+  values instead of misleadingly translating them as hand instructions.
+- Revision `88a7ab4` briefly exposed the incorrect color-based R/L calibration wording and was
+  superseded after physical correction of the coordinate-system distinction.
 - Deployed live-confirmed recovery and quiet remembered-device reconnection as exact revision
   `3778a1c` at `https://49f9f481.peterlingo.pages.dev`.
 - Promoted the verified live GoCube state to the normal solve flow. A connected, synchronized cube

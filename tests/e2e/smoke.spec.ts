@@ -153,12 +153,10 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   await expect(page.getByText('Er det R1?')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Back · bag' })).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'M er det vandrette midterlag i GO-grebet' })
+    page.getByRole('heading', { name: 'M er det lodrette midterlag i GO-grebet' })
   ).toBeVisible();
-  await expect(
-    page.getByText(/M-laget ligger mellem det orange L-lag og det røde R-lag/)
-  ).toBeVisible();
-  await expect(page.getByText(/orange L-lag øverst.*røde R-lag er nederst/)).toBeVisible();
+  await expect(page.getByText(/M-laget ligger mellem venstre L-lag og højre R-lag/)).toBeVisible();
+  await expect(page.getByText(/orange flade er øverst.*røde er nederst/)).toBeVisible();
   await page.getByRole('link', { name: 'Tilbage til GoCube-målingen' }).click();
   await expect(page.getByRole('heading', { name: 'GoCube-diagnostik' })).toBeVisible();
 });
@@ -205,7 +203,7 @@ test('manual cube state saves locally and produces verified color-based rescue s
   await expect(page.getByRole('heading', { name: 'Trin for trin tilbage til løst' })).toBeVisible();
   await expect(page.getByText(/nabofarver der vender opad/)).toBeVisible();
   await expect(page.getByText('grøn side', { exact: true })).toBeVisible();
-  await expect(page.getByText(/F = Front \(foran\)/)).toBeVisible();
+  await expect(page.getByText(/Løsningsmotorens interne kode: F2/)).toBeVisible();
   await expect(page.locator('.current-solve-step')).toContainText('Retningen er ligegyldig.');
   await page.getByRole('button', { name: 'Jeg har lavet trækket' }).click();
   await expect(page.getByText('rød side', { exact: true })).toBeVisible();
