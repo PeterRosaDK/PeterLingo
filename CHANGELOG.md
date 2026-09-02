@@ -22,6 +22,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the fixed-color, beginner-repertoire Second Block course as exact revision `8bc3d45`
+  at `https://49be95db.peterlingo.pages.dev`.
 - Standardized the Roux learning track on real face notation (`U/R/F/D/L/B`, prime, and `2`) while
   retaining color-based one- or two-turn instructions only in the separately labelled emergency
   recovery solver.
