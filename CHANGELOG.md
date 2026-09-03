@@ -6,6 +6,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added phase four, beginner Last Six Edges: a five-part lesson, EO/L-R/4C subgoals, three
+  physically valid practice setups, live GoCube edge recognition, automatic whole-cube
+  completion, and an explicitly self-reported fallback.
+- Kept the first LSE repertoire to two reusable `M`-and-`U` sandwich patterns instead of a case
+  list, while reserving EOLR and 4C prediction for later proficiency.
 - Added phase three, beginner CMLL: a five-part two-look lesson, white-corner orientation, live
   headlights and corner-placement recognition, physically valid practice setups, automatic
   GoCube completion, and an explicitly self-reported fallback.

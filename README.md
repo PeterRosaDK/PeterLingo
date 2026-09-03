@@ -103,6 +103,13 @@ T-perm places the corners relative to their centers. Live GoCube progress report
 oriented corners, detected headlights, and fully solved corners. The course has exactly these two
 algorithms; the full 42-case CMLL set is explicitly a much later optional rung.
 
+**Roux → Last Six Edges** completes the fixed-color beginner course. It splits LSE into edge
+orientation, left/right-edge placement relative to the solved corners, and the final four edges.
+The initial repertoire is not a list of cases: it reuses two `M`–`U`–undo-`M` patterns, with a
+quarter `U` for the arrow and `U2` for an orientation-preserving swap. Live GoCube progress guards
+the completed blocks and corner ring, counts all six oriented edges, recognizes both relative
+left/right edges, and completes only when all six faces are solved.
+
 ## Learning data
 
 Substantive data lives first in IndexedDB, behind `LearningRepository`; the UI never accesses the

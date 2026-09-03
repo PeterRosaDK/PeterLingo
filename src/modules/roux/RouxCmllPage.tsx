@@ -636,6 +636,9 @@ export function RouxCmllPage({
         . Farverne er tilpasset PeterLingos faste hvid-op, gul-ned-greb.
       </p>
       <div className="button-row page-footer-actions">
+        <Link className="button primary" to="/fag/roux/lse">
+          Fortsæt til Last Six Edges
+        </Link>
         <Link className="button secondary" to="/fag/roux/second-block">
           Tilbage til Second Block
         </Link>

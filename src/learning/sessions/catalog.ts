@@ -219,6 +219,22 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
+    id: 'roux:lse-intro',
+    discipline: 'roux',
+    title: 'LSE i tre delmål',
+    stage: 'teaching',
+    estimatedSeconds: 210,
+    isNew: true,
+  },
+  {
+    id: 'roux:lse-live',
+    discipline: 'roux',
+    title: 'LSE med den fysiske cube',
+    stage: 'unassisted',
+    estimatedSeconds: 420,
+    isNew: true,
+  },
+  {
     id: 'music-ear:interval:3:ascending',
     discipline: 'music-ear',
     title: 'Lille terts melodisk opad',

@@ -43,6 +43,19 @@ export interface FixedCmllProgress {
   complete: boolean;
 }
 
+export interface FixedLseProgress {
+  valid: boolean;
+  blocksComplete: boolean;
+  cmllComplete: boolean;
+  orientedEdgeCount: number;
+  edgesOriented: boolean;
+  lrEdgesOnBottomCount: number;
+  lrEdgesRelativeCount: number;
+  lrEdgesRelative: boolean;
+  solvedFaceCount: number;
+  complete: boolean;
+}
+
 const FIXED_LEFT_FIRST_BLOCK_PIECES: ReadonlyArray<{
   id: FixedFirstBlockPieceId;
   stickers: ReadonlyArray<[number, 'D' | 'L' | 'F' | 'B']>;
@@ -177,6 +190,22 @@ const FIXED_CMLL_HEADLIGHTS: ReadonlyArray<{
   { face: 'L', indices: [36, 38] },
 ];
 
+const FIXED_LSE_EDGES = [
+  { position: 'UB', stickers: [1, 46] as const },
+  { position: 'UL', stickers: [3, 37] as const },
+  { position: 'UR', stickers: [5, 10] as const },
+  { position: 'UF', stickers: [7, 19] as const },
+  { position: 'DF', stickers: [28, 25] as const },
+  { position: 'DB', stickers: [34, 52] as const },
+] as const;
+
+const FIXED_LSE_U_EDGE_RELATIONSHIPS = [
+  { stickers: [1, 46] as const, cornerSideStickers: [45, 47] as const },
+  { stickers: [3, 37] as const, cornerSideStickers: [36, 38] as const },
+  { stickers: [5, 10] as const, cornerSideStickers: [9, 11] as const },
+  { stickers: [7, 19] as const, cornerSideStickers: [18, 20] as const },
+] as const;
+
 function hasUsableCenters(facelets: string): boolean {
   if (facelets.length !== 54) return false;
   const centers = [4, 13, 22, 31, 40, 49].map((index) => facelets[index]);
@@ -310,4 +339,78 @@ export function fixedCmllProgress(facelets: string): FixedCmllProgress {
 
 export function isFixedCmllSolved(facelets: string): boolean {
   return fixedCmllProgress(facelets).complete;
+}
+
+function isSamePiece(facelets: string, indices: readonly [number, number], colors: string[]) {
+  return colors.every((color) => indices.some((index) => facelets[index] === color));
+}
+
+export function fixedLseProgress(facelets: string): FixedLseProgress {
+  const empty: FixedLseProgress = {
+    valid: false,
+    blocksComplete: false,
+    cmllComplete: false,
+    orientedEdgeCount: 0,
+    edgesOriented: false,
+    lrEdgesOnBottomCount: 0,
+    lrEdgesRelativeCount: 0,
+    lrEdgesRelative: false,
+    solvedFaceCount: 0,
+    complete: false,
+  };
+  if (!hasUsableCenters(facelets)) return empty;
+
+  const centers = {
+    U: facelets[4]!,
+    D: facelets[31]!,
+    L: facelets[40]!,
+    R: facelets[13]!,
+  };
+  const cmll = fixedCmllProgress(facelets);
+  // During LSE, U turns deliberately move the solved corner ring away from the live centers.
+  // Four headlights prove that the corners remain solved relative to one another.
+  const cmllComplete =
+    cmll.blocksComplete && cmll.cornersOriented && cmll.headlightFaces.length === 4;
+  const orientedEdgeCount = FIXED_LSE_EDGES.filter(({ stickers }) =>
+    [centers.U, centers.D].includes(facelets[stickers[0]]!)
+  ).length;
+  const targetLrPieces = [
+    [centers.U, centers.L],
+    [centers.U, centers.R],
+  ];
+  const bottomPositions = FIXED_LSE_EDGES.filter(({ position }) => position.startsWith('D'));
+  const lrEdgesOnBottomCount = targetLrPieces.filter((colors) =>
+    bottomPositions.some(({ stickers }) => isSamePiece(facelets, stickers, colors))
+  ).length;
+  const lrEdgesRelativeCount = targetLrPieces.filter((colors) =>
+    FIXED_LSE_U_EDGE_RELATIONSHIPS.some(({ stickers, cornerSideStickers }) => {
+      if (!isSamePiece(facelets, stickers, colors)) return false;
+      const sideSticker = facelets[stickers[1]];
+      return cornerSideStickers.every((index) => facelets[index] === sideSticker);
+    })
+  ).length;
+  const solvedFaceCount = [0, 9, 18, 27, 36, 45].filter((start) =>
+    facelets
+      .slice(start, start + 9)
+      .split('')
+      .every((color) => color === facelets[start + 4])
+  ).length;
+  const complete = solvedFaceCount === 6;
+
+  return {
+    valid: true,
+    blocksComplete: cmll.blocksComplete,
+    cmllComplete,
+    orientedEdgeCount,
+    edgesOriented: orientedEdgeCount === FIXED_LSE_EDGES.length,
+    lrEdgesOnBottomCount,
+    lrEdgesRelativeCount,
+    lrEdgesRelative: lrEdgesRelativeCount === targetLrPieces.length || complete,
+    solvedFaceCount,
+    complete,
+  };
+}
+
+export function isFixedLseSolved(facelets: string): boolean {
+  return fixedLseProgress(facelets).complete;
 }

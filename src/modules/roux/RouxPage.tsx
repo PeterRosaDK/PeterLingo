@@ -44,6 +44,9 @@ export function RouxPage() {
           <Link className="button secondary" to="/fag/roux/cmll">
             Lær begynder-CMLL
           </Link>
+          <Link className="button secondary" to="/fag/roux/lse">
+            Afslut med LSE
+          </Link>
           <Link className="button secondary" to="/fag/roux/notation">
             Lær cubens notation
           </Link>
@@ -72,11 +75,11 @@ export function RouxPage() {
                 <span>Åben nu: to-look CMLL med kun to algoritmer.</span>
               </div>
             </li>
-            <li>
+            <li className="active">
               <b>04</b>
               <div>
                 <strong>Last Six Edges</strong>
-                <span>Orientér og afslut.</span>
+                <span>Åben nu: tre delmål med kun M og U.</span>
               </div>
             </li>
           </ol>

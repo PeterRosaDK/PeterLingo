@@ -18,9 +18,11 @@ import { MockSmartCubeAdapter } from './MockSmartCubeAdapter';
 import {
   fixedCmllProgress,
   fixedLeftFirstBlockProgress,
+  fixedLseProgress,
   fixedRightSecondBlockProgress,
   isFixedCmllSolved,
   isFixedLeftFirstBlockSolved,
+  isFixedLseSolved,
   isFixedRightSecondBlockSolved,
   SOLVED_FACELETS,
 } from './state';
@@ -29,6 +31,9 @@ import { WebBluetoothSmartCubeAdapter } from './WebBluetoothSmartCubeAdapter';
 const SECOND_BLOCK_SETUP_FACELETS = 'UURUUFBBFRRDBRRURRURDFFUFFFDDRDDDDDBFFLLLLLLLBLLUBBUBB';
 const SUNE_SETUP_FACELETS = 'RUFUUUUULBBURRRRRRBFUFFFFFFDDDDDDDDDFRRLLLLLLLLUBBBBBB';
 const T_PERM_SETUP_FACELETS = 'UUUUUUUUUBLFRRRRRRFFRFFFFFFDDDDDDDDDLRLLLLLLLRBBBBBBBB';
+const LSE_EO_SETUP_FACELETS = 'UUUFUFURUFDFRRRRRRLULFFFFUFDLDDDDDDDBUBLLLLLLRBRBBBBBB';
+const LSE_SWAP_SETUP_FACELETS = 'UUUUUDUUULFLRRRRRRBBBFFFFRFDUDDDDDDDRLRLLLLLLFFFBBBBBB';
+const LSE_FINISH_SETUP_FACELETS = 'UUUUUUUUURRRRRRRRRFBFFFFFBFDDDDDDDDDLLLLLLLLLBFBBBBBFB';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -163,6 +168,59 @@ describe('smart-cube adapters', () => {
       blocksComplete: false,
       cornersOriented: true,
       solvedCornerIds: ['front-right', 'back-right', 'back-left', 'front-left'],
+      complete: false,
+    });
+  });
+
+  it('tracks all three beginner LSE subgoals and only completes on a solved cube', () => {
+    expect(isFixedLseSolved(SOLVED_FACELETS)).toBe(true);
+    expect(fixedLseProgress(SOLVED_FACELETS)).toEqual({
+      valid: true,
+      blocksComplete: true,
+      cmllComplete: true,
+      orientedEdgeCount: 6,
+      edgesOriented: true,
+      lrEdgesOnBottomCount: 0,
+      lrEdgesRelativeCount: 2,
+      lrEdgesRelative: true,
+      solvedFaceCount: 6,
+      complete: true,
+    });
+
+    expect(fixedLseProgress(LSE_EO_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      blocksComplete: true,
+      cmllComplete: true,
+      orientedEdgeCount: 2,
+      edgesOriented: false,
+      complete: false,
+    });
+    expect(fixedLseProgress(LSE_SWAP_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      blocksComplete: true,
+      cmllComplete: true,
+      orientedEdgeCount: 6,
+      edgesOriented: true,
+      lrEdgesOnBottomCount: 1,
+      lrEdgesRelativeCount: 0,
+      lrEdgesRelative: false,
+      complete: false,
+    });
+    expect(fixedLseProgress(LSE_FINISH_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      blocksComplete: true,
+      cmllComplete: true,
+      orientedEdgeCount: 6,
+      edgesOriented: true,
+      lrEdgesRelative: true,
+      complete: false,
+    });
+
+    const brokenCorner = [...LSE_EO_SETUP_FACELETS];
+    brokenCorner[8] = 'X';
+    expect(fixedLseProgress(brokenCorner.join(''))).toMatchObject({
+      blocksComplete: true,
+      cmllComplete: false,
       complete: false,
     });
   });

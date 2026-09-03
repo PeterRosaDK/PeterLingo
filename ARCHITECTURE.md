@@ -125,6 +125,13 @@ corner stickers against the live centers. CMLL completion additionally requires 
 to remain intact; the six non-block edges are deliberately ignored for LSE. The two-look course
 records Sune/T-perm practice without treating `U`, `U'`, or `U2` setup turns as extra algorithms.
 
+The fixed LSE detector treats CMLL as a solved corner ring rather than requiring its current `U`
+alignment to match the centers, because normal LSE deliberately uses `U` turns. It monitors the
+six non-block edges, classifies their white/yellow orientation, recognizes the white-orange and
+white-red edges relative to the adjacent solved corners, and reserves completion for six uniform
+faces. The UI exposes edge orientation, relative L/R placement, and final 4C as separate subgoals;
+automatic completion is therefore stricter than any intermediate pattern match.
+
 ## Cube visualization
 
 `CubeViewer` owns a `cubing.js` `TwistyPlayer`. Mock and physical move logs update its algorithm. Raw facelets are retained as logical state and surfaced in diagnostics. Milestone 1 must verify device move direction, initial facelet sync, reconnection, and visual/logical agreement on physical hardware.

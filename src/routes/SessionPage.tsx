@@ -17,17 +17,19 @@ import {
 } from '../learning/sessions/sessionSelector';
 
 const unitRoute = (unit: { discipline: string; id: string }) =>
-  unit.id.startsWith('roux:cmll')
-    ? '/fag/roux/cmll'
-    : unit.id.startsWith('roux:second-block')
-      ? '/fag/roux/second-block'
-      : unit.id.startsWith('roux:first-block') || unit.id === 'roux:cube-orientation'
-        ? '/fag/roux/first-block'
-        : unit.discipline === 'cards'
-          ? '/fag/kort'
-          : unit.discipline === 'music-ear'
-            ? '/fag/hoerelaere'
-            : `/fag/${unit.discipline}`;
+  unit.id.startsWith('roux:lse')
+    ? '/fag/roux/lse'
+    : unit.id.startsWith('roux:cmll')
+      ? '/fag/roux/cmll'
+      : unit.id.startsWith('roux:second-block')
+        ? '/fag/roux/second-block'
+        : unit.id.startsWith('roux:first-block') || unit.id === 'roux:cube-orientation'
+          ? '/fag/roux/first-block'
+          : unit.discipline === 'cards'
+            ? '/fag/kort'
+            : unit.discipline === 'music-ear'
+              ? '/fag/hoerelaere'
+              : `/fag/${unit.discipline}`;
 
 function ReadySessionPage() {
   const { snapshot, repository, refresh } = useLearningData();

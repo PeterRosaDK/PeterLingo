@@ -62,6 +62,11 @@ if visible, and the result.
     reports four white corners oriented, then recognizes headlights and final corner placement.
     Break either 1×2×3 block during an attempt and confirm CMLL cannot complete until both blocks
     are restored.
+20. Open **Roux → Last Six Edges** with the cube solved. Run each of the three displayed LSE-only
+    setups. For EO, confirm the good-edge counter changes as `M` and `U` are turned. For L/R,
+    confirm the app recognizes edges relative to the corner ring even after a `U` adjustment. For
+    4C, confirm completion happens automatically only when all six faces are uniform. Deliberately
+    disturb a block or corner and confirm LSE stops and names the broken prerequisite.
 
 ## iPad Safari + Beacio
 

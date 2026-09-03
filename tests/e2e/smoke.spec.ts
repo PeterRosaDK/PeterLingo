@@ -207,6 +207,33 @@ test('beginner CMLL teaches two looks with exactly two standard-notation algorit
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 
+test('beginner LSE completes Roux with three subgoals and two M/U patterns', async ({ page }) => {
+  await page.goto('/fag/roux/lse');
+  await expect(page.getByRole('heading', { name: 'Last Six Edges', level: 1 })).toBeVisible();
+  await expect(page.getByText('0 lange algoritmer')).toBeVisible();
+  await expect(page.getByRole('tab', { name: /Delmål 1 · EO/ })).toHaveAttribute(
+    'aria-selected',
+    'true'
+  );
+
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.getByText('God kant', { exact: true })).toBeVisible();
+  await expect(page.getByText('Dårlig kant', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.locator('.lse-pattern-card')).toContainText('M′ U M');
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.locator('.lse-pattern-grid')).toContainText('M′ U2 M');
+  await expect(page.locator('.lse-pattern-grid')).toContainText('M U2 M′');
+  await page.getByRole('button', { name: 'Næste delmål' }).click();
+  await expect(page.getByText('EO → L/R → 4C · 2 mønstre')).toBeVisible();
+  await page.getByRole('button', { name: 'Jeg er klar til LSE' }).click();
+
+  await page.getByRole('button', { name: 'Start uden GoCube' }).click();
+  await page.getByRole('button', { name: 'Hele min cube er løst' }).click();
+  await expect(page.getByText('Hele cuben er løst')).toBeVisible();
+  await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
+});
+
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
   await expect(
