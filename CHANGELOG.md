@@ -32,6 +32,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the complete four-phase beginner Roux course with Last Six Edges as exact revision
+  `c5c65da` at `https://ca39f4ec.peterlingo.pages.dev`.
 - Deployed the two-look beginner CMLL course as exact revision `90c38c4` at
   `https://7820bd91.peterlingo.pages.dev`.
 - Deployed the fixed-color, beginner-repertoire Second Block course as exact revision `8bc3d45`
