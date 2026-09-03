@@ -27,6 +27,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the two-look beginner CMLL course as exact revision `90c38c4` at
+  `https://7820bd91.peterlingo.pages.dev`.
 - Deployed the fixed-color, beginner-repertoire Second Block course as exact revision `8bc3d45`
   at `https://49be95db.peterlingo.pages.dev`.
 - Standardized the Roux learning track on real face notation (`U/R/F/D/L/B`, prime, and `2`) while
