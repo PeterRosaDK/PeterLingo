@@ -16,8 +16,10 @@ import {
 } from 'smartcube-web-bluetooth';
 import { MockSmartCubeAdapter } from './MockSmartCubeAdapter';
 import {
+  fixedCmllProgress,
   fixedLeftFirstBlockProgress,
   fixedRightSecondBlockProgress,
+  isFixedCmllSolved,
   isFixedLeftFirstBlockSolved,
   isFixedRightSecondBlockSolved,
   SOLVED_FACELETS,
@@ -25,6 +27,8 @@ import {
 import { WebBluetoothSmartCubeAdapter } from './WebBluetoothSmartCubeAdapter';
 
 const SECOND_BLOCK_SETUP_FACELETS = 'UURUUFBBFRRDBRRURRURDFFUFFFDDRDDDDDBFFLLLLLLLBLLUBBUBB';
+const SUNE_SETUP_FACELETS = 'RUFUUUUULBBURRRRRRBFUFFFFFFDDDDDDDDDFRRLLLLLLLLUBBBBBB';
+const T_PERM_SETUP_FACELETS = 'UUUUUUUUUBLFRRRRRRFFRFFFFFFDDDDDDDDDLRLLLLLLLRBBBBBBBB';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -117,6 +121,48 @@ describe('smart-cube adapters', () => {
       solvedPieceIds: ['bottom-edge'],
       bottomEdgeComplete: true,
       oneSquareComplete: false,
+      complete: false,
+    });
+  });
+
+  it('tracks two-look CMLL while requiring both blocks', () => {
+    expect(isFixedCmllSolved(SOLVED_FACELETS)).toBe(true);
+    expect(fixedCmllProgress(SOLVED_FACELETS)).toEqual({
+      valid: true,
+      blocksComplete: true,
+      orientedCornerCount: 4,
+      orientedCornerIds: ['front-right', 'back-right', 'back-left', 'front-left'],
+      cornersOriented: true,
+      headlightFaces: ['F', 'R', 'B', 'L'],
+      solvedCornerIds: ['front-right', 'back-right', 'back-left', 'front-left'],
+      complete: true,
+    });
+
+    expect(fixedCmllProgress(SUNE_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      blocksComplete: true,
+      orientedCornerCount: 1,
+      orientedCornerIds: ['front-left'],
+      cornersOriented: false,
+      solvedCornerIds: [],
+      complete: false,
+    });
+    expect(fixedCmllProgress(T_PERM_SETUP_FACELETS)).toMatchObject({
+      valid: true,
+      blocksComplete: true,
+      orientedCornerCount: 4,
+      cornersOriented: true,
+      headlightFaces: ['L'],
+      solvedCornerIds: ['back-left', 'front-left'],
+      complete: false,
+    });
+
+    const brokenBlocks = [...SOLVED_FACELETS];
+    brokenBlocks[29] = 'X';
+    expect(fixedCmllProgress(brokenBlocks.join(''))).toMatchObject({
+      blocksComplete: false,
+      cornersOriented: true,
+      solvedCornerIds: ['front-right', 'back-right', 'back-left', 'front-left'],
       complete: false,
     });
   });

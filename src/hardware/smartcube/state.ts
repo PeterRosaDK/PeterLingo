@@ -29,6 +29,20 @@ export interface FixedSecondBlockProgress {
   complete: boolean;
 }
 
+export type FixedCmllCornerId = 'front-right' | 'back-right' | 'back-left' | 'front-left';
+export type FixedCmllHeadlightFace = 'F' | 'R' | 'B' | 'L';
+
+export interface FixedCmllProgress {
+  valid: boolean;
+  blocksComplete: boolean;
+  orientedCornerCount: number;
+  orientedCornerIds: FixedCmllCornerId[];
+  cornersOriented: boolean;
+  headlightFaces: FixedCmllHeadlightFace[];
+  solvedCornerIds: FixedCmllCornerId[];
+  complete: boolean;
+}
+
 const FIXED_LEFT_FIRST_BLOCK_PIECES: ReadonlyArray<{
   id: FixedFirstBlockPieceId;
   stickers: ReadonlyArray<[number, 'D' | 'L' | 'F' | 'B']>;
@@ -115,6 +129,54 @@ const FIXED_RIGHT_SECOND_BLOCK_PIECES: ReadonlyArray<{
   },
 ];
 
+const FIXED_CMLL_CORNERS: ReadonlyArray<{
+  id: FixedCmllCornerId;
+  stickers: ReadonlyArray<[number, 'U' | 'R' | 'F' | 'L' | 'B']>;
+}> = [
+  {
+    id: 'front-right',
+    stickers: [
+      [8, 'U'],
+      [20, 'F'],
+      [9, 'R'],
+    ],
+  },
+  {
+    id: 'back-right',
+    stickers: [
+      [2, 'U'],
+      [11, 'R'],
+      [45, 'B'],
+    ],
+  },
+  {
+    id: 'back-left',
+    stickers: [
+      [0, 'U'],
+      [47, 'B'],
+      [36, 'L'],
+    ],
+  },
+  {
+    id: 'front-left',
+    stickers: [
+      [6, 'U'],
+      [38, 'L'],
+      [18, 'F'],
+    ],
+  },
+];
+
+const FIXED_CMLL_HEADLIGHTS: ReadonlyArray<{
+  face: FixedCmllHeadlightFace;
+  indices: readonly [number, number];
+}> = [
+  { face: 'F', indices: [18, 20] },
+  { face: 'R', indices: [9, 11] },
+  { face: 'B', indices: [45, 47] },
+  { face: 'L', indices: [36, 38] },
+];
+
 function hasUsableCenters(facelets: string): boolean {
   if (facelets.length !== 54) return false;
   const centers = [4, 13, 22, 31, 40, 49].map((index) => facelets[index]);
@@ -198,4 +260,54 @@ export function fixedRightSecondBlockProgress(facelets: string): FixedSecondBloc
 
 export function isFixedRightSecondBlockSolved(facelets: string): boolean {
   return fixedRightSecondBlockProgress(facelets).complete;
+}
+
+export function fixedCmllProgress(facelets: string): FixedCmllProgress {
+  const empty: FixedCmllProgress = {
+    valid: false,
+    blocksComplete: false,
+    orientedCornerCount: 0,
+    orientedCornerIds: [],
+    cornersOriented: false,
+    headlightFaces: [],
+    solvedCornerIds: [],
+    complete: false,
+  };
+  if (!hasUsableCenters(facelets)) return empty;
+
+  const centers = {
+    U: facelets[4],
+    R: facelets[13],
+    F: facelets[22],
+    L: facelets[40],
+    B: facelets[49],
+  };
+  if (Object.values(centers).some((color) => color === undefined)) return empty;
+
+  const orientedCornerIds = FIXED_CMLL_CORNERS.filter(
+    ({ stickers }) => facelets[stickers[0]![0]] === centers.U
+  ).map(({ id }) => id);
+  const orientedCornerCount = orientedCornerIds.length;
+  const headlightFaces = FIXED_CMLL_HEADLIGHTS.filter(
+    ({ indices }) => facelets[indices[0]] === facelets[indices[1]]
+  ).map(({ face }) => face);
+  const solvedCornerIds = FIXED_CMLL_CORNERS.filter((corner) =>
+    corner.stickers.every(([index, face]) => facelets[index] === centers[face])
+  ).map(({ id }) => id);
+  const blocksComplete = fixedRightSecondBlockProgress(facelets).complete;
+
+  return {
+    valid: true,
+    blocksComplete,
+    orientedCornerCount,
+    orientedCornerIds,
+    cornersOriented: orientedCornerCount === FIXED_CMLL_CORNERS.length,
+    headlightFaces,
+    solvedCornerIds,
+    complete: blocksComplete && solvedCornerIds.length === FIXED_CMLL_CORNERS.length,
+  };
+}
+
+export function isFixedCmllSolved(facelets: string): boolean {
+  return fixedCmllProgress(facelets).complete;
 }

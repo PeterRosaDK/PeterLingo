@@ -119,6 +119,12 @@ from accepting a right block that was obtained by destroying the first. The firs
 course uses only standard `R`/`U` notation and records live and explicitly self-reported attempts
 separately.
 
+The fixed CMLL detector builds on both block detectors. It counts U-oriented corner stickers,
+reports their exact positions, recognizes same-color side pairs (headlights), and checks all twelve
+corner stickers against the live centers. CMLL completion additionally requires both 1×2×3 blocks
+to remain intact; the six non-block edges are deliberately ignored for LSE. The two-look course
+records Sune/T-perm practice without treating `U`, `U'`, or `U2` setup turns as extra algorithms.
+
 ## Cube visualization
 
 `CubeViewer` owns a `cubing.js` `TwistyPlayer`. Mock and physical move logs update its algorithm. Raw facelets are retained as logical state and surfaced in diagnostics. Milestone 1 must verify device move direction, initial facelet sync, reconnection, and visual/logical agreement on physical hardware.

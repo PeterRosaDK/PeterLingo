@@ -178,6 +178,35 @@ test('Second Block preserves fixed colors and keeps the starter repertoire small
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 
+test('beginner CMLL teaches two looks with exactly two standard-notation algorithms', async ({
+  page,
+}) => {
+  await page.goto('/fag/roux/cmll');
+  await expect(page.getByRole('heading', { name: 'Begynder-CMLL', level: 1 })).toBeVisible();
+  await expect(page.getByText(/hvid CMLL-farven/)).toBeVisible();
+  await expect(page.getByRole('tab', { name: /Kig 1 · orientering/ })).toHaveAttribute(
+    'aria-selected',
+    'true'
+  );
+
+  await page.getByRole('button', { name: 'Næste kig' }).click();
+  await expect(page.getByText('Orientér')).toBeVisible();
+  await expect(page.getByText('Permutér')).toBeVisible();
+  await page.getByRole('button', { name: 'Næste kig' }).click();
+  await expect(page.locator('.cmll-algorithm-card')).toContainText('R U R′ U R U2 R′');
+  await page.getByRole('button', { name: 'Næste kig' }).click();
+  await expect(page.getByText('Forlygter til venstre')).toBeVisible();
+  await page.getByRole('button', { name: 'Næste kig' }).click();
+  await expect(page.locator('.cmll-algorithm-card')).toContainText('R U R′ U′ R′ F R2');
+  await expect(page.getByText('Sune + T-perm · 2 algoritmer')).toBeVisible();
+  await page.getByRole('button', { name: 'Jeg er klar til CMLL' }).click();
+
+  await page.getByRole('button', { name: 'Start uden GoCube' }).click();
+  await page.getByRole('button', { name: 'Mine fire hjørner er løst' }).click();
+  await expect(page.getByText('CMLL gennemført')).toBeVisible();
+  await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
+});
+
 test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
   await page.goto('/fag/roux/diagnostik');
   await expect(

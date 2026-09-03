@@ -55,6 +55,11 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   intact. The first repertoire has only `R U R'` and `R U' R'`; wide `r` insertions and M-based
   shortcuts are explicit later ladder steps. Generated coaching for arbitrary full scrambles and
   orientation independence remain open.
+- The fixed-orientation beginner CMLL slice is implemented as phase three of four. It requires both
+  blocks, tracks the four white U-layer corners and headlights live, and separates orientation from
+  permutation. The initial repertoire is exactly Sune plus T-perm; `U` setup turns do not count as
+  algorithms, and the full 42-case CMLL set remains a later optional ladder rung. Arbitrary-case
+  direct CMLL recognition and algorithm recommendation remain open.
 - Add a phase launcher that prepares the physical cube for any unlocked phase, plus an always
   available guided preview of later phases. Balance daily phase repetitions directly so First
   Block practice cannot starve Second Block, CMLL, or LSE of examples.

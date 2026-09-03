@@ -203,6 +203,22 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
+    id: 'roux:cmll-intro',
+    discipline: 'roux',
+    title: 'CMLL i to kig',
+    stage: 'teaching',
+    estimatedSeconds: 180,
+    isNew: true,
+  },
+  {
+    id: 'roux:cmll-live',
+    discipline: 'roux',
+    title: 'CMLL med den fysiske cube',
+    stage: 'unassisted',
+    estimatedSeconds: 300,
+    isNew: true,
+  },
+  {
     id: 'music-ear:interval:3:ascending',
     discipline: 'music-ear',
     title: 'Lille terts melodisk opad',

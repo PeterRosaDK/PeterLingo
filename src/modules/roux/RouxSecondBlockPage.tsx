@@ -621,6 +621,9 @@ export function RouxSecondBlockPage({
         . PeterLingo gør begyndelsen smallere med fast farveramme og kun R/U-værktøjerne.
       </p>
       <div className="button-row page-footer-actions">
+        <Link className="button primary" to="/fag/roux/cmll">
+          Fortsæt til begynder-CMLL
+        </Link>
         <Link className="button secondary" to="/fag/roux/first-block">
           Tilbage til First Block
         </Link>

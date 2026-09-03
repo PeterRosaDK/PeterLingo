@@ -6,6 +6,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added phase three, beginner CMLL: a five-part two-look lesson, white-corner orientation, live
+  headlights and corner-placement recognition, physically valid practice setups, automatic
+  GoCube completion, and an explicitly self-reported fallback.
+- Limited the initial CMLL repertoire to two algorithms—Sune and T-perm—with readable chunks and
+  an explicit ladder that keeps direct 42-case CMLL out of the beginner course.
 - Added the complete fixed-color Second Block teaching slice: five short explanations, a
   red-yellow right-block target, all five target pieces, DR and square subgoals, safe `R`/`U`
   exercise setups, live GoCube completion, and an explicit manual fallback.

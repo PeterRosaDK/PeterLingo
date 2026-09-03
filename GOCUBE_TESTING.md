@@ -57,6 +57,11 @@ if visible, and the result.
     exercise setup, start the live attempt, and rebuild the red-yellow right block. Confirm that
     the five-piece counter follows the physical cube, completion is automatic, and deliberately
     breaking the orange First Block prevents completion until it is restored.
+19. Open **Roux → Begynder-CMLL** with the cube solved. Run the orientation setup, start live
+    practice, and execute Sune. Repeat with the permutation setup and T-perm. Confirm the app first
+    reports four white corners oriented, then recognizes headlights and final corner placement.
+    Break either 1×2×3 block during an attempt and confirm CMLL cannot complete until both blocks
+    are restored.
 
 ## iPad Safari + Beacio
 

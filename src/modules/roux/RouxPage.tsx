@@ -41,6 +41,9 @@ export function RouxPage() {
           <Link className="button secondary" to="/fag/roux/second-block">
             Fortsæt med Second Block
           </Link>
+          <Link className="button secondary" to="/fag/roux/cmll">
+            Lær begynder-CMLL
+          </Link>
           <Link className="button secondary" to="/fag/roux/notation">
             Lær cubens notation
           </Link>
@@ -62,11 +65,11 @@ export function RouxPage() {
                 <span>Åben nu: byg højre blok med kun to korte værktøjer.</span>
               </div>
             </li>
-            <li>
+            <li className="active">
               <b>03</b>
               <div>
                 <strong>Begynderhjørner</strong>
-                <span>To-look før fuld CMLL.</span>
+                <span>Åben nu: to-look CMLL med kun to algoritmer.</span>
               </div>
             </li>
             <li>

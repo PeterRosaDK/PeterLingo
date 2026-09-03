@@ -97,6 +97,12 @@ Block, and synchronized GoCube facelets track the five new pieces, the DR edge, 
 and both completed blocks. Wide `r` insertions and M-based shortcuts remain later algorithm-ladder
 steps instead of being mixed into the first training round.
 
+**Roux → Begynder-CMLL** is phase three of four. With both fixed blocks complete, it solves only
+the four white U-layer corners in two looks: Sune orients all four white stickers upward, then
+T-perm places the corners relative to their centers. Live GoCube progress reports intact blocks,
+oriented corners, detected headlights, and fully solved corners. The course has exactly these two
+algorithms; the full 42-case CMLL set is explicitly a much later optional rung.
+
 ## Learning data
 
 Substantive data lives first in IndexedDB, behind `LearningRepository`; the UI never accesses the
