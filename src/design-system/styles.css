@@ -2028,8 +2028,93 @@ p {
   width: 100%;
   height: 100%;
 }
-.roux-training-heading {
-  max-width: 800px;
+.roux-training-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(390px, 1.15fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 48px);
+  min-height: 470px;
+  padding: clamp(28px, 5vw, 54px);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--ice) 42%, var(--line));
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      color-mix(in srgb, var(--ice) 38%, transparent),
+      transparent 38%
+    ),
+    linear-gradient(135deg, color-mix(in srgb, var(--ice) 18%, var(--surface)), var(--surface));
+}
+.roux-training-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.roux-training-hero .page-heading {
+  max-width: 620px;
+  margin: 0;
+}
+.roux-training-hero .page-heading h1 {
+  font-size: clamp(2.8rem, 5vw, 4.6rem);
+}
+.roux-start-cube {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ice) 42%, var(--line));
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+.roux-start-viewer {
+  min-height: 300px;
+  padding: 4px 14px 0;
+  background: radial-gradient(
+    circle at 50% 46%,
+    color-mix(in srgb, var(--ice) 16%, transparent),
+    transparent 58%
+  );
+}
+.roux-start-viewer .cube-viewer {
+  height: 310px;
+}
+.roux-start-cube-controls {
+  display: grid;
+  gap: 10px;
+  padding: 0 22px 22px;
+}
+.cube-connection-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+.cube-connection-state i {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink-soft) 12%, transparent);
+}
+.cube-connection-state.connected {
+  color: var(--brand-2);
+}
+.cube-connection-state.connected i {
+  background: var(--mint);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--mint) 18%, transparent);
+}
+.roux-start-cube-message {
+  min-height: 1.35em;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+}
+.roux-start-cube-controls > small {
+  color: var(--ink-soft);
+  font-size: 0.65rem;
 }
 .roux-training-path {
   margin-top: 26px;
@@ -2515,32 +2600,9 @@ p {
 .block-side i:last-child {
   background: #27945f;
 }
-.roux-grip-check,
 .first-block-lesson,
 .first-block-practice {
   margin-bottom: 0;
-}
-.roux-check-question {
-  margin: 24px 0 14px;
-  color: var(--ink);
-  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  font-size: clamp(1.35rem, 3vw, 2rem);
-}
-.compact-answer-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 720px;
-}
-.roux-check-complete {
-  display: grid;
-  gap: 5px;
-  margin-top: 20px;
-  padding: 18px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--mint) 17%, var(--bg));
-}
-.roux-check-complete span {
-  color: var(--ink-soft);
-  font-size: 0.8rem;
 }
 .first-block-lesson > header {
   display: flex;
@@ -5130,6 +5192,12 @@ p {
   .diagnostic-grid {
     grid-template-columns: 1fr;
   }
+  .roux-training-hero {
+    grid-template-columns: 1fr;
+  }
+  .roux-start-cube {
+    order: -1;
+  }
   .roux-training-path li {
     grid-template-columns: 34px 1fr;
   }
@@ -5370,8 +5438,7 @@ p {
     align-items: flex-start;
     flex-direction: column;
   }
-  .first-block-piece-list,
-  .compact-answer-grid {
+  .first-block-piece-list {
     grid-template-columns: 1fr;
   }
   .fixed-block-pair,

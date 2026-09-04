@@ -9,40 +9,6 @@ import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardwar
 import type { GeneratedExercise } from '../../learning/types';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
 
-const gripQuestions = [
-  {
-    prompt: 'Hvilken farve vender mod dig?',
-    options: ['Grøn', 'Blå', 'Rød'],
-    answer: 'Grøn',
-    explanation: 'Grøn er F — fronten i vores faste greb.',
-  },
-  {
-    prompt: 'Hvilken farve er på din venstre hånd?',
-    options: ['Rød', 'Orange', 'Gul'],
-    answer: 'Orange',
-    explanation: 'Orange er L — siden til venstre.',
-  },
-  {
-    prompt: 'Hvor ligger den gule side?',
-    options: ['Øverst', 'Nederst', 'Bagpå'],
-    answer: 'Nederst',
-    explanation: 'Gul er D — bunden under First Block.',
-  },
-] as const;
-
-const gripExercise: GeneratedExercise<{ reference: string }> = {
-  id: 'roux:cube-orientation:standard-grip:v1',
-  learningUnitId: 'roux:cube-orientation',
-  discipline: 'roux',
-  prompt: 'Kontrollér standardgrebet',
-  parameters: { reference: 'white-up-green-front' },
-  hints: gripQuestions.map((question, index) => ({
-    id: `grip-correction-${index + 1}`,
-    label: 'Vis placeringen',
-    content: question.explanation,
-  })),
-};
-
 const introExercise: GeneratedExercise<{ block: string; movablePieces: number }> = {
   id: 'roux:first-block-intro:left-down:v1',
   learningUnitId: 'roux:first-block-intro',
@@ -143,85 +109,6 @@ function FirstBlockTarget() {
         <p>En 1×2×3-blok, der kan løftes som én samlet klods.</p>
       </div>
     </div>
-  );
-}
-
-function GripCheck() {
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [feedback, setFeedback] = useState('');
-  const [answerAccepted, setAnswerAccepted] = useState(false);
-  const [mistakes, setMistakes] = useState(0);
-  const [complete, setComplete] = useState(false);
-  const { record } = useAttemptRecorder(gripExercise);
-  const question = gripQuestions[questionIndex]!;
-
-  const choose = (answer: string) => {
-    if (answerAccepted || complete) return;
-    if (answer === question.answer) {
-      setFeedback(question.explanation);
-      setAnswerAccepted(true);
-    } else {
-      setMistakes((current) => current + 1);
-      setFeedback('Ikke helt. Stil cuben tilbage med hvid/GO opad og kig igen.');
-    }
-  };
-
-  const advance = async () => {
-    if (questionIndex < gripQuestions.length - 1) {
-      setQuestionIndex((current) => current + 1);
-      setFeedback('');
-      setAnswerAccepted(false);
-      return;
-    }
-    await record({
-      correct: mistakes === 0,
-      hintsUsed: Math.min(mistakes, gripExercise.hints.length),
-      answerRevealed: mistakes > 0,
-      stage: 'assisted',
-      fluentThresholdMs: 30_000,
-    });
-    setComplete(true);
-  };
-
-  return (
-    <section className="lesson-card roux-grip-check" aria-labelledby="grip-check-title">
-      <div className="stage-heading">
-        <div>
-          <p className="eyebrow">30 sekunder · registreret øvelse</p>
-          <h2 id="grip-check-title">Tjek dit faste greb</h2>
-        </div>
-        <span className={`status-pill ${complete ? 'good' : ''}`}>
-          {complete ? 'Gennemført' : `${questionIndex + 1}/3`}
-        </span>
-      </div>
-      {complete ? (
-        <div className="roux-check-complete" role="status">
-          <strong>Grebet er på plads.</strong>
-          <span>Hvid op · grøn frem · orange til venstre · gul nederst.</span>
-        </div>
-      ) : (
-        <>
-          <p className="roux-check-question">{question.prompt}</p>
-          <div className="answer-grid compact-answer-grid">
-            {question.options.map((option) => (
-              <button type="button" key={option} onClick={() => choose(option)}>
-                {option}
-              </button>
-            ))}
-          </div>
-          {feedback && (
-            <div className={`feedback ${answerAccepted ? 'correct' : 'incorrect'}`} role="status">
-              <span>{feedback}</span>
-              {answerAccepted && (
-                <button type="button" className="button primary" onClick={() => void advance()}>
-                  {questionIndex === gripQuestions.length - 1 ? 'Afslut grebstjek' : 'Næste'}
-                </button>
-              )}
-            </div>
-          )}
-        </>
-      )}
-    </section>
   );
 }
 
@@ -591,7 +478,6 @@ export function RouxFirstBlockPage({
         <strong>First Block</strong>
       </nav>
 
-      <GripCheck />
       <FirstBlockLesson onFinish={revealPractice} />
       <FirstBlockPractice adapter={cubeAdapter} />
 

@@ -163,14 +163,6 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
-    id: 'roux:cube-orientation',
-    discipline: 'roux',
-    title: 'Terningens orientering',
-    stage: 'assisted',
-    estimatedSeconds: 60,
-    isNew: true,
-  },
-  {
     id: 'roux:first-block-live',
     discipline: 'roux',
     title: 'First Block med den fysiske cube',

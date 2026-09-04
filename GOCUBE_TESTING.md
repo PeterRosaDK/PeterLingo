@@ -10,8 +10,9 @@ if visible, and the result.
 1. Charge and wake the GoCube; keep it close to the device.
 2. Close other apps/tabs that may own its Bluetooth connection.
 3. Serve PeterLingo over HTTPS or use `localhost` on desktop.
-4. Open **Fag → Roux** and confirm training opens directly. Choose **Opsætning** only for the
-   hardware checks below.
+4. Open **Fag → Roux** and confirm the live 3D cube and training path appear immediately. If the
+   browser already knows the GoCube, confirm this route tries to reconnect without a chooser.
+   Choose **Opsætning** only for the deeper hardware checks below.
 5. Hold the white GO centre upward and the green centre toward you. Keep this standard reference
    grip while comparing colours and testing moves: green F, blue B, red R, orange L, white U, yellow D.
 6. Confirm the setup screen starts with connection and the live 3D cube, without an unfolded
@@ -43,11 +44,13 @@ if visible, and the result.
     Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
     the integration advances that state from the received move packets.
 12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
-13. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
-    before calibrating the electronics. Never use this to make a mixed cube appear solved.
+13. Return to **Roux**, hold the physically solved cube with hvid/GO up and green forward, and use
+    **Kalibrer**. Confirm the warning, then check that the 3D cube adopts that exact viewing frame
+    and the logical state is solved. Never use this to make a mixed cube appear solved.
 14. Tap **Afbryd**; confirm no later physical turn is logged.
-15. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
-    without opening a chooser. If that fails, reconnect manually and repeat four moves.
+15. Reload once with the approved cube awake. PeterLingo should make a quiet startup reconnection
+    without opening a chooser. Entering Roux may make one additional quiet retry; it must not loop.
+    If both fail, reconnect manually and repeat four moves.
 16. Start **Løs cuben hurtigt** and perform the shown move physically. A quarter-turn should
     advance immediately; a half-turn should advance only after its second matching quarter-turn.
     Disconnect the cube and confirm that the manual step buttons return.
@@ -85,8 +88,8 @@ remain usable without horizontal page overflow.
 - User cancels the chooser: no false “connected” state.
 - Cube sleeps or moves out of range: UI returns to a truthful disconnected/error state; no chooser
   opens and there is no repeated retry loop.
-- Refresh while disconnected: at most one quiet remembered-device attempt occurs; no chooser appears
-  without a new tap.
+- Refresh while disconnected: one quiet startup attempt is allowed, plus one Roux-entry retry; no
+  chooser appears without a new tap and there is no repeated retry loop.
 
 ## Completion evidence
 

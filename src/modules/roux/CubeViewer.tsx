@@ -10,11 +10,13 @@ export function CubeViewer({
   compact = false,
   showAlgorithmStart = false,
   orientation = null,
+  orientationReference,
 }: {
   algorithm?: string;
   compact?: boolean;
   showAlgorithmStart?: boolean;
   orientation?: CubeOrientation | null;
+  orientationReference?: CubeOrientation | null;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<TwistyPlayer | null>(null);
@@ -74,7 +76,10 @@ export function CubeViewer({
     if (orientation && !automaticOrientationReference.current) {
       automaticOrientationReference.current = orientation;
     }
-    const reference = automaticOrientationReference.current;
+    const reference =
+      orientationReference === undefined
+        ? automaticOrientationReference.current
+        : orientationReference;
     const delta =
       orientation && reference
         ? relativeGoCubeQuaternion(orientation.quaternion, reference.quaternion)
@@ -85,7 +90,7 @@ export function CubeViewer({
     void instance.experimentalCurrentVantages().then((vantages) => {
       for (const vantage of vantages) vantage.scheduleRender();
     });
-  }, [orientation, viewerReady]);
+  }, [orientation, orientationReference, viewerReady]);
 
   return (
     <div

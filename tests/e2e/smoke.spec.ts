@@ -131,6 +131,19 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
   await expect(page.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start med First Block' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Hjælp', exact: true })).toBeVisible();
+  const liveCube = page.getByLabel('Interaktiv 3D Rubiks terning');
+  await expect(liveCube).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Kalibrer' })).toBeDisabled();
+  await expect
+    .poll(() =>
+      liveCube.locator('twisty-player').evaluate(async (player) => {
+        const twistyPlayer = player as HTMLElement & {
+          experimentalCurrentCanvases(): Promise<HTMLCanvasElement[]>;
+        };
+        return (await twistyPlayer.experimentalCurrentCanvases()).length;
+      })
+    )
+    .toBe(1);
   const setupLink = page.locator('.roux-training-heading').getByRole('link', {
     name: 'Opsætning',
     exact: true,
@@ -149,13 +162,7 @@ test('First Block has a complete beginner lesson and manual practice fallback', 
   await expect(page.getByRole('heading', { name: 'First Block', level: 1 })).toBeVisible();
   await expect(page.getByText('Orange til venstre · gul i bunden').first()).toBeVisible();
 
-  await page.getByRole('button', { name: 'Grøn', exact: true }).click();
-  await page.getByRole('button', { name: 'Næste', exact: true }).click();
-  await page.getByRole('button', { name: 'Orange', exact: true }).click();
-  await page.getByRole('button', { name: 'Næste', exact: true }).click();
-  await page.getByRole('button', { name: 'Nederst', exact: true }).click();
-  await page.getByRole('button', { name: 'Afslut grebstjek' }).click();
-  await expect(page.getByText('Grebet er på plads.')).toBeVisible();
+  await expect(page.getByText('30 sekunder')).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Næste delmål' }).click();
   await expect(page.getByText('gul · orange · grøn').first()).toBeVisible();
@@ -246,7 +253,7 @@ test('beginner LSE completes Roux with three subgoals and two M/U patterns', asy
 
   await page.getByRole('button', { name: 'Start uden GoCube' }).click();
   await page.getByRole('button', { name: 'Hele min cube er løst' }).click();
-  await expect(page.getByText('Hele cuben er løst')).toBeVisible();
+  await expect(page.getByText('Hele cuben er løst', { exact: true })).toBeVisible();
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 

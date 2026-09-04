@@ -4,27 +4,38 @@ import type { SmartCubeAdapter } from './types';
 // One adapter keeps an approved connection alive while React routes change.
 export const physicalCubeAdapter: SmartCubeAdapter = new WebBluetoothSmartCubeAdapter();
 
-let automaticReconnect: Promise<boolean> | null = null;
+const automaticReconnects = new WeakMap<SmartCubeAdapter, Promise<boolean>>();
+const attemptedAdapters = new WeakSet<SmartCubeAdapter>();
+
+interface ReconnectOptions {
+  retry?: boolean;
+}
 
 /**
  * Try the browser's already-approved GoCube without opening a device chooser.
- * This deliberately runs at most once per full page load. A sleeping cube or a
- * browser without getDevices() simply leaves the explicit connection flow intact.
+ * The ordinary app-wide call runs once per full page load. A focused route may
+ * request one more quiet attempt after the first one has finished, for example
+ * when the user enters Roux after waking the cube. No device chooser is opened.
  */
 export function reconnectApprovedCube(
-  adapter: SmartCubeAdapter = physicalCubeAdapter
+  adapter: SmartCubeAdapter = physicalCubeAdapter,
+  options: ReconnectOptions = {}
 ): Promise<boolean> {
   const initialState = adapter.getConnectionState();
   if (initialState === 'connected') return Promise.resolve(true);
+  const inFlight = automaticReconnects.get(adapter);
+  if (inFlight) return inFlight;
   if (initialState === 'connecting' || !adapter.isSupported()) return Promise.resolve(false);
-  if (automaticReconnect) return automaticReconnect;
+  if (attemptedAdapters.has(adapter) && !options.retry) return Promise.resolve(false);
+  attemptedAdapters.add(adapter);
 
-  automaticReconnect = (async () => {
+  const attempt = (async () => {
     if (!adapter.getRememberedCubes || !adapter.connectRemembered) return false;
     try {
       const remembered = await adapter.getRememberedCubes();
       const cube = remembered?.[0];
-      if (!cube || adapter.getConnectionState() !== 'disconnected') {
+      const currentState = adapter.getConnectionState();
+      if (!cube || currentState === 'connecting') {
         return adapter.getConnectionState() === 'connected';
       }
       await adapter.connectRemembered(cube.id);
@@ -34,5 +45,11 @@ export function reconnectApprovedCube(
     }
   })();
 
-  return automaticReconnect;
+  const trackedAttempt = attempt.finally(() => {
+    if (automaticReconnects.get(adapter) === trackedAttempt) {
+      automaticReconnects.delete(adapter);
+    }
+  });
+  automaticReconnects.set(adapter, trackedAttempt);
+  return trackedAttempt;
 }

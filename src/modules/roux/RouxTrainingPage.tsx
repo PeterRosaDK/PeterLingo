@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { RouxStartCube } from './RouxStartCube';
 
 const phases = [
   {
@@ -42,24 +43,27 @@ const phases = [
 export function RouxTrainingPage() {
   return (
     <div className="page roux-training-page">
-      <header className="page-heading roux-training-heading">
-        <p className="eyebrow">Roux · træning</p>
-        <h1>Én fase ad gangen</h1>
-        <p>
-          Hold hvid/GO op og grøn mod dig. Vælg den fase, du vil lære; hver side forklarer først
-          målet og åbner derefter den fysiske øvelse.
-        </p>
-        <div className="button-row">
-          <Link className="button primary" to="/fag/roux/first-block">
-            Start helt fra begyndelsen
-          </Link>
-          <Link className="button secondary" to="/fag/roux/notation">
-            Hjælp
-          </Link>
-          <Link className="button secondary" to="/fag/roux/opsaetning">
-            Opsætning
-          </Link>
+      <header className="roux-training-hero roux-training-heading">
+        <div className="page-heading">
+          <p className="eyebrow">Roux · træning</p>
+          <h1>Én fase ad gangen</h1>
+          <p>
+            Hold hvid/GO op og grøn mod dig. Vælg den fase, du vil lære; hver side forklarer først
+            målet og åbner derefter den fysiske øvelse.
+          </p>
+          <div className="button-row">
+            <Link className="button primary" to="/fag/roux/first-block">
+              Start helt fra begyndelsen
+            </Link>
+            <Link className="button secondary" to="/fag/roux/notation">
+              Hjælp
+            </Link>
+            <Link className="button secondary" to="/fag/roux/opsaetning">
+              Opsætning
+            </Link>
+          </div>
         </div>
+        <RouxStartCube />
       </header>
 
       <section className="roux-training-path" aria-labelledby="training-path-title">

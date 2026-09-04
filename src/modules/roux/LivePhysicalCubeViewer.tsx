@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
 import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
-import type { CubeOrientation } from '../../hardware/smartcube/types';
+import type { CubeOrientation, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import { CubeViewer } from './CubeViewer';
 import { solveFacelets, validateFacelets } from './faceletSolver';
 
-export function LivePhysicalCubeViewer({ compact = false }: { compact?: boolean }) {
-  const adapter = physicalCubeAdapter;
+export function LivePhysicalCubeViewer({
+  compact = false,
+  orientationReference,
+  adapter = physicalCubeAdapter,
+}: {
+  compact?: boolean;
+  orientationReference?: CubeOrientation | null;
+  adapter?: SmartCubeAdapter;
+}) {
   const [facelets, setFacelets] = useState(() => adapter.getCubeState()?.facelets ?? null);
   const [orientation, setOrientation] = useState<CubeOrientation | null>(
     () => adapter.getOrientation?.() ?? null
@@ -50,6 +57,7 @@ export function LivePhysicalCubeViewer({ compact = false }: { compact?: boolean 
       compact={compact}
       showAlgorithmStart
       orientation={orientation}
+      orientationReference={orientationReference}
     />
   );
 }

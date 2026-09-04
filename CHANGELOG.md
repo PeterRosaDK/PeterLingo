@@ -6,6 +6,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added the live 3D GoCube directly to the Roux training entry and a guarded **Kalibrer** action.
+  After physical-solved confirmation it resets GoCubens logical solved state and makes the current
+  white-up, green-front gyro reading the visual reference.
+- Added a Roux-specific quiet retry for an already browser-approved GoCube, including recovery from
+  the adapter's prior error state without opening the Bluetooth chooser.
 - Added a live 3D GoCube view built from the synchronized facelets. GoCubens orientation
   quaternion now rotates both Opsætning and the home-page Roux card from an automatic first-reading
   reference; the physical axis mapping remains explicitly pending a real-device check.
@@ -25,16 +30,18 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 - Added a deliberately small beginner repertoire of `R U R'` and `R U' R'`, with wide `r`
   insertions and M-based shortcuts shown as later algorithm-ladder steps rather than immediate
   memorization.
-- Added the first complete Roux teaching slice: a short standard-grip check, a four-step First Block
+- Added the first complete Roux teaching slice: a four-step First Block
   lesson, an accurate 1×2×3 target visual, the five orange-yellow target pieces, front-square and
   back-pair subgoals, live GoCube progress, automatic completion, and a labelled manual fallback.
-- Connected the existing `roux:first-block-intro` and `roux:cube-orientation` daily units to the new
-  executable lesson and added a separate `roux:first-block-live` practice unit.
+- Connected `roux:first-block-intro` to the executable lesson and added a separate
+  `roux:first-block-live` practice unit.
 - Added a copyable GoCube calibration report containing every raw R/R′/L/L′/M/M′ event and its
   inter-event timing, while keeping hardware data local until the user explicitly shares it.
 
 ### Changed
 
+- Removed the timed three-question orientation quiz and its `roux:cube-orientation` daily unit;
+  the fixed grip remains contextual guidance instead of a standalone 30-second exercise.
 - Deployed automatic GoCube orientation, the live home-page cube, and the simplified Roux controls
   as exact revision `37763b9` at `https://c3e9e883.peterlingo.pages.dev`.
 - Renamed the training shortcut **Se notation** to **Hjælp** and removed the unexplained daily

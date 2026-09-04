@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const viewer = vi.hoisted(() => ({
   quaternionSet: vi.fn(),
@@ -25,6 +25,8 @@ vi.mock('cubing/twisty', () => ({
 import { CubeViewer } from './CubeViewer';
 
 describe('CubeViewer GoCube orientation', () => {
+  beforeEach(() => vi.clearAllMocks());
+
   it('uses the first reading automatically and renders later physical rotation', async () => {
     const reference = {
       quaternion: { x: 0, y: 0, z: 0, w: 1 },
@@ -51,5 +53,29 @@ describe('CubeViewer GoCube orientation', () => {
       expect(latest?.[3]).toBeCloseTo(halfSqrt);
     });
     expect(viewer.scheduleRender).toHaveBeenCalled();
+  });
+
+  it('uses an explicit calibration reading as the new white-up, green-front reference', async () => {
+    const initial = {
+      quaternion: { x: 0, y: 0, z: 0, w: 1 },
+      timestamp: 1,
+    };
+    const halfSqrt = Math.sqrt(0.5);
+    const calibrated = {
+      quaternion: { x: halfSqrt, y: 0, z: 0, w: halfSqrt },
+      timestamp: 2,
+    };
+    const { rerender } = render(<CubeViewer orientation={initial} />);
+    await waitFor(() => expect(viewer.quaternionSet).toHaveBeenCalled());
+
+    rerender(<CubeViewer orientation={calibrated} orientationReference={calibrated} />);
+
+    await waitFor(() => {
+      const latest = viewer.quaternionSet.mock.calls.at(-1);
+      expect(latest?.[0]).toBeCloseTo(0);
+      expect(latest?.[1]).toBeCloseTo(0);
+      expect(latest?.[2]).toBeCloseTo(0);
+      expect(latest?.[3]).toBeCloseTo(1);
+    });
   });
 });

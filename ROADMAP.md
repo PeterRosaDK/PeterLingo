@@ -14,17 +14,20 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
-- Keep an approved connection alive during navigation inside PeterLingo. A single prompt-free
-  startup reconnection through Web Bluetooth `getDevices()` is now implemented where the browser
-  supports it; explicit remembered-device reconnection and the chooser remain fallbacks.
+- Keep an approved connection alive during navigation inside PeterLingo. A prompt-free startup
+  reconnection through Web Bluetooth `getDevices()` is implemented where the browser supports it;
+  entering Roux permits one additional quiet retry after the cube has been woken. Explicit
+  remembered-device reconnection and the chooser remain fallbacks.
 - Open Roux directly on the four-phase training path. Keep **Opsætning** as the secondary place for
   Bluetooth connection, live 3D state, synchronization tools, manual colour fallback, and quick
   recovery solving. The former guided protocol and text-heavy physical-cube landing section are
   removed from the learner flow.
 - Feed GoCubens orientation quaternion into the live 3D cube from the standard white-up,
-  green-front grip. The first gyro reading now establishes that reference automatically, and
-  both the home-page Roux card and Opsætning follow subsequent readings. Physical axis direction
-  still needs verification on the actual cube before it is considered calibrated.
+  green-front grip. The first gyro reading establishes an automatic reference. Roux now opens on
+  that live cube and offers a guarded calibration that adopts the current white-up, green-front
+  reading as its visual reference while resetting a physically solved GoCube as logically solved.
+  The home-page Roux card and Opsætning also follow subsequent readings. Physical axis direction
+  still needs verification on the actual cube before it is considered calibrated end to end.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
   In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
   `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.
@@ -50,8 +53,8 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 - Add orientation-independent First Block and Second Block detection.
 - Build phase-aware guidance for First Square/First Block, Second Block, CMLL, and LSE, including
   stage timing and explanations of why a suggested move advances the current Roux phase.
-- The first fixed-orientation teaching slice is implemented: a registered grip check, a four-part
-  beginner explanation of the five orange-yellow target pieces, First Square and back-pair
+- The first fixed-orientation teaching slice is implemented: a four-part beginner explanation of
+  the five orange-yellow target pieces, First Square and back-pair
   subgoals, piece-by-piece live GoCube recognition, automatic completion, and an explicitly
   self-reported offline fallback. It deliberately uses outer turns until M/M′ normalization is
   physically confirmed. Generated phase setup, move-level coaching, and orientation independence

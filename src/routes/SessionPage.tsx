@@ -23,7 +23,7 @@ const unitRoute = (unit: { discipline: string; id: string }) =>
       ? '/fag/roux/cmll'
       : unit.id.startsWith('roux:second-block')
         ? '/fag/roux/second-block'
-        : unit.id.startsWith('roux:first-block') || unit.id === 'roux:cube-orientation'
+        : unit.id.startsWith('roux:first-block')
           ? '/fag/roux/first-block'
           : unit.discipline === 'cards'
             ? '/fag/kort'
