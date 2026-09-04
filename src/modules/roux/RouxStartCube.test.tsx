@@ -34,12 +34,12 @@ describe('Roux start cube', () => {
     expect(screen.getByRole('link', { name: 'Forbind GoCube' })).toBeVisible();
   });
 
-  it('requires confirmation, resets solved state, and aligns the current gyro reading', async () => {
+  it('resets solved state directly and aligns the current gyro reading', async () => {
     const cube = new MockSmartCubeAdapter(SCRAMBLED_FACELETS);
     await cube.connect();
     cube.setOrientation({ x: 0.2, y: 0.1, z: 0.3, w: 0.9 });
     const calibrate = vi.spyOn(cube, 'calibrateSolvedState');
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirm = vi.spyOn(window, 'confirm');
 
     render(
       <MemoryRouter>
@@ -49,6 +49,7 @@ describe('Roux start cube', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Kalibrer' }));
 
     await screen.findByText(/Kalibreret: hvid\/GO er op, grøn er frem/);
+    expect(confirm).not.toHaveBeenCalled();
     expect(calibrate).toHaveBeenCalledOnce();
     await waitFor(() => expect(cube.getCubeState()?.facelets).toBe(SOLVED_FACELETS));
   });

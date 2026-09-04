@@ -11,12 +11,18 @@ export function CubeViewer({
   showAlgorithmStart = false,
   orientation = null,
   orientationReference,
+  cameraLatitude = 28,
+  cameraLongitude = 32,
+  allowDrag = true,
 }: {
   algorithm?: string;
   compact?: boolean;
   showAlgorithmStart?: boolean;
   orientation?: CubeOrientation | null;
   orientationReference?: CubeOrientation | null;
+  cameraLatitude?: number;
+  cameraLongitude?: number;
+  allowDrag?: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<TwistyPlayer | null>(null);
@@ -33,9 +39,9 @@ export function CubeViewer({
       background: 'none',
       controlPanel: 'none',
       viewerLink: 'none',
-      experimentalDragInput: 'auto',
-      cameraLatitude: 28,
-      cameraLongitude: 32,
+      experimentalDragInput: allowDrag ? 'auto' : 'none',
+      cameraLatitude,
+      cameraLongitude,
       hintFacelets: 'none',
     });
     host.current.replaceChildren(instance);
@@ -57,7 +63,7 @@ export function CubeViewer({
       puzzleObject.current = null;
       baseQuaternion.current = null;
     };
-  }, [compact]);
+  }, [allowDrag, cameraLatitude, cameraLongitude, compact]);
 
   useEffect(() => {
     if (!player.current) return;

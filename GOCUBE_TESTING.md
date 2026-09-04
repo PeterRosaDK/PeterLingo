@@ -44,13 +44,14 @@ if visible, and the result.
     Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
     the integration advances that state from the received move packets.
 12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
-13. Return to **Roux**, hold the physically solved cube with hvid/GO up and green forward, and use
-    **Kalibrer**. Confirm the warning, then check that the 3D cube adopts that exact viewing frame
-    and the logical state is solved. Never use this to make a mixed cube appear solved.
+13. Return to **Roux**, hold the physically solved cube with hvid/GO up and green forward as shown,
+    and use **Kalibrer** once. Check that the 3D cube is square-on to the green face and the logical
+    state is solved. Never use this direct action on a mixed cube.
 14. Tap **Afbryd**; confirm no later physical turn is logged.
-15. Reload once with the approved cube awake. PeterLingo should make a quiet startup reconnection
-    without opening a chooser. Entering Roux may make one additional quiet retry; it must not loop.
-    If both fail, reconnect manually and repeat four moves.
+15. On desktop Chrome/Edge, reload once with the approved cube awake. PeterLingo should make a quiet
+    startup reconnection without opening a chooser. Entering Roux may make one additional quiet
+    retry; it must not loop. On iPhone/iPad, Beacio does not persist pairing across the reload, so a
+    new user tap is expected. Reconnect manually and repeat four moves.
 16. Start **Løs cuben hurtigt** and perform the shown move physically. A quarter-turn should
     advance immediately; a half-turn should advance only after its second matching quarter-turn.
     Disconnect the cube and confirm that the manual step buttons return.
@@ -88,8 +89,9 @@ remain usable without horizontal page overflow.
 - User cancels the chooser: no false “connected” state.
 - Cube sleeps or moves out of range: UI returns to a truthful disconnected/error state; no chooser
   opens and there is no repeated retry loop.
-- Refresh while disconnected: one quiet startup attempt is allowed, plus one Roux-entry retry; no
-  chooser appears without a new tap and there is no repeated retry loop.
+- Desktop refresh while disconnected: one quiet startup attempt is allowed, plus one Roux-entry
+  retry; no chooser appears without a new tap and there is no repeated retry loop. iOS/Beacio starts
+  without persistent pairing and must expose a clear manual connection button.
 
 ## Completion evidence
 

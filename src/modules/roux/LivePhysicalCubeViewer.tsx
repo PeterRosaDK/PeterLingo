@@ -8,10 +8,12 @@ export function LivePhysicalCubeViewer({
   compact = false,
   orientationReference,
   adapter = physicalCubeAdapter,
+  frontView = false,
 }: {
   compact?: boolean;
   orientationReference?: CubeOrientation | null;
   adapter?: SmartCubeAdapter;
+  frontView?: boolean;
 }) {
   const [facelets, setFacelets] = useState(() => adapter.getCubeState()?.facelets ?? null);
   const [orientation, setOrientation] = useState<CubeOrientation | null>(
@@ -58,6 +60,9 @@ export function LivePhysicalCubeViewer({
       showAlgorithmStart
       orientation={orientation}
       orientationReference={orientationReference}
+      cameraLatitude={frontView ? 0 : 28}
+      cameraLongitude={frontView ? 0 : 32}
+      allowDrag={!frontView}
     />
   );
 }

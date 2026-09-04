@@ -5,10 +5,12 @@ const viewer = vi.hoisted(() => ({
   quaternionSet: vi.fn(),
   updateMatrixWorld: vi.fn(),
   scheduleRender: vi.fn(),
+  constructorOptions: [] as unknown[],
 }));
 
 vi.mock('cubing/twisty', () => ({
-  TwistyPlayer: function MockTwistyPlayer() {
+  TwistyPlayer: function MockTwistyPlayer(options: unknown) {
+    viewer.constructorOptions.push(options);
     const element = document.createElement('div');
     return Object.assign(element, {
       experimentalCurrentThreeJSPuzzleObject: async () => ({
@@ -25,7 +27,10 @@ vi.mock('cubing/twisty', () => ({
 import { CubeViewer } from './CubeViewer';
 
 describe('CubeViewer GoCube orientation', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    viewer.constructorOptions = [];
+  });
 
   it('uses the first reading automatically and renders later physical rotation', async () => {
     const reference = {
@@ -76,6 +81,17 @@ describe('CubeViewer GoCube orientation', () => {
       expect(latest?.[1]).toBeCloseTo(0);
       expect(latest?.[2]).toBeCloseTo(0);
       expect(latest?.[3]).toBeCloseTo(1);
+    });
+  });
+
+  it('can render the calibration frame straight on without drag rotation', async () => {
+    render(<CubeViewer cameraLatitude={0} cameraLongitude={0} allowDrag={false} />);
+
+    await waitFor(() => expect(viewer.constructorOptions).toHaveLength(1));
+    expect(viewer.constructorOptions[0]).toMatchObject({
+      cameraLatitude: 0,
+      cameraLongitude: 0,
+      experimentalDragInput: 'none',
     });
   });
 });

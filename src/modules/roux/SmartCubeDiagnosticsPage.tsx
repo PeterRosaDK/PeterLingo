@@ -1,103 +1,63 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { detectBluetoothEnvironment } from '../../hardware/smartcube/environment';
 import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
-import type {
-  ConnectionState,
-  CubeMove,
-  CubeOrientation,
-  CubeState,
-  RememberedCube,
-} from '../../hardware/smartcube/types';
-import { CubeViewer } from './CubeViewer';
-import { solveFacelets, validateFacelets } from './faceletSolver';
+import type { ConnectionState, CubeState, RememberedCube } from '../../hardware/smartcube/types';
+import { validateFacelets } from './faceletSolver';
 
 type RememberedCheck = 'checking' | 'ready' | 'unsupported' | 'error';
+
+const connectionLabel: Record<ConnectionState, string> = {
+  unsupported: 'Bluetooth er ikke tilgængelig',
+  disconnected: 'Ikke forbundet',
+  connecting: 'Forbinder …',
+  connected: 'GoCube er forbundet',
+  error: 'Forbindelsen mislykkedes',
+};
 
 function connectionErrorMessage(error: unknown, remembered: boolean): string {
   if (!(error instanceof Error)) return 'Bluetooth-forbindelsen mislykkedes.';
   if (error.name === 'NotFoundError') {
     return remembered
-      ? 'Browseren husker cuben, men kunne ikke kontakte den. Drej et lag for at vække den, og prøv igen.'
-      : 'Bluetooth-vælgeren blev lukket uden en cube. Drej et lag for at vække GoCube, og søg igen.';
+      ? 'Browseren fandt den huskede cube, men kunne ikke kontakte den. Drej et lag for at vække den.'
+      : 'Bluetooth-vælgeren blev lukket uden en cube.';
   }
   if (error.name === 'NetworkError') {
-    return remembered
-      ? 'GoCube blev genkendt, men selve forbindelsen mislykkedes. Væk cuben, og luk andre apps eller faner, der kan være forbundet til den.'
-      : 'GoCube blev valgt, men selve forbindelsen mislykkedes. Væk cuben, og luk andre apps eller faner, der kan være forbundet til den.';
+    return 'Væk cuben, og luk andre apps eller faner, der kan være forbundet til den.';
   }
   if (error.name === 'SecurityError') {
-    return 'Browseren blokerede Bluetooth-adgangen. Kontrollér sidens Bluetooth-tilladelse ved adresselinjen.';
+    return 'Browseren kræver, at du trykker på forbindelsesknappen igen.';
   }
   return error.message;
 }
 
 function pickerStatusMessage(status: string): string {
   const messages: Record<string, string> = {
-    'Select your cube…': 'Browserens Bluetooth-vælger er åben. Vælg din GoCube …',
+    'Select your cube…': 'Vælg din GoCube i browserens Bluetooth-vindue …',
     'Reading advertisements…': 'GoCube er valgt. Læser dens Bluetooth-oplysninger …',
-    'Connecting…': 'GoCube er fundet. Opretter selve forbindelsen …',
-    'Verifying connection…': 'Forbindelsen er oprettet. Kontrollerer data fra cuben …',
+    'Connecting…': 'GoCube er fundet. Opretter forbindelsen …',
+    'Verifying connection…': 'Kontrollerer forbindelsen …',
   };
   return messages[status] ?? status;
 }
 
 export function SmartCubeDiagnosticsPage() {
-  const environment = useMemo(() => detectBluetoothEnvironment(), []);
   const adapter = physicalCubeAdapter;
   const [connection, setConnection] = useState<ConnectionState>(() => adapter.getConnectionState());
   const [state, setState] = useState<CubeState | null>(() => adapter.getCubeState());
-  const [history, setHistory] = useState<CubeMove[]>([]);
-  const [orientation, setOrientation] = useState<CubeOrientation | null>(
-    () => adapter.getOrientation?.() ?? null
-  );
-  const [viewerSolution, setViewerSolution] = useState('');
-  const [viewerStatus, setViewerStatus] = useState('Venter på cubens tilstand');
-  const [battery, setBattery] = useState<number | null>(null);
-  const [actionPending, setActionPending] = useState(false);
   const [rememberedCubes, setRememberedCubes] = useState<RememberedCube[]>([]);
   const [rememberedCheck, setRememberedCheck] = useState<RememberedCheck>('checking');
-  const [bluetoothAvailable, setBluetoothAvailable] = useState<boolean | null>(null);
-  const [message, setMessage] = useState(() =>
+  const [message, setMessage] = useState(
     adapter.getConnectionState() === 'connected'
-      ? 'Den eksisterende GoCube-forbindelse i PeterLingo er genbrugt.'
-      : environment.guidance
+      ? 'Den eksisterende forbindelse er klar.'
+      : 'Tænd cuben. Hvis browseren kender den, forsøger PeterLingo allerede at genforbinde.'
   );
   const liveFacelets = state?.facelets ?? null;
-  const liveStateIsSolvable = liveFacelets ? validateFacelets(liveFacelets).ok : false;
+  const liveStateIsSolvable = Boolean(liveFacelets && validateFacelets(liveFacelets).ok);
   const canSolveLiveState =
     connection === 'connected' && state?.synchronization === 'synchronized' && liveStateIsSolvable;
   const liveSolveSearch = liveFacelets
     ? `?${new URLSearchParams({ facelets: liveFacelets, solve: '1' }).toString()}`
     : '';
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeout = 0;
-    if (!liveFacelets || !validateFacelets(liveFacelets).ok) {
-      setViewerSolution('');
-      setViewerStatus('Forbind cuben for at se dens aktuelle farver i 3D');
-      return;
-    }
-    setViewerStatus('Opdaterer 3D-visningen …');
-    timeout = window.setTimeout(() => {
-      void solveFacelets(liveFacelets)
-        .then((solution) => {
-          if (cancelled) return;
-          setViewerSolution(solution.algorithm);
-          setViewerStatus('3D-farverne følger cubens aflæste tilstand');
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setViewerSolution('');
-          setViewerStatus('3D-visningen kunne ikke beregnes fra den aktuelle tilstand');
-        });
-    }, 140);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-    };
-  }, [liveFacelets]);
 
   const refreshRememberedCubes = useCallback(async () => {
     if (!adapter.getRememberedCubes) {
@@ -118,50 +78,27 @@ export function SmartCubeDiagnosticsPage() {
   }, [adapter]);
 
   useEffect(() => {
-    const offMove = adapter.subscribeToMoves((move) => {
-      setHistory((current) => [...current, move]);
-      setState(adapter.getCubeState());
-    });
     const offState = adapter.subscribeToState?.((nextState) => {
       setState(nextState);
-      const nextConnection = adapter.getConnectionState();
-      setConnection(nextConnection);
-      if (nextConnection !== 'connected') {
-        setOrientation(null);
-      }
+      setConnection(adapter.getConnectionState());
     });
-    const offOrientation = adapter.subscribeToOrientation?.((nextOrientation) => {
-      setOrientation(nextOrientation);
-    });
-    if (adapter.getConnectionState() === 'connected') {
-      void adapter.getBatteryLevel?.().then((level) => setBattery(level ?? null));
-    }
-    void refreshRememberedCubes();
-    void adapter
-      .getBluetoothAvailability?.()
-      .then((available) => setBluetoothAvailable(available ?? null))
-      .catch(() => setBluetoothAvailable(null));
+    const rememberedTimer = window.setTimeout(() => void refreshRememberedCubes(), 0);
     return () => {
-      offMove();
+      window.clearTimeout(rememberedTimer);
       offState?.();
-      offOrientation?.();
     };
   }, [adapter, refreshRememberedCubes]);
 
-  // This handler deliberately calls connect() immediately. requestDevice remains in this user gesture.
   const completeConnection = async () => {
     setConnection(adapter.getConnectionState());
     setState(adapter.getCubeState());
-    setBattery((await adapter.getBatteryLevel?.()) ?? null);
     await refreshRememberedCubes();
-    setMessage(
-      'Forbindelsen er oprettet. Hold den hvide GO-side opad og den grønne side mod dig; 3D-cuben følger automatisk den første gyroretning.'
-    );
+    setMessage('GoCube er klar. Gå tilbage til Roux for at kalibrere eller begynde træningen.');
   };
 
   const connect = () => {
     setConnection('connecting');
-    setMessage('Åbner browserens Bluetooth-vælger …');
+    setMessage('Åbner browserens Bluetooth-vindue …');
     adapter
       .connect((status) => setMessage(pickerStatusMessage(status)))
       .then(completeConnection)
@@ -174,7 +111,7 @@ export function SmartCubeDiagnosticsPage() {
   const reconnect = (device: RememberedCube) => {
     if (!adapter.connectRemembered) return;
     setConnection('connecting');
-    setMessage(`Browseren husker ${device.name}. Forsøger at genforbinde uden ny søgning …`);
+    setMessage(`Forsøger at kontakte ${device.name} uden en ny Bluetooth-søgning …`);
     adapter
       .connectRemembered(device.id, (status) => setMessage(status))
       .then(completeConnection)
@@ -188,164 +125,39 @@ export function SmartCubeDiagnosticsPage() {
   const disconnect = () => {
     void adapter.disconnect().then(() => {
       setConnection('disconnected');
-      setBattery(null);
-      setOrientation(null);
-      setMessage('Forbindelsen er lukket. Browserens tilladelse til cuben er bevaret.');
+      setMessage('Forbindelsen er lukket.');
     });
   };
 
-  const readPhysicalState = async () => {
-    setActionPending(true);
-    setMessage('Kontrollerer den løbende tilstand mod GoCube …');
-    try {
-      await adapter.requestState?.();
-      setState(adapter.getCubeState());
-      setMessage(
-        'Synkroniseringskontrollen er bestilt. Handlingen ændrer ikke GoCubens referencepunkt.'
-      );
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Tilstanden kunne ikke genindlæses.');
-    } finally {
-      setActionPending(false);
-    }
-  };
+  const memoryExplanation =
+    rememberedCheck === 'checking'
+      ? 'Kontrollerer, om browseren har gemt Bluetooth-tilladelsen …'
+      : rememberedCheck === 'unsupported'
+        ? 'Denne browser kan ikke genåbne en Bluetooth-enhed efter en ny sideindlæsning. På iPhone og iPad kræver Beacio derfor et nyt tryk på forbindelsesknappen.'
+        : rememberedCheck === 'error'
+          ? 'Browserens gemte Bluetooth-tilladelser kunne ikke læses.'
+          : rememberedCubes.length
+            ? 'Browseren husker cuben. Den skal stadig være vågen og må ikke være optaget af en anden app.'
+            : 'Browseren har endnu ikke givet PeterLingo en genbrugelig Bluetooth-tilladelse.';
 
-  const clearTracking = () => {
-    adapter.clearTracking?.();
-    setState(adapter.getCubeState());
-    setHistory([]);
-    setMessage('Den lokale trækhistorik er ryddet. GoCubens fysiske reference er ikke ændret.');
-  };
-
-  const calibrateSolvedState = async () => {
-    const physicallySolved = window.confirm(
-      'Brug kun denne nulstilling, når alle seks fysiske sider er ensfarvede. GoCube får besked på at regne den aktuelle fysiske stilling som løst. Er terningen fysisk løst nu?'
-    );
-    if (!physicallySolved) return;
-    setActionPending(true);
-    setMessage('Kalibrerer GoCubens nuværende fysiske stilling som løst …');
-    try {
-      await adapter.calibrateSolvedState?.();
-      setState(adapter.getCubeState());
-      setHistory([]);
-      setMessage('GoCube er nulstillet til den fysisk løste stilling. Drej én side som kontrol.');
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'GoCube kunne ikke nulstilles.');
-    } finally {
-      setActionPending(false);
-    }
-  };
   return (
-    <div className="page diagnostics-page">
+    <div className="page diagnostics-page simple-cube-setup">
       <header className="page-heading">
-        <p className="eyebrow">Roux · opsætning</p>
+        <p className="eyebrow">Roux</p>
         <h1>Opsætning</h1>
-        <p>Forbind GoCube, se hvad den aflæser, eller få cuben løst hurtigt.</p>
-        <Link className="button secondary" to="/fag/roux/traening">
-          Gå direkte til Træning
-        </Link>
+        <p>Her kan du vælge en GoCube eller få en blandet cube løst. Resten foregår i træningen.</p>
       </header>
-      <section className="cube-reference-grip" aria-labelledby="reference-grip-title">
-        <div>
-          <p className="eyebrow">Fælles nulpunkt</p>
-          <h2 id="reference-grip-title">Hvid GO-side op · grøn side mod dig</h2>
-        </div>
-        <p>
-          Dette er standardgrebet: F er grøn foran, B er blå bagpå, R er rød til højre, L er orange
-          til venstre, U er hvid ovenpå, og D er gul nedenunder. Behold grebet under målingen.
-        </p>
-        <Link className="button secondary" to="/fag/roux/notation">
-          Hvad betyder R, R′ og M?
-        </Link>
-      </section>
-      <section className="diagnostic-grid setup-grid">
-        <div className="diagnostic-panel setup-technical-panel">
-          <h2>Miljø</h2>
-          <dl>
-            <div>
-              <dt>Browser</dt>
-              <dd>{environment.browser}</dd>
-            </div>
-            <div>
-              <dt>Platform</dt>
-              <dd>{environment.platform}</dd>
-            </div>
-            <div>
-              <dt>Sikker kontekst</dt>
-              <dd>{environment.secureContext ? 'Ja' : 'Nej'}</dd>
-            </div>
-            <div>
-              <dt>Web Bluetooth</dt>
-              <dd>{environment.webBluetooth ? 'Tilgængelig' : 'Ikke fundet'}</dd>
-            </div>
-            <div>
-              <dt>Bluetooth-adapter</dt>
-              <dd>
-                {bluetoothAvailable === null
-                  ? 'Kan ikke afgøres'
-                  : bluetoothAvailable
-                    ? 'Rapporteret tilgængelig'
-                    : 'Rapporteret utilgængelig'}
-              </dd>
-            </div>
-            <div>
-              <dt>Beacio</dt>
-              <dd>
-                {environment.beacio === 'active'
-                  ? 'Aktiv/polyfill fundet'
-                  : environment.beacio === 'not-needed'
-                    ? 'Ikke nødvendig'
-                    : 'Mangler eller er slået fra'}
-              </dd>
-            </div>
-          </dl>
-          <p className="guidance">{environment.guidance}</p>
-          {environment.webBluetooth && (
-            <p className="guidance">
-              “Rapporteret tilgængelig” betyder kun, at browseren kan bruge en Bluetooth-adapter;
-              det beviser ikke, at GoCube er tændt eller kan nås.
-            </p>
-          )}
-        </div>
-        <div className="diagnostic-panel setup-connection-panel">
-          <p className="eyebrow">1 · Forbind</p>
-          <h2>GoCube</h2>
-          <dl>
-            <div>
-              <dt>Status</dt>
-              <dd>{connection}</dd>
-            </div>
-            <div>
-              <dt>Enhed</dt>
-              <dd>{adapter.getDeviceName?.() ?? '—'}</dd>
-            </div>
-            <div>
-              <dt>Protokol</dt>
-              <dd>{adapter.getProtocolName?.() ?? '—'}</dd>
-            </div>
-            <div>
-              <dt>Batteri</dt>
-              <dd>{battery === null ? '—' : `${battery}%`}</dd>
-            </div>
-            <div>
-              <dt>Sidste træk</dt>
-              <dd>{history.at(-1) ? `${history.at(-1)?.notation} · rå GoCube-kode` : '—'}</dd>
-            </div>
-            <div>
-              <dt>Husket af browseren</dt>
-              <dd>
-                {rememberedCheck === 'checking'
-                  ? 'Kontrollerer …'
-                  : rememberedCheck === 'unsupported'
-                    ? 'Kan ikke aflæses i denne browser'
-                    : rememberedCheck === 'error'
-                      ? 'Kontrollen mislykkedes'
-                      : rememberedCubes.length
-                        ? rememberedCubes.map((device) => device.name).join(', ')
-                        : 'Ingen GoCube-tilladelse fundet'}
-              </dd>
-            </div>
-          </dl>
+
+      <section className="setup-simple-grid">
+        <article className="setup-simple-card">
+          <p className="eyebrow">GoCube</p>
+          <div className="setup-simple-status">
+            <i className={connection === 'connected' ? 'connected' : ''} aria-hidden="true" />
+            <h2>{connectionLabel[connection]}</h2>
+          </div>
+          <p className="connection-message" role="status">
+            {message}
+          </p>
           <div className="button-row">
             {connection === 'connected' ? (
               <button type="button" className="button secondary" onClick={disconnect}>
@@ -368,43 +180,22 @@ export function SmartCubeDiagnosticsPage() {
                   type="button"
                   className={rememberedCubes.length ? 'button secondary' : 'button primary'}
                   onClick={connect}
-                  disabled={connection === 'connecting'}
+                  disabled={connection === 'connecting' || !adapter.isSupported()}
                 >
-                  {rememberedCubes.length ? 'Vælg en anden cube …' : 'Find og forbind GoCube'}
+                  {rememberedCubes.length ? 'Vælg en anden cube' : 'Find GoCube'}
                 </button>
               </>
             )}
           </div>
-          {rememberedCheck === 'ready' && rememberedCubes.length > 0 && (
-            <p className="guidance">
-              Browseren husker tilladelsen. Det beviser ikke, at cuben er vågen eller inden for
-              rækkevidde; det afgør genforbindelsesforsøget.
-            </p>
-          )}
-          <p className="connection-message" role="status">
-            {message}
-          </p>
-        </div>
-        <div className="diagnostic-panel cube-diagnostic setup-cube-panel">
-          <p className="eyebrow">2 · Se og løs</p>
-          <h2>Din cube i 3D</h2>
-          <div className="live-cube-viewer">
-            <CubeViewer algorithm={viewerSolution} showAlgorithmStart orientation={orientation} />
-            <div>
-              <span className={`status-pill ${liveStateIsSolvable ? 'good' : ''}`}>
-                {state?.synchronization ?? 'unknown'}
-              </span>
-              <p>{viewerStatus}</p>
-              <p>
-                {orientation
-                  ? 'Gyroskopet sender cubens retning til 3D-visningen.'
-                  : 'Venter på orienteringsdata fra GoCube.'}
-              </p>
-            </div>
-          </div>
-          <p className="facelet-note">
-            3D-cuben følger farverne løbende. Den første gyromåling bruges kun som visningens
-            nulpunkt og ændrer ikke GoCubens gemte cubetilstand.
+          <p className="setup-memory-note">{memoryExplanation}</p>
+        </article>
+
+        <article className="setup-simple-card setup-solve-card">
+          <p className="eyebrow">Hurtig hjælp</p>
+          <h2>Løs en blandet cube</h2>
+          <p>
+            Når GoCube har sendt en gyldig tilstand, kan PeterLingo føre dig tilbage til løst ét
+            træk ad gangen.
           </p>
           <div className="button-row">
             {canSolveLiveState ? (
@@ -416,73 +207,32 @@ export function SmartCubeDiagnosticsPage() {
                 Løs cuben hurtigt
               </button>
             )}
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => void readPhysicalState()}
-              disabled={connection !== 'connected' || actionPending}
-              title={
-                connection === 'connected'
-                  ? 'Kontrollér den løbende tilstand mod GoCube'
-                  : 'Forbind GoCube først'
-              }
-            >
-              Kontrollér synkronisering
-            </button>
             <Link
               className="button secondary"
               to="/fag/roux/manuel-tilstand"
               state={{ facelets: state?.facelets ?? null }}
             >
-              Ret eller indtast farver manuelt
+              Indtast farver manuelt
             </Link>
           </div>
-          {connection === 'connected' && !liveStateIsSolvable && (
-            <p className="facelet-note">
-              Løsning aktiveres, når GoCube har leveret en fuld, fysisk gyldig tilstand.
-            </p>
-          )}
-          {connection !== 'connected' && (
-            <p className="facelet-note">
-              Forbind GoCube ovenfor for at løse eller kontrollere den.
-            </p>
-          )}
-        </div>
-        <div className="diagnostic-panel setup-technical-panel">
-          <h2>Logisk state</h2>
-          <dl>
-            <div>
-              <dt>Træk</dt>
-              <dd>{state?.moveCount ?? 0}</dd>
-            </div>
-            <div>
-              <dt>Facelets</dt>
-              <dd className="facelets">{state?.facelets ?? 'Ikke rapporteret'}</dd>
-            </div>
-          </dl>
-          {connection === 'connected' && (
-            <div className="diagnostic-reset-actions">
-              <button type="button" className="button secondary" onClick={clearTracking}>
-                Ryd kun loggen
-              </button>
-              <button
-                type="button"
-                className="button danger"
-                onClick={() => void calibrateSolvedState()}
-                disabled={actionPending}
-              >
-                Nulstil efter fysisk løsning …
-              </button>
-            </div>
-          )}
-          {connection === 'connected' && (
-            <p className="reset-guidance">
-              Nulstilling løser ikke en blandet terning. Den må først bruges, når terningen fysisk
-              er løst; ellers lærer elektronikken en forkert nulstilling.
-            </p>
-          )}
-        </div>
+          <p className="setup-memory-note">
+            {connection !== 'connected'
+              ? 'Forbind cuben først, eller indtast farverne manuelt.'
+              : liveStateIsSolvable
+                ? 'Cubens aktuelle tilstand er klar.'
+                : 'Venter på en fuld, gyldig tilstand fra cuben.'}
+          </p>
+        </article>
       </section>
+
+      <div className="button-row page-footer-actions">
+        <Link className="button primary" to="/fag/roux">
+          Til Roux-træning
+        </Link>
+        <Link className="button secondary" to="/fag/roux/notation">
+          Hjælp til notation
+        </Link>
+      </div>
     </div>
   );
 }

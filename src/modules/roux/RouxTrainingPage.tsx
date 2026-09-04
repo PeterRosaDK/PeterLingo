@@ -53,7 +53,7 @@ export function RouxTrainingPage() {
           </p>
           <div className="button-row">
             <Link className="button primary" to="/fag/roux/first-block">
-              Start helt fra begyndelsen
+              Start First Block
             </Link>
             <Link className="button secondary" to="/fag/roux/notation">
               Hjælp

@@ -19,13 +19,14 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   entering Roux permits one additional quiet retry after the cube has been woken. Explicit
   remembered-device reconnection and the chooser remain fallbacks.
 - Open Roux directly on the four-phase training path. Keep **Opsætning** as the secondary place for
-  Bluetooth connection, live 3D state, synchronization tools, manual colour fallback, and quick
-  recovery solving. The former guided protocol and text-heavy physical-cube landing section are
+  Bluetooth connection, manual colour fallback, and quick recovery solving. Environment details,
+  raw logical state, the former guided protocol, and the text-heavy physical-cube section are
   removed from the learner flow.
 - Feed GoCubens orientation quaternion into the live 3D cube from the standard white-up,
   green-front grip. The first gyro reading establishes an automatic reference. Roux now opens on
-  that live cube and offers a guarded calibration that adopts the current white-up, green-front
-  reading as its visual reference while resetting a physically solved GoCube as logically solved.
+  that live cube in a square-on green-front view with a small holding guide. One direct calibration
+  action adopts the current white-up, green-front reading as its visual reference while resetting a
+  physically solved GoCube as logically solved.
   The home-page Roux card and Opsætning also follow subsequent readings. Physical axis direction
   still needs verification on the actual cube before it is considered calibrated end to end.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.

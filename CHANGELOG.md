@@ -6,6 +6,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added a square-on green-face calibration view with all other cube faces hidden and a graphic
+  white/GO-up, green-front holding guide.
 - Added the live 3D GoCube directly to the Roux training entry and a guarded **Kalibrer** action.
   After physical-solved confirmation it resets GoCubens logical solved state and makes the current
   white-up, green-front gyro reading the visual reference.
@@ -40,6 +42,12 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Made **Kalibrer** a direct one-tap action without a confirmation dialog, renamed the ambiguous
+  **Start helt fra begyndelsen** action to **Start First Block**, and reduced Roux Opsætning to
+  GoCube connection plus quick solving/manual colour entry.
+- Replaced the technical environment and logical-state panels with a browser-specific pairing
+  explanation. Desktop Chrome/Edge can reuse a granted device through `getDevices()`; iOS Beacio
+  explicitly does not persist pairing across page loads and therefore needs a fresh user tap.
 - Deployed the direct live Roux entry, guarded calibration, quiet retry, and removal of the timed
   grip quiz as exact revision `a8d5b15` at `https://94d19f41.peterlingo.pages.dev`.
 - Removed the timed three-question orientation quiz and its `roux:cube-orientation` daily unit;

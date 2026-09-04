@@ -76,11 +76,6 @@ export function RouxStartCube({ adapter = physicalCubeAdapter }: { adapter?: Sma
   const calibrate = async () => {
     const currentOrientation = adapter.getOrientation?.() ?? orientation;
     if (connection !== 'connected' || !currentOrientation) return;
-    const physicallySolved = window.confirm(
-      'Kalibrering må kun bruges, når alle seks fysiske sider er ensfarvede. Hold den løste cube med hvid/GO op og grøn mod dig. PeterLingo gemmer denne stilling som løst og retter 3D-visningen ind. Er cuben fysisk løst og holdt sådan nu?'
-    );
-    if (!physicallySolved) return;
-
     setCalibrating(true);
     setMessage('Kalibrerer løst tilstand og 3D-retning …');
     try {
@@ -103,7 +98,19 @@ export function RouxStartCube({ adapter = physicalCubeAdapter }: { adapter?: Sma
   return (
     <section className="roux-start-cube" aria-label="Live GoCube">
       <div className="roux-start-viewer">
-        <LivePhysicalCubeViewer adapter={adapter} orientationReference={orientationReference} />
+        <div className="cube-hold-guide cube-hold-guide-top" aria-hidden="true">
+          <b>HVID / GO</b>
+          <span>↑ op</span>
+        </div>
+        <LivePhysicalCubeViewer
+          adapter={adapter}
+          orientationReference={orientationReference}
+          frontView
+        />
+        <div className="cube-hold-guide cube-hold-guide-front" aria-hidden="true">
+          <i />
+          <span>Grøn side lige mod dig</span>
+        </div>
       </div>
       <div className="roux-start-cube-controls">
         <div className={`cube-connection-state ${connection === 'connected' ? 'connected' : ''}`}>
@@ -130,7 +137,7 @@ export function RouxStartCube({ adapter = physicalCubeAdapter }: { adapter?: Sma
             </Link>
           )}
         </div>
-        <small>Kalibrer kun en fysisk løst cube: hvid/GO op · grøn frem.</small>
+        <small>Hold den fysisk løste cube som vist, og tryk én gang.</small>
       </div>
     </section>
   );

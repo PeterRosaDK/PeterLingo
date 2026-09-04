@@ -2067,6 +2067,7 @@ p {
   box-shadow: var(--shadow-soft);
 }
 .roux-start-viewer {
+  position: relative;
   min-height: 300px;
   padding: 4px 14px 0;
   background: radial-gradient(
@@ -2077,6 +2078,41 @@ p {
 }
 .roux-start-viewer .cube-viewer {
   height: 310px;
+}
+.cube-hold-guide {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  transform: translateX(-50%);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--ink-soft);
+  box-shadow: 0 4px 14px rgba(26, 40, 35, 0.08);
+  font-size: 0.62rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.cube-hold-guide-top {
+  top: 12px;
+}
+.cube-hold-guide-top b {
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+.cube-hold-guide-front {
+  bottom: 8px;
+}
+.cube-hold-guide-front i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(21, 46, 36, 0.28);
+  border-radius: 3px;
+  background: #24b357;
 }
 .roux-start-cube-controls {
   display: grid;
@@ -2175,6 +2211,56 @@ p {
 .roux-training-footer p {
   margin: 0;
   color: var(--ink-soft);
+}
+.setup-simple-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.setup-simple-card {
+  min-width: 0;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+.setup-simple-card h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+.setup-simple-card > p:not(.eyebrow) {
+  color: var(--ink-soft);
+}
+.setup-simple-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.setup-simple-status h2 {
+  margin: 0;
+}
+.setup-simple-status i {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--ink-soft) 12%, transparent);
+}
+.setup-simple-status i.connected {
+  background: var(--mint);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--mint) 18%, transparent);
+}
+.setup-simple-card .connection-message {
+  min-height: 3em;
+  margin: 20px 0;
+}
+.setup-memory-note {
+  margin: 22px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.72rem;
+  line-height: 1.55;
 }
 .roux-layout {
   display: grid;
@@ -5197,6 +5283,9 @@ p {
   }
   .roux-start-cube {
     order: -1;
+  }
+  .setup-simple-grid {
+    grid-template-columns: 1fr;
   }
   .roux-training-path li {
     grid-template-columns: 34px 1fr;

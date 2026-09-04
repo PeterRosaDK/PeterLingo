@@ -257,22 +257,16 @@ test('beginner LSE completes Roux with three subgoals and two M/U patterns', asy
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 
-test('GoCube setup goes directly to connection, 3D state, and solving', async ({ page }) => {
+test('GoCube setup keeps only connection and quick solving', async ({ page }) => {
   await page.goto('/fag/roux/opsaetning');
   await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: /Hvid GO-side op · grøn side mod dig/ })
-  ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Find og forbind GoCube' })).toBeVisible();
-  await expect(page.getByText('Husket af browseren')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Din cube i 3D' })).toBeVisible();
-  await expect(page.getByLabel('Interaktiv 3D Rubiks terning')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Find GoCube' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Løs en blandet cube' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Løs cuben hurtigt' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeDisabled();
-  await expect(
-    page.getByText('Forbind GoCube ovenfor for at løse eller kontrollere den.')
-  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Indtast farver manuelt' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Miljø' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Logisk state' })).toHaveCount(0);
+  await expect(page.getByLabel('Interaktiv 3D Rubiks terning')).toHaveCount(0);
   await expect(page.getByLabel('Farver aflæst direkte fra GoCube')).toHaveCount(0);
   await expect(page.getByText('Guidet protokol')).toHaveCount(0);
   await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
@@ -301,7 +295,7 @@ test('manual cube state entry cycles stickers and reports color-count difference
   page,
 }) => {
   await page.goto('/fag/roux/opsaetning');
-  await page.getByRole('link', { name: 'Ret eller indtast farver manuelt' }).click();
+  await page.getByRole('link', { name: 'Indtast farver manuelt' }).click();
   await expect(
     page.getByRole('heading', { name: 'Fortæl hvordan cuben faktisk ser ud' })
   ).toBeVisible();

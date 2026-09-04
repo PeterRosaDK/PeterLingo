@@ -75,23 +75,24 @@ On iPhone/iPad:
 4. Open **Roux → Opsætning**.
 5. Tap **Find og forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
 
-After that first approval, PeterLingo makes a quiet startup attempt to reconnect the remembered
-cube without opening the chooser. Entering Roux permits one additional quiet retry, which helps
-when the cube has only just been woken. This depends on browser support for `getDevices()` and can
-still fail when the cube is asleep, out of range, or already used by another app; Opsætning keeps
-both a remembered-device button and the explicit chooser as fallbacks.
+On desktop Chrome/Edge, PeterLingo makes a quiet startup attempt to reconnect a remembered cube
+without opening the chooser. Entering Roux permits one additional quiet retry, which helps when the
+cube has only just been woken. The browser must support `getDevices()`, and the cube must be awake,
+in range, and free from other apps. Beacio on iPhone/iPad does not persist pairing across a page
+load, so iOS Safari requires a new tap on **Find GoCube** after reopening the page.
 
 See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
 has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
 under verification.
 
-Choosing **Roux** opens directly on the live 3D cube and the four-phase training path. A connected
-cube can be calibrated there only after confirming that it is physically solved and held with
-white/GO up and green forward; that action resets the reported solved state and adopts the current
-gyro reading as the 3D reference. **Opsætning** remains the secondary route for explicit connection,
-synchronization, and quick recovery solving. The physical cube's state and relative orientation
-also drive the 3D cube on the home-page Roux card. The old guided capture protocol, timed grip quiz,
-and unfolded diagnostic facelet net are not part of the learner interface.
+Choosing **Roux** opens directly on the live 3D cube and the four-phase training path. Its reference
+view is square-on to the green face, with every other face hidden, and a small graphic shows
+white/GO upward. **Kalibrer** is one direct action: while the physically solved cube is held in that
+frame, it resets the reported solved state and adopts the current gyro reading as the 3D reference.
+**Opsætning** is reduced to explicit connection and quick recovery solving. The physical cube's
+state and relative orientation also drive the 3D cube on the home-page Roux card. The old guided
+capture protocol, timed grip quiz, environment/state diagnostics, and unfolded facelet net are not
+part of the learner interface.
 
 The first real Roux teaching slice lives at **Roux → First Block**. It teaches the fixed
 orange-yellow left block as a front square plus a back pair, records the lesson unit, and watches
