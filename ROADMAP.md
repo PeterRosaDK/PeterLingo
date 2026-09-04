@@ -12,6 +12,8 @@ Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop c
 facelet tracking through ordinary outer turns have been physically confirmed by Peter. The old
 solved-state reset has been removed from the app; visual-only calibration, M-move normalization,
 and the remaining device matrix still require their stated physical checks.
+The software-side iPad/Beacio correction and integrated color-recovery workbench are deployed as
+tested app revision `d720109` at `https://27b0a9d1.peterlingo.pages.dev`.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.

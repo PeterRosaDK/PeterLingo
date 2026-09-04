@@ -57,6 +57,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the iPad/Beacio connection fix, integrated manual color correction, and expanded Roux
+  help as exact app revision `d720109` at `https://27b0a9d1.peterlingo.pages.dev`.
 - Updated `@beacio/core` from 1.2.0 to 2.1.1 and made its auto-initialization a dependency of every
   Bluetooth capability check. PeterLingo no longer treats Beacio's inactive `navigator.bluetooth`
   installation stub as a working API.

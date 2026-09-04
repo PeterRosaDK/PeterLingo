@@ -59,6 +59,9 @@ shared attempt history. The app shell remains available offline; when the Access
 expired, the shell shows **Log ind** and sends a network navigation through `/login` before
 returning to the app.
 
+The current tested app artifact is revision `d720109`, deployed directly at
+`https://27b0a9d1.peterlingo.pages.dev` and promoted to the custom production domain.
+
 ## GoCube and iOS
 
 PeterLingo imports `@beacio/core/auto` before the React application or any Bluetooth capability
