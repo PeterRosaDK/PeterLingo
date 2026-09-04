@@ -9,6 +9,19 @@ test('home shows one coherent five-subject experience', async ({ page }) => {
   for (const name of ['Doomsday', 'Roux', 'BCS → MBCS', 'Pi', 'Hørelære']) {
     await expect(page.getByRole('link', { name: new RegExp(name) })).toBeVisible();
   }
+  const homeCube = page.getByLabel('Interaktiv 3D Rubiks terning');
+  await homeCube.scrollIntoViewIfNeeded();
+  await expect(homeCube).toBeVisible();
+  await expect
+    .poll(() =>
+      homeCube.locator('twisty-player').evaluate(async (player) => {
+        const twistyPlayer = player as HTMLElement & {
+          experimentalCurrentCanvases(): Promise<HTMLCanvasElement[]>;
+        };
+        return (await twistyPlayer.experimentalCurrentCanvases()).length;
+      })
+    )
+    .toBe(1);
 });
 
 test('daily session explains why each learning unit was selected', async ({ page }) => {
@@ -117,16 +130,14 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
   await expect(page.getByRole('heading', { name: 'Én fase ad gangen' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start med First Block' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Hjælp', exact: true })).toBeVisible();
   const setupLink = page.locator('.roux-training-heading').getByRole('link', {
     name: 'Opsætning',
     exact: true,
   });
   await expect(setupLink).toBeVisible();
   await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
-  const handDrill = page.locator('.roux-move-drill');
-  for (const move of ['R', 'U', "R'"])
-    await handDrill.getByRole('button', { name: move, exact: true }).click();
-  await expect(handDrill.getByRole('status')).toContainText('Sekvensen sad rigtigt');
+  await expect(page.getByText('Dagens håndtræning')).toHaveCount(0);
   await setupLink.click();
   await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
 });
@@ -255,7 +266,7 @@ test('GoCube setup goes directly to connection, 3D state, and solving', async ({
   await expect(
     page.getByText('Forbind GoCube ovenfor for at løse eller kontrollere den.')
   ).toBeVisible();
-  await expect(page.getByText('Vis udfoldet farvenet')).toBeVisible();
+  await expect(page.getByLabel('Farver aflæst direkte fra GoCube')).toHaveCount(0);
   await expect(page.getByText('Guidet protokol')).toHaveCount(0);
   await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);

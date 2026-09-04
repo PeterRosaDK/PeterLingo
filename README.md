@@ -85,15 +85,15 @@ has succeeded physically; state accuracy, move mapping, and the remaining device
 under verification.
 
 Choosing **Roux** opens the four-phase training path directly. **Opsætning** is a secondary route
-for connection, a live 3D state, synchronization, and quick recovery solving. The unfolded facelet
-net remains available only as a technical disclosure. The old guided capture protocol is not part
-of the learner interface.
+for connection, a live 3D state, synchronization, and quick recovery solving. The physical cube's
+state and relative orientation also drive the 3D cube on the home-page Roux card. The old guided
+capture protocol and unfolded diagnostic facelet net are not part of the learner interface.
 
 The first real Roux teaching slice lives at **Roux → First Block**. It teaches the fixed
 orange-yellow left block as a front square plus a back pair, records the orientation and lesson
 units, and watches the five target cubies live when a synchronized GoCube is connected. Manual
 completion remains available as an explicitly self-reported offline fallback. This first slice
-uses only outer turns until Peter's copied M/M′ calibration report has been interpreted.
+uses only outer turns until M/M′ normalization has been physically confirmed.
 
 **Roux → Second Block** continues with the fixed red-yellow right block while requiring the orange
 First Block to remain intact. The beginner repertoire is deliberately limited to `R`/`U` moves and

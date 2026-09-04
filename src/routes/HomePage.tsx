@@ -15,7 +15,7 @@ import {
 } from '../learning/sessions/sessionSelector';
 import type { DisciplineId } from '../learning/types';
 import { PlayingCard } from '../modules/cards/PlayingCard';
-import { CubeViewer } from '../modules/roux/CubeViewer';
+import { LivePhysicalCubeViewer } from '../modules/roux/LivePhysicalCubeViewer';
 
 const scheduler = new FsrsScheduler();
 
@@ -31,7 +31,7 @@ function SubjectVisual({ id }: { id: DisciplineId }) {
   if (id === 'roux')
     return (
       <div className="subject-visual cube-mini">
-        <CubeViewer compact />
+        <LivePhysicalCubeViewer compact />
       </div>
     );
   if (id === 'cards')

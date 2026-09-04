@@ -14,8 +14,8 @@ if visible, and the result.
    hardware checks below.
 5. Hold the white GO centre upward and the green centre toward you. Keep this standard reference
    grip while comparing colours and testing moves: green F, blue B, red R, orange L, white U, yellow D.
-6. Confirm the setup screen starts with connection and the live 3D cube; the unfolded net should be
-   closed under **Vis udfoldet farvenet**.
+6. Confirm the setup screen starts with connection and the live 3D cube, without an unfolded
+   diagnostic net.
 
 ## iPhone Safari + Beacio
 
@@ -34,12 +34,12 @@ if visible, and the result.
    the physical cube is mixed.
    If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
    stickers, and copy the comparison report before making more turns.
-9. Set the 3D reference with white/GO up and green front. Turn and tilt the whole physical cube;
-   confirm the 3D cube follows the same axis and direction. This is a physical calibration check,
-   not yet established by automated tests.
+9. Hold white/GO up and green front when the first gyro reading arrives. Turn and tilt the whole
+   physical cube; confirm both the Opsætning view and the home-page Roux card follow the same axis
+   and direction. This is a physical calibration check, not yet established by automated tests.
 10. Turn `R`, `U`, `R'`, `U'` slowly. Confirm **Sidste træk** shows each outer move once with the
     same letter and direction. `R → B` means the cube is not in the standard reference grip.
-11. Compare the physical cube, optional unfolded facelet net, raw facelets, logical move count, and synchronization label.
+11. Compare the physical cube, 3D colors, raw facelets, logical move count, and synchronization label.
     Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
     the integration advances that state from the received move packets.
 12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
@@ -68,8 +68,8 @@ if visible, and the result.
 
 ## iPad Safari + Beacio
 
-Repeat the iPhone procedure in both portrait and landscape. Also confirm the diagnostics and
-facelet net remain usable without horizontal page overflow.
+Repeat the iPhone procedure in both portrait and landscape. Also confirm Opsætning and the 3D cube
+remain usable without horizontal page overflow.
 
 ## Desktop Chrome or Edge
 

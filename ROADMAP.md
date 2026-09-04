@@ -21,9 +21,10 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
   Bluetooth connection, live 3D state, synchronization tools, manual colour fallback, and quick
   recovery solving. The former guided protocol and text-heavy physical-cube landing section are
   removed from the learner flow.
-- Feed GoCubens orientation quaternion into the live 3D cube after a user-defined white-up,
-  green-front reference. The event pipeline and visual integration are implemented; physical axis
-  direction still needs verification on the actual cube before it is considered calibrated.
+- Feed GoCubens orientation quaternion into the live 3D cube from the standard white-up,
+  green-front grip. The first gyro reading now establishes that reference automatically, and
+  both the home-page Roux card and Opsætning follow subsequent readings. Physical axis direction
+  still needs verification on the actual cube before it is considered calibrated.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
   In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
   `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.

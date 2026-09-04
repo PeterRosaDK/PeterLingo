@@ -7,8 +7,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 ### Added
 
 - Added a live 3D GoCube view built from the synchronized facelets. GoCubens orientation
-  quaternion can rotate the visual cube after the learner sets a white-up, green-front reference;
-  the physical axis mapping remains explicitly pending a real-device check.
+  quaternion now rotates both Opsætning and the home-page Roux card from an automatic first-reading
+  reference; the physical axis mapping remains explicitly pending a real-device check.
 - Added phase four, beginner Last Six Edges: a five-part lesson, EO/L-R/4C subgoals, three
   physically valid practice setups, live GoCube edge recognition, automatic whole-cube
   completion, and an explicitly self-reported fallback.
@@ -35,10 +35,15 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Renamed the training shortcut **Se notation** to **Hjælp** and removed the unexplained daily
+  three-move hand drill from both the Roux page and future daily-session selection.
+- Removed cubing.js' floating hint facelets and the separate unfolded diagnostic net. Hidden cube
+  faces are now revealed by rotating the physical cube or dragging the 3D view.
 - Roux now opens directly on the four-phase training path. **Opsætning** is a secondary route for
   Bluetooth connection, synchronization, manual colour fallback, and quick recovery solving.
 - Removed the intermediate Roux landing page, the learner-facing guided calibration protocol, and
-  the raw move-history section. The unfolded facelet net is now an optional technical disclosure.
+  the raw move-history section. The unfolded facelet net was initially moved into an optional
+  technical disclosure and was subsequently removed from the normal setup flow.
 - Deployed the simplified training and GoCube setup as exact revision `112bac7` at
   `https://9c58f2c8.peterlingo.pages.dev`.
 - Deployed the complete four-phase beginner Roux course with Last Six Edges as exact revision

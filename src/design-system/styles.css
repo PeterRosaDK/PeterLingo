@@ -2161,38 +2161,6 @@ p {
   justify-content: start;
   margin-top: 20px;
 }
-.roux-move-drill {
-  margin-top: 22px;
-}
-.roux-move-drill > div:first-child p:last-child {
-  margin-bottom: 18px;
-}
-.roux-target-sequence {
-  display: flex;
-  justify-content: center;
-  gap: 9px;
-  margin: 8px 0 18px;
-}
-.roux-target-sequence strong {
-  min-width: 52px;
-  padding: 12px;
-  display: grid;
-  place-items: center;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--ice) 18%, var(--bg));
-  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  font-size: 1.25rem;
-}
-.compact-move-pad button:disabled {
-  cursor: default;
-  opacity: 0.55;
-}
-.roux-entered {
-  margin: 14px 0 0;
-  color: var(--ink-soft);
-  font-size: 0.75rem;
-  text-align: center;
-}
 .roux-progress ol {
   list-style: none;
   padding: 0;
@@ -4240,18 +4208,6 @@ p {
   color: var(--ink-soft);
   font-size: 0.78rem;
 }
-.facelet-net-details {
-  margin-top: 22px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  text-align: left;
-}
-.facelet-net-details summary {
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
 .diagnostic-panel h2 {
   font-size: 1.25rem;
 }
@@ -4289,60 +4245,6 @@ p {
 .cube-diagnostic .cube-viewer {
   height: 240px;
 }
-.facelet-net {
-  width: min(100%, 330px);
-  margin: 18px auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-areas:
-    '. U . .'
-    'L F R B'
-    '. D . .';
-  gap: 7px;
-}
-.facelet-face {
-  position: relative;
-}
-.facelet-face > strong {
-  position: absolute;
-  inset: 50% auto auto 50%;
-  z-index: 1;
-  transform: translate(-50%, -50%);
-  color: rgba(18, 29, 25, 0.58);
-  font-size: 0.57rem;
-  pointer-events: none;
-}
-.facelet-face > div {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 3px;
-  border-radius: 6px;
-  background: #25312d;
-}
-.facelet-color {
-  aspect-ratio: 1;
-  border-radius: 2px;
-  background: #bbc2bf;
-}
-.face-U {
-  grid-area: U;
-}
-.face-R {
-  grid-area: R;
-}
-.face-F {
-  grid-area: F;
-}
-.face-D {
-  grid-area: D;
-}
-.face-L {
-  grid-area: L;
-}
-.face-B {
-  grid-area: B;
-}
 .color-U {
   background: #f7f5e8;
 }
@@ -4361,7 +4263,6 @@ p {
 .color-B {
   background: #3c72c9;
 }
-.facelet-empty,
 .facelet-note,
 .reset-guidance {
   color: var(--ink-soft);

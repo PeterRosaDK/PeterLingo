@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { RouxMoveDrill } from './RouxMoveDrill';
 
 const phases = [
   {
@@ -55,7 +54,7 @@ export function RouxTrainingPage() {
             Start helt fra begyndelsen
           </Link>
           <Link className="button secondary" to="/fag/roux/notation">
-            Se notation
+            Hjælp
           </Link>
           <Link className="button secondary" to="/fag/roux/opsaetning">
             Opsætning
@@ -89,8 +88,6 @@ export function RouxTrainingPage() {
           ))}
         </ol>
       </section>
-
-      <RouxMoveDrill />
 
       <div className="roux-training-footer">
         <p>Skal cuben forbindes eller løses først?</p>

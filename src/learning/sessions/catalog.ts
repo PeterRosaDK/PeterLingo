@@ -171,14 +171,6 @@ export const learningCatalog: LearningUnit[] = [
     isNew: true,
   },
   {
-    id: 'roux:move-sequence',
-    discipline: 'roux',
-    title: 'Roux: kort håndtræning',
-    stage: 'teaching',
-    estimatedSeconds: 45,
-    isNew: true,
-  },
-  {
     id: 'roux:first-block-live',
     discipline: 'roux',
     title: 'First Block med den fysiske cube',

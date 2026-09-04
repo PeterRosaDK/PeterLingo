@@ -1,45 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { TwistyPlayer } from 'cubing/twisty';
 import type { CubeOrientation } from '../../hardware/smartcube/types';
+import { multiplyQuaternion, relativeGoCubeQuaternion, type Quaternion } from './cubeOrientation';
 
-type Quaternion = CubeOrientation['quaternion'];
 type PuzzleObject = Awaited<ReturnType<TwistyPlayer['experimentalCurrentThreeJSPuzzleObject']>>;
-
-function multiplyQuaternion(left: Quaternion, right: Quaternion): Quaternion {
-  return {
-    x: left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
-    y: left.w * right.y - left.x * right.z + left.y * right.w + left.z * right.x,
-    z: left.w * right.z + left.x * right.y - left.y * right.x + left.z * right.w,
-    w: left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z,
-  };
-}
-
-function relativeQuaternion(current: Quaternion, reference: Quaternion): Quaternion {
-  return multiplyQuaternion(current, {
-    x: -reference.x,
-    y: -reference.y,
-    z: -reference.z,
-    w: reference.w,
-  });
-}
 
 export function CubeViewer({
   algorithm = '',
   compact = false,
   showAlgorithmStart = false,
   orientation = null,
-  orientationReference = null,
 }: {
   algorithm?: string;
   compact?: boolean;
   showAlgorithmStart?: boolean;
   orientation?: CubeOrientation | null;
-  orientationReference?: CubeOrientation | null;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<TwistyPlayer | null>(null);
   const puzzleObject = useRef<PuzzleObject | null>(null);
   const baseQuaternion = useRef<Quaternion | null>(null);
+  const automaticOrientationReference = useRef<CubeOrientation | null>(null);
   const [viewerReady, setViewerReady] = useState(false);
 
   useEffect(() => {
@@ -53,6 +34,7 @@ export function CubeViewer({
       experimentalDragInput: 'auto',
       cameraLatitude: 28,
       cameraLongitude: 32,
+      hintFacelets: 'none',
     });
     host.current.replaceChildren(instance);
     player.current = instance;
@@ -88,9 +70,14 @@ export function CubeViewer({
     const object = puzzleObject.current;
     const base = baseQuaternion.current;
     if (!instance || !object || !base) return;
+    if (!orientation) automaticOrientationReference.current = null;
+    if (orientation && !automaticOrientationReference.current) {
+      automaticOrientationReference.current = orientation;
+    }
+    const reference = automaticOrientationReference.current;
     const delta =
-      orientation && orientationReference
-        ? relativeQuaternion(orientation.quaternion, orientationReference.quaternion)
+      orientation && reference
+        ? relativeGoCubeQuaternion(orientation.quaternion, reference.quaternion)
         : { x: 0, y: 0, z: 0, w: 1 };
     const next = multiplyQuaternion(base, delta);
     object.quaternion.set(next.x, next.y, next.z, next.w);
@@ -98,7 +85,7 @@ export function CubeViewer({
     void instance.experimentalCurrentVantages().then((vantages) => {
       for (const vantage of vantages) vantage.scheduleRender();
     });
-  }, [orientation, orientationReference, viewerReady]);
+  }, [orientation, viewerReady]);
 
   return (
     <div

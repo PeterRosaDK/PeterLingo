@@ -9,7 +9,6 @@ import type {
   CubeState,
   RememberedCube,
 } from '../../hardware/smartcube/types';
-import { CubeFaceletNet } from './CubeFaceletNet';
 import { CubeViewer } from './CubeViewer';
 import { solveFacelets, validateFacelets } from './faceletSolver';
 
@@ -52,7 +51,6 @@ export function SmartCubeDiagnosticsPage() {
   const [orientation, setOrientation] = useState<CubeOrientation | null>(
     () => adapter.getOrientation?.() ?? null
   );
-  const [orientationReference, setOrientationReference] = useState<CubeOrientation | null>(null);
   const [viewerSolution, setViewerSolution] = useState('');
   const [viewerStatus, setViewerStatus] = useState('Venter på cubens tilstand');
   const [battery, setBattery] = useState<number | null>(null);
@@ -130,7 +128,6 @@ export function SmartCubeDiagnosticsPage() {
       setConnection(nextConnection);
       if (nextConnection !== 'connected') {
         setOrientation(null);
-        setOrientationReference(null);
       }
     });
     const offOrientation = adapter.subscribeToOrientation?.((nextOrientation) => {
@@ -158,7 +155,7 @@ export function SmartCubeDiagnosticsPage() {
     setBattery((await adapter.getBatteryLevel?.()) ?? null);
     await refreshRememberedCubes();
     setMessage(
-      'Forbindelsen er oprettet. Hold den hvide GO-side opad og den grønne side mod dig, og sammenlign farvenettet.'
+      'Forbindelsen er oprettet. Hold den hvide GO-side opad og den grønne side mod dig; 3D-cuben følger automatisk den første gyroretning.'
     );
   };
 
@@ -193,7 +190,6 @@ export function SmartCubeDiagnosticsPage() {
       setConnection('disconnected');
       setBattery(null);
       setOrientation(null);
-      setOrientationReference(null);
       setMessage('Forbindelsen er lukket. Browserens tilladelse til cuben er bevaret.');
     });
   };
@@ -393,12 +389,7 @@ export function SmartCubeDiagnosticsPage() {
           <p className="eyebrow">2 · Se og løs</p>
           <h2>Din cube i 3D</h2>
           <div className="live-cube-viewer">
-            <CubeViewer
-              algorithm={viewerSolution}
-              showAlgorithmStart
-              orientation={orientation}
-              orientationReference={orientationReference}
-            />
+            <CubeViewer algorithm={viewerSolution} showAlgorithmStart orientation={orientation} />
             <div>
               <span className={`status-pill ${liveStateIsSolvable ? 'good' : ''}`}>
                 {state?.synchronization ?? 'unknown'}
@@ -406,24 +397,14 @@ export function SmartCubeDiagnosticsPage() {
               <p>{viewerStatus}</p>
               <p>
                 {orientation
-                  ? orientationReference
-                    ? 'Gyroskopet sender nu cubens retning til 3D-visningen.'
-                    : 'Gyroskop fundet. Hold hvid/GO op og grøn frem, og sæt retningen.'
+                  ? 'Gyroskopet sender cubens retning til 3D-visningen.'
                   : 'Venter på orienteringsdata fra GoCube.'}
               </p>
-              <button
-                type="button"
-                className="button secondary"
-                disabled={!orientation}
-                onClick={() => setOrientationReference(orientation)}
-              >
-                Sæt denne retning som hvid op · grøn frem
-              </button>
             </div>
           </div>
           <p className="facelet-note">
-            3D-cuben følger farverne løbende. Gyroretningen nulstilles kun for visningen og ændrer
-            ikke GoCubens gemte cubetilstand.
+            3D-cuben følger farverne løbende. Den første gyromåling bruges kun som visningens
+            nulpunkt og ændrer ikke GoCubens gemte cubetilstand.
           </p>
           <div className="button-row">
             {canSolveLiveState ? (
@@ -466,10 +447,6 @@ export function SmartCubeDiagnosticsPage() {
               Forbind GoCube ovenfor for at løse eller kontrollere den.
             </p>
           )}
-          <details className="facelet-net-details">
-            <summary>Vis udfoldet farvenet</summary>
-            <CubeFaceletNet facelets={state?.facelets ?? null} />
-          </details>
         </div>
         <div className="diagnostic-panel setup-technical-panel">
           <h2>Logisk state</h2>
