@@ -12,7 +12,8 @@ if visible, and the result.
 3. Serve PeterLingo over HTTPS or use `localhost` on desktop.
 4. Open **Fag → Roux** and confirm the live 3D cube and training path appear immediately. Native
    Chrome/Edge may quietly reconnect exactly one approved cube. iPad/Beacio must instead wait for
-   the user's **Tilslut** tap; there is no separate Opsætning screen.
+   the user's **Tilslut** tap in Safari; Beacio is not available in the installed standalone
+   Home Screen web app. There is no separate Opsætning screen.
 5. Hold the white GO centre upward and the green centre toward you. Keep this standard reference
    grip while comparing colours and testing moves: green F, blue B, red R, orange L, white U, yellow D.
 6. Confirm the Roux workbench starts with connection and the live 3D cube, without an unfolded
@@ -43,8 +44,9 @@ if visible, and the result.
 11. Make at least 30 mixed turns and compare all six physical sides with the rotatable 3D cube.
     Use **Synkronisér farver** once, then return the physical cube to solved and compare again.
 12. Hold the cube with hvid/GO up and green forward as shown, and use
-    **Kalibrer 3D** once. Check that only the model's visual direction changes. Facelets and solved
-    state must remain identical before and after, whether the physical cube is solved or mixed.
+    **Kalibrer 3D** once. Check that the green face is shown directly square-on—not diagonally—with
+    white/GO above it. Only the model's visual direction may change. Facelets and solved state must
+    remain identical before and after, whether the physical cube is solved or mixed.
 13. Reload the page. On iPhone/iPad, Beacio does not persist pairing, so there must be no false
     “remembered” claim and a new **Tilslut** tap is expected. Reconnect and repeat four moves.
 14. Start **Løs hurtigt** and perform the shown move physically. A quarter-turn should

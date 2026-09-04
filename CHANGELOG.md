@@ -57,6 +57,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Restored the square-on calibration frame in the unified Roux workbench. After **Kalibrer 3D**,
+  the model camera is fixed directly on the green face with white/GO above it; disconnecting clears
+  that physical reference without changing facelets.
+- Detect the installed iPhone/iPad standalone web-app context and explain that Beacio must be used
+  in Safari itself. The installed PWA remains available for ordinary learning and offline practice.
 - Deployed the iPad/Beacio connection fix, integrated manual color correction, and expanded Roux
   help as exact app revision `d720109` at `https://27b0a9d1.peterlingo.pages.dev`.
 - Updated `@beacio/core` from 1.2.0 to 2.1.1 and made its auto-initialization a dependency of every

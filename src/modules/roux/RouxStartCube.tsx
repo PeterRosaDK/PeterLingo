@@ -69,6 +69,9 @@ function unavailableMessage(diagnostics?: BluetoothDiagnostics): string {
   if (typeof window !== 'undefined' && !window.isSecureContext) {
     return 'Bluetooth kræver en sikker HTTPS-side. Åbn PeterLingo via det normale websted, og prøv igen.';
   }
+  if (isStandaloneAppleWebApp()) {
+    return 'Beacio kan ikke indlæses i en installeret iPad-webapp. Åbn PeterLingo direkte i Safari, når du vil bruge GoCube.';
+  }
   if (!diagnostics) return 'Bluetooth er ikke tilgængelig i denne browser.';
   if (diagnostics.extension === 'installed-inactive') {
     return 'Beacio er installeret, men udvidelsen er slået fra eller ikke tilladt på PeterLingo. Aktivér den i Safari, og genindlæs.';
@@ -77,6 +80,17 @@ function unavailableMessage(diagnostics?: BluetoothDiagnostics): string {
     return 'Beacio er ikke aktiv på iPad. Installér Beacio, aktivér Safari-udvidelsen for PeterLingo, og genindlæs.';
   }
   return 'Bluetooth-API’et mangler. Brug Safari med Beacio på iPad eller Chrome/Edge på computer.';
+}
+
+export function isStandaloneAppleWebApp(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  const appleMobile =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent.includes('Macintosh') && navigator.maxTouchPoints > 1);
+  const standalone =
+    (navigator as Navigator & { standalone?: boolean }).standalone === true ||
+    window.matchMedia?.('(display-mode: standalone)').matches === true;
+  return appleMobile && standalone;
 }
 
 function pickerStatusMessage(status: string): string {
@@ -124,7 +138,10 @@ export function RouxStartCube({
       const nextConnection = adapter.getConnectionState();
       setConnection(nextConnection);
       setCubeState(nextState === undefined ? adapter.getCubeState() : nextState);
-      if (nextConnection !== 'connected') setOrientation(null);
+      if (nextConnection !== 'connected') {
+        setOrientation(null);
+        setOrientationReference(undefined);
+      }
     };
     const offState = adapter.subscribeToState?.((nextState) => refresh(nextState));
     const offOrientation = adapter.subscribeToOrientation?.((nextOrientation) => {
@@ -229,7 +246,7 @@ export function RouxStartCube({
     const currentOrientation = adapter.getOrientation?.() ?? orientation;
     if (connection !== 'connected' || !currentOrientation) return;
     setOrientationReference(currentOrientation);
-    setMessage('3D-cuben er rettet ind efter den måde, du holder den på. Cubens farver er urørte.');
+    setMessage('3D-cuben viser nu grøn direkte forfra med hvid ovenpå. Cubens farver er urørte.');
   };
 
   const rereadCube = async () => {
@@ -288,11 +305,12 @@ export function RouxStartCube({
         <LivePhysicalCubeViewer
           adapter={adapter}
           orientationReference={orientationReference}
+          frontView={orientationReference !== undefined}
           faceletsOverride={manualFacelets}
         />
         <div className="cube-hold-guide cube-hold-guide-front" aria-hidden="true">
           <i />
-          <span>Grøn side mod dig</span>
+          <span>Grøn side lige mod dig</span>
         </div>
       </div>
       <div className="roux-start-cube-controls">
@@ -355,6 +373,12 @@ export function RouxStartCube({
             forkert.
           </li>
         </ul>
+        {connection === 'unsupported' && isStandaloneAppleWebApp() && (
+          <p className="roux-pwa-bluetooth-note">
+            Den installerede webapp kan stadig bruges til læring og offlineøvelser. Åbn samme side i
+            Safari til de øvelser, der bruger GoCube.
+          </p>
+        )}
         {diagnostics && (
           <details className="roux-bluetooth-details">
             <summary>Tekniske Bluetooth-detaljer</summary>

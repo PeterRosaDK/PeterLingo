@@ -84,6 +84,12 @@ On iPhone/iPad:
    GoCube/Rubik's Connected name filters `GoCube_…`, `GoCube…`, and `Rubiks…` plus the protocol's
    UART service permission. The chooser remains controlled by Safari/Beacio.
 
+Beacio is a Safari extension and is not injected into PeterLingo when iPadOS launches it as an
+installed standalone Home Screen web app. Keep the installed PWA for ordinary learning and offline
+practice, but open `https://peterlingo.petergpt.dk/fag/roux` directly in Safari for GoCube. On
+iPadOS versions that offer **Open as Web App** while adding a Home Screen icon, leaving that option
+off creates a Safari-opening shortcut instead of the standalone PeterLingo window.
+
 On desktop Chrome/Edge, PeterLingo makes a quiet startup attempt to reconnect a remembered cube
 without opening the chooser. Entering Roux permits one additional quiet retry. Direct reconnection
 is used only when native Web Bluetooth exposes `getDevices()` and returns exactly one compatible
@@ -105,9 +111,10 @@ verification.
 
 Choosing **Roux** opens one workbench: the interactive live 3D cube and hardware controls are on the
 left, and the four phase choices are on the right. **Kalibrer 3D** adopts the current gyro reading
-as the display reference without changing any facelets. **Synkronisér farver** requests a fresh
-full facelet state from GoCube; it does not turn or reset the physical cube, alter 3D calibration,
-or mark a mixed state as solved. The app no longer exposes GoCube's solved-state reset command.
+as the display reference and restores a square-on camera—green directly in front with white/GO
+above—without changing any facelets. **Synkronisér farver** requests a fresh full facelet state from
+GoCube; it does not turn or reset the physical cube, alter 3D calibration, or mark a mixed state as
+solved. The app no longer exposes GoCube's solved-state reset command.
 **Ret farver manuelt** opens the existing validated six-face editor in the right side of the same
 workbench. A saved correction is kept as an explicit local override and is not silently replaced by
 later hardware snapshots; choosing **Synkronisér farver** deliberately returns authority to the

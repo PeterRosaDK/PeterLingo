@@ -33,14 +33,17 @@ tested app revision `d720109` at `https://27b0a9d1.peterlingo.pages.dev`.
   that live cube with a small holding guide. **Kalibrer 3D** adopts the current white-up,
   green-front reading only as a visual reference; it does not overwrite the logical facelets.
   **Synkronisér farver** separately requests only a fresh full state and never resets a mixed cube.
-  The solved-state reset command is no longer exposed by the app. The home-page Roux card also follows
-  subsequent readings. Physical axis direction
+  Calibration now also restores the fixed square-on camera with green directly forward and
+  white/GO above it. The solved-state reset command is no longer exposed by the app. The home-page
+  Roux card also follows subsequent readings. Physical axis direction
   still needs verification on the actual cube before it is considered calibrated end to end.
 - Initialize Beacio before every capability check, distinguish the SDK's inactive installation stub
   from a usable API, and start the filtered GoCube chooser synchronously from **Tilslut**. The
   workbench now reports missing/inactive Beacio, missing API, cancellation/no match where the SDK
   distinguishes them, unreachable granted devices, and connected-without-valid-state. Physical
   iPad/GoCube confirmation remains open.
+- Treat the installed iPhone/iPad Home Screen web app as a non-Beacio context: keep learning and
+  offline practice available there, but tell the learner to open Roux in Safari for Bluetooth.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
   In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
   `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.

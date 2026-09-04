@@ -2,15 +2,20 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
-import { connectionErrorMessage, RouxStartCube } from './RouxStartCube';
+import { connectionErrorMessage, isStandaloneAppleWebApp, RouxStartCube } from './RouxStartCube';
 
 vi.mock('../../hardware/smartcube/physicalCube', () => ({
   physicalCubeAdapter: {},
   reconnectApprovedCube: vi.fn(async () => false),
 }));
 
+const liveViewer = vi.hoisted(() => ({ props: {} as { frontView?: boolean } }));
+
 vi.mock('./LivePhysicalCubeViewer', () => ({
-  LivePhysicalCubeViewer: () => <div aria-label="Interaktiv 3D Rubiks terning" />,
+  LivePhysicalCubeViewer: (props: { frontView?: boolean }) => {
+    liveViewer.props = props;
+    return <div aria-label="Interaktiv 3D Rubiks terning" />;
+  },
 }));
 
 const SCRAMBLED_FACELETS = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
@@ -18,9 +23,43 @@ const SCRAMBLED_FACELETS = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRU
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  liveViewer.props = {};
 });
 
 describe('Roux start cube', () => {
+  it('detects an installed Apple home-screen web app', () => {
+    vi.stubGlobal('navigator', {
+      userAgent: 'Mozilla/5.0 (iPad; CPU OS 26_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
+      maxTouchPoints: 5,
+      standalone: true,
+    });
+
+    expect(isStandaloneAppleWebApp()).toBe(true);
+  });
+
+  it('explains that Beacio requires Safari outside the installed iPad web app', async () => {
+    vi.stubGlobal('isSecureContext', true);
+    vi.stubGlobal('navigator', {
+      userAgent: 'Mozilla/5.0 (iPad; CPU OS 26_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
+      maxTouchPoints: 5,
+      standalone: true,
+    });
+    const cube = new MockSmartCubeAdapter();
+    vi.spyOn(cube, 'isSupported').mockReturnValue(false);
+
+    render(
+      <MemoryRouter>
+        <RouxStartCube adapter={cube} />
+      </MemoryRouter>
+    );
+
+    expect(
+      await screen.findByText(/Beacio kan ikke indlæses i en installeret iPad-webapp/)
+    ).toBeVisible();
+    expect(screen.getByText(/kan stadig bruges til læring og offlineøvelser/)).toBeVisible();
+  });
+
   it('distinguishes Beacio, cancellation, no-device, and remembered-connection failures', () => {
     const error = (name: string, code?: string) => Object.assign(new Error(name), { name, code });
     expect(connectionErrorMessage(error('Error', 'USER_CANCELLED'), 'chooser')).toMatch(
@@ -69,11 +108,16 @@ describe('Roux start cube', () => {
         <RouxStartCube adapter={cube} />
       </MemoryRouter>
     );
+    expect(liveViewer.props.frontView).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Kalibrer 3D' }));
 
-    await screen.findByText(/3D-cuben er rettet ind/);
+    await screen.findByText(/grøn direkte forfra med hvid ovenpå/);
+    expect(liveViewer.props.frontView).toBe(true);
     expect(requestState).not.toHaveBeenCalled();
     await waitFor(() => expect(cube.getCubeState()?.facelets).toBe(SCRAMBLED_FACELETS));
+
+    await cube.disconnect();
+    await waitFor(() => expect(liveViewer.props.frontView).toBe(false));
   });
 
   it('connects and refreshes the cube without leaving the current view', async () => {

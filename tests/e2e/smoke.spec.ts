@@ -178,6 +178,29 @@ test('Roux workbench has no horizontal overflow at iPad-like sizes', async ({ pa
   }
 });
 
+test('installed iPad web app sends GoCube use to Safari', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium');
+  await page.addInitScript(() => {
+    Object.defineProperties(navigator, {
+      userAgent: {
+        configurable: true,
+        value: 'Mozilla/5.0 (iPad; CPU OS 26_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
+      },
+      maxTouchPoints: { configurable: true, value: 5 },
+      standalone: { configurable: true, value: true },
+      bluetooth: { configurable: true, value: undefined },
+    });
+  });
+
+  await page.goto('/fag/roux');
+
+  await expect(
+    page.getByText(/Beacio kan ikke indlæses i en installeret iPad-webapp/)
+  ).toBeVisible();
+  await expect(page.getByText(/kan stadig bruges til læring og offlineøvelser/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tilslut' })).toBeDisabled();
+});
+
 test('First Block compares the live cube with two fixed 3D goals and keeps manual fallback', async ({
   page,
 }) => {
