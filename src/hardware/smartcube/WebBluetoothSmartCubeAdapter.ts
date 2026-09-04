@@ -8,6 +8,7 @@ import { appendMove, SOLVED_FACELETS } from './state';
 import type {
   ConnectionState,
   CubeMove,
+  CubeOrientation,
   CubeState,
   RememberedCube,
   SmartCubeAdapter,
@@ -26,7 +27,9 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   private subscription: { unsubscribe(): void } | null = null;
   private handlers = new Set<(move: CubeMove) => void>();
   private stateHandlers = new Set<(state: CubeState) => void>();
+  private orientationHandlers = new Set<(orientation: CubeOrientation) => void>();
   private battery: number | null = null;
+  private orientation: CubeOrientation | null = null;
 
   isSupported(): boolean {
     return typeof navigator !== 'undefined' && 'bluetooth' in navigator;
@@ -111,6 +114,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   private activateConnection(connection: SmartCubeConnection): void {
     this.subscription?.unsubscribe();
     this.connection = connection;
+    this.orientation = null;
     this.subscription = connection.events$.subscribe((event) => this.onEvent(event));
     this.connectionState = 'connected';
     this.state = { ...this.state, synchronization: 'unknown' };
@@ -130,6 +134,10 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       for (const handler of this.handlers) handler(move);
     } else if (event.type === 'FACELETS') {
       this.state = { ...this.state, facelets: event.facelets, synchronization: 'synchronized' };
+    } else if (event.type === 'GYRO') {
+      this.orientation = { quaternion: { ...event.quaternion }, timestamp: event.timestamp };
+      for (const handler of this.orientationHandlers) handler(this.getOrientation()!);
+      return;
     } else if (event.type === 'BATTERY') {
       this.battery = event.batteryLevel;
     } else if (event.type === 'DISCONNECT') {
@@ -143,6 +151,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     this.subscription = null;
     await this.connection?.disconnect();
     this.connection = null;
+    this.orientation = null;
     this.connectionState = 'disconnected';
     this.notifyState();
   }
@@ -163,6 +172,17 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   subscribeToState(handler: (state: CubeState) => void): Unsubscribe {
     this.stateHandlers.add(handler);
     return () => this.stateHandlers.delete(handler);
+  }
+
+  getOrientation(): CubeOrientation | null {
+    return this.orientation
+      ? { ...this.orientation, quaternion: { ...this.orientation.quaternion } }
+      : null;
+  }
+
+  subscribeToOrientation(handler: (orientation: CubeOrientation) => void): Unsubscribe {
+    this.orientationHandlers.add(handler);
+    return () => this.orientationHandlers.delete(handler);
   }
 
   async requestState(): Promise<void> {

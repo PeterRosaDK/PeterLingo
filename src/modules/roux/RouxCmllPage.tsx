@@ -523,7 +523,7 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
                   <p>
                     Forbind GoCube for automatisk kontrol, eller øv med din egen visuelle kontrol.
                   </p>
-                  <Link className="button secondary" to="/fag/roux/diagnostik">
+                  <Link className="button secondary" to="/fag/roux/opsaetning">
                     Forbind GoCube
                   </Link>
                 </>
@@ -645,8 +645,8 @@ export function RouxCmllPage({
         <Link className="button secondary" to="/fag/roux/notation">
           Slå notation op
         </Link>
-        <Link className="button secondary" to="/fag/roux">
-          Roux-oversigt
+        <Link className="button secondary" to="/fag/roux/traening">
+          Træningsoversigt
         </Link>
       </div>
     </div>

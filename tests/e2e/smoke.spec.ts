@@ -112,18 +112,23 @@ test('daily stars reward practice rather than correctness', async ({ page }) => 
   await expect(piCard.getByLabel('1 af 3 stjerner i dag')).toBeVisible();
 });
 
-test('Roux presents the physical reference grip and keeps the notation drill', async ({ page }) => {
+test('Roux opens directly in the pedagogical training path', async ({ page }) => {
   await page.goto('/fag/roux');
-  await expect(page.getByRole('heading', { name: 'Roux', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Hvid GO-side op · grøn mod dig' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Forbind og kontrollér GoCube' })).toBeVisible();
-  await expect(page.getByText('Beacio skal ikke installeres på Mac.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Én fase ad gangen' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start med First Block' })).toBeVisible();
+  const setupLink = page.locator('.roux-training-heading').getByRole('link', {
+    name: 'Opsætning',
+    exact: true,
+  });
+  await expect(setupLink).toBeVisible();
+  await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
   const handDrill = page.locator('.roux-move-drill');
   for (const move of ['R', 'U', "R'"])
     await handDrill.getByRole('button', { name: move, exact: true }).click();
   await expect(handDrill.getByRole('status')).toContainText('Sekvensen sad rigtigt');
-  await page.getByRole('link', { name: 'Åbn GoCube-diagnostik' }).click();
-  await expect(page.getByText(/live-tracking af almindelige ydertræk bekræftet/i)).toBeVisible();
+  await setupLink.click();
+  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
 });
 
 test('First Block has a complete beginner lesson and manual practice fallback', async ({
@@ -234,22 +239,25 @@ test('beginner LSE completes Roux with three subgoals and two M/U patterns', asy
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 
-test('GoCube diagnostics exposes only the physical connection flow', async ({ page }) => {
-  await page.goto('/fag/roux/diagnostik');
+test('GoCube setup goes directly to connection, 3D state, and solving', async ({ page }) => {
+  await page.goto('/fag/roux/opsaetning');
+  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: /Hvid GO-side op · grøn side mod dig/ })
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Find og forbind GoCube' })).toBeVisible();
   await expect(page.getByText('Husket af browseren')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Sådan taler GoCube' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Start måling af R' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Løs den aflæste cube' })).toBeDisabled();
+  await expect(page.getByRole('heading', { name: 'Din cube i 3D' })).toBeVisible();
+  await expect(page.getByLabel('Interaktiv 3D Rubiks terning')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Løs cuben hurtigt' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Kontrollér synkronisering' })).toBeDisabled();
   await expect(
     page.getByText('Forbind GoCube ovenfor for at løse eller kontrollere den.')
   ).toBeVisible();
-  await expect(page.getByText(/M\/M′ måles bagefter/)).toBeVisible();
+  await expect(page.getByText('Vis udfoldet farvenet')).toBeVisible();
+  await expect(page.getByText('Guidet protokol')).toHaveCount(0);
+  await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
 });
@@ -267,14 +275,14 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   ).toBeVisible();
   await expect(page.getByText(/M-laget ligger mellem det orange L-lag.*røde R-lag/)).toBeVisible();
   await expect(page.getByText(/grøn er F foran.*blå er B bagpå.*rød er R/)).toBeVisible();
-  await page.getByRole('link', { name: 'Tilbage til GoCube-målingen' }).click();
-  await expect(page.getByRole('heading', { name: 'GoCube-diagnostik' })).toBeVisible();
+  await page.getByRole('link', { name: 'Til Opsætning' }).click();
+  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
 });
 
 test('manual cube state entry cycles stickers and reports color-count differences', async ({
   page,
 }) => {
-  await page.goto('/fag/roux/diagnostik');
+  await page.goto('/fag/roux/opsaetning');
   await page.getByRole('link', { name: 'Ret eller indtast farver manuelt' }).click();
   await expect(
     page.getByRole('heading', { name: 'Fortæl hvordan cuben faktisk ser ud' })

@@ -524,10 +524,10 @@ function FirstBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
               ) : (
                 <>
                   <p>
-                    Forbind GoCube i diagnostikken for automatisk kontrol, eller øv med din egen
+                    Forbind GoCube under Opsætning for automatisk kontrol, eller øv med din egen
                     visuelle kontrol.
                   </p>
-                  <Link className="button secondary" to="/fag/roux/diagnostik">
+                  <Link className="button secondary" to="/fag/roux/opsaetning">
                     Forbind GoCube
                   </Link>
                 </>
@@ -613,8 +613,8 @@ export function RouxFirstBlockPage({
         <Link className="button secondary" to="/fag/roux/notation">
           Slå notation op
         </Link>
-        <Link className="button secondary" to="/fag/roux">
-          Tilbage til Roux
+        <Link className="button secondary" to="/fag/roux/traening">
+          Træningsoversigt
         </Link>
       </div>
     </div>

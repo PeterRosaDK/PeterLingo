@@ -10,11 +10,12 @@ if visible, and the result.
 1. Charge and wake the GoCube; keep it close to the device.
 2. Close other apps/tabs that may own its Bluetooth connection.
 3. Serve PeterLingo over HTTPS or use `localhost` on desktop.
-4. Open **Fag → Roux → Åbn GoCube-diagnostik**.
+4. Open **Fag → Roux** and confirm training opens directly. Choose **Opsætning** only for the
+   hardware checks below.
 5. Hold the white GO centre upward and the green centre toward you. Keep this standard reference
    grip while comparing colours and testing moves: green F, blue B, red R, orange L, white U, yellow D.
-6. Confirm the warning says that ordinary outer-turn tracking is confirmed while M moves remain the
-   next verification step.
+6. Confirm the setup screen starts with connection and the live 3D cube; the unfolded net should be
+   closed under **Vis udfoldet farvenet**.
 
 ## iPhone Safari + Beacio
 
@@ -22,7 +23,7 @@ if visible, and the result.
 2. Go to **Indstillinger → Apps → Safari → Udvidelser**.
 3. Enable Beacio and allow it on the PeterLingo website.
 4. Force-reload PeterLingo.
-5. In diagnostics confirm: browser is iOS Safari, secure context is **Ja**, Web Bluetooth is **Tilgængelig**, Beacio is **Aktiv/polyfill fundet**.
+5. In Opsætning confirm: browser is iOS Safari, secure context is **Ja**, Web Bluetooth is **Tilgængelig**, Beacio is **Aktiv/polyfill fundet**.
 6. On first use, tap **Find og forbind GoCube** once. Do not navigate away while the chooser is
    open. On later visits, prefer **Genforbind GoCube** when it is offered.
 7. Select the GoCube. Confirm detected name/protocol and battery if supported. Reload the page once,
@@ -33,36 +34,33 @@ if visible, and the result.
    the physical cube is mixed.
    If the second reading is still wrong, open **Indtast den fysiske tilstand manuelt**, correct the
    stickers, and copy the comparison report before making more turns.
-9. Turn `R`, `U`, `R'`, `U'` slowly. Confirm every outer move appears once with the same letter and
-   direction. `R → B` means the cube is not in the standard reference grip.
-10. Tap **Ryd kun loggen**, make one isolated physical `M`, and record both raw move names and the
-    displayed millisecond gap. Repeat from a cleared log with one `M'`. Do not yet assume which
-    pair corresponds to which normalized slice direction.
-11. Complete the guided sequence and tap **Kopiér målerapport**. Paste the full report into the
-    development thread; the browser-local confirmation alone does not make the mapping available
-    to the codebase or cloud sync.
-12. Compare the physical cube, facelet net, raw facelets, logical move count, and synchronization label.
+9. Set the 3D reference with white/GO up and green front. Turn and tilt the whole physical cube;
+   confirm the 3D cube follows the same axis and direction. This is a physical calibration check,
+   not yet established by automated tests.
+10. Turn `R`, `U`, `R'`, `U'` slowly. Confirm **Sidste træk** shows each outer move once with the
+    same letter and direction. `R → B` means the cube is not in the standard reference grip.
+11. Compare the physical cube, optional unfolded facelet net, raw facelets, logical move count, and synchronization label.
     Remember that the hardware supplies a full snapshot at connection/re-read; between snapshots,
     the integration advances that state from the received move packets.
-13. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
-14. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
+12. Make at least 30 mixed turns, return the physical cube to solved, and check agreement again.
+13. With the cube physically solved, use **Nulstil efter fysisk løsning …** and confirm the warning
     before calibrating the electronics. Never use this to make a mixed cube appear solved.
-15. Tap **Afbryd**; confirm no later physical turn is logged.
-16. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
+14. Tap **Afbryd**; confirm no later physical turn is logged.
+15. Reload once with the approved cube awake. PeterLingo should make one quiet reconnection attempt
     without opening a chooser. If that fails, reconnect manually and repeat four moves.
-17. Start **Løs den aflæste cube** and perform the shown move physically. A quarter-turn should
+16. Start **Løs cuben hurtigt** and perform the shown move physically. A quarter-turn should
     advance immediately; a half-turn should advance only after its second matching quarter-turn.
     Disconnect the cube and confirm that the manual step buttons return.
-18. Open **Roux → Second Block** with the cube solved. Perform the displayed `R`/`U`
+17. Open **Roux → Second Block** with the cube solved. Perform the displayed `R`/`U`
     exercise setup, start the live attempt, and rebuild the red-yellow right block. Confirm that
     the five-piece counter follows the physical cube, completion is automatic, and deliberately
     breaking the orange First Block prevents completion until it is restored.
-19. Open **Roux → Begynder-CMLL** with the cube solved. Run the orientation setup, start live
+18. Open **Roux → Begynder-CMLL** with the cube solved. Run the orientation setup, start live
     practice, and execute Sune. Repeat with the permutation setup and T-perm. Confirm the app first
     reports four white corners oriented, then recognizes headlights and final corner placement.
     Break either 1×2×3 block during an attempt and confirm CMLL cannot complete until both blocks
     are restored.
-20. Open **Roux → Last Six Edges** with the cube solved. Run each of the three displayed LSE-only
+19. Open **Roux → Last Six Edges** with the cube solved. Run each of the three displayed LSE-only
     setups. For EO, confirm the good-edge counter changes as `M` and `U` are turned. For L/R,
     confirm the app recognizes edges relative to the corner ring even after a `U` adjustment. For
     4C, confirm completion happens automatically only when all six faces are uniform. Deliberately

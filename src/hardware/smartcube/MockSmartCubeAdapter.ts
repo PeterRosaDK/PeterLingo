@@ -1,11 +1,20 @@
 import { appendMove, SOLVED_FACELETS } from './state';
-import type { ConnectionState, CubeMove, CubeState, SmartCubeAdapter, Unsubscribe } from './types';
+import type {
+  ConnectionState,
+  CubeMove,
+  CubeOrientation,
+  CubeState,
+  SmartCubeAdapter,
+  Unsubscribe,
+} from './types';
 
 export class MockSmartCubeAdapter implements SmartCubeAdapter {
   private connectionState: ConnectionState = 'disconnected';
   private state: CubeState;
   private handlers = new Set<(move: CubeMove) => void>();
   private stateHandlers = new Set<(state: CubeState) => void>();
+  private orientationHandlers = new Set<(orientation: CubeOrientation) => void>();
+  private orientation: CubeOrientation | null = null;
 
   constructor(facelets: string = SOLVED_FACELETS) {
     this.state = {
@@ -27,6 +36,7 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
 
   async disconnect(): Promise<void> {
     this.connectionState = 'disconnected';
+    this.orientation = null;
     this.notifyState();
   }
 
@@ -46,6 +56,22 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
   subscribeToState(handler: (state: CubeState) => void): Unsubscribe {
     this.stateHandlers.add(handler);
     return () => this.stateHandlers.delete(handler);
+  }
+
+  getOrientation(): CubeOrientation | null {
+    return this.orientation
+      ? { ...this.orientation, quaternion: { ...this.orientation.quaternion } }
+      : null;
+  }
+
+  subscribeToOrientation(handler: (orientation: CubeOrientation) => void): Unsubscribe {
+    this.orientationHandlers.add(handler);
+    return () => this.orientationHandlers.delete(handler);
+  }
+
+  setOrientation(quaternion: CubeOrientation['quaternion'], timestamp = Date.now()): void {
+    this.orientation = { quaternion: { ...quaternion }, timestamp };
+    for (const handler of this.orientationHandlers) handler(this.getOrientation()!);
   }
 
   async getBatteryLevel(): Promise<number> {

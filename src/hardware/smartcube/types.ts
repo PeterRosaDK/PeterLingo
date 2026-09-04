@@ -7,6 +7,11 @@ export interface CubeMove {
   source: 'mock' | 'bluetooth';
 }
 
+export interface CubeOrientation {
+  quaternion: { x: number; y: number; z: number; w: number };
+  timestamp: number;
+}
+
 export interface CubeState {
   facelets: string | null;
   algorithm: string;
@@ -30,6 +35,8 @@ export interface SmartCubeAdapter {
   getCubeState(): CubeState | null;
   subscribeToMoves(handler: (move: CubeMove) => void): Unsubscribe;
   subscribeToState?(handler: (state: CubeState) => void): Unsubscribe;
+  getOrientation?(): CubeOrientation | null;
+  subscribeToOrientation?(handler: (orientation: CubeOrientation) => void): Unsubscribe;
   requestState?(): Promise<void>;
   clearTracking?(): void;
   calibrateSolvedState?(): Promise<void>;

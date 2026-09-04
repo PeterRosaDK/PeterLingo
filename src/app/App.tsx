@@ -26,8 +26,10 @@ const CardsPage = lazy(() =>
 const PiPage = lazy(() =>
   import('../modules/pi/PiPage').then((module) => ({ default: module.PiPage }))
 );
-const RouxPage = lazy(() =>
-  import('../modules/roux/RouxPage').then((module) => ({ default: module.RouxPage }))
+const RouxTrainingPage = lazy(() =>
+  import('../modules/roux/RouxTrainingPage').then((module) => ({
+    default: module.RouxTrainingPage,
+  }))
 );
 const RouxFirstBlockPage = lazy(() =>
   import('../modules/roux/RouxFirstBlockPage').then((module) => ({
@@ -87,14 +89,19 @@ export function App() {
               <Route path="fag/doomsday" element={<DoomsdayPage />} />
               <Route path="fag/kort" element={<CardsPage />} />
               <Route path="fag/pi" element={<PiPage />} />
-              <Route path="fag/roux" element={<RouxPage />} />
+              <Route path="fag/roux" element={<RouxTrainingPage />} />
+              <Route path="fag/roux/traening" element={<RouxTrainingPage />} />
               <Route path="fag/roux/first-block" element={<RouxFirstBlockPage />} />
               <Route path="fag/roux/second-block" element={<RouxSecondBlockPage />} />
               <Route path="fag/roux/cmll" element={<RouxCmllPage />} />
               <Route path="fag/roux/lse" element={<RouxLsePage />} />
               <Route path="fag/roux/notation" element={<CubeNotationHelpPage />} />
               <Route path="fag/roux/manuel-tilstand" element={<ManualCubeStatePage />} />
-              <Route path="fag/roux/diagnostik" element={<SmartCubeDiagnosticsPage />} />
+              <Route path="fag/roux/opsaetning" element={<SmartCubeDiagnosticsPage />} />
+              <Route
+                path="fag/roux/diagnostik"
+                element={<Navigate replace to="/fag/roux/opsaetning" />}
+              />
               <Route path="fag/hoerelaere" element={<MusicEarPage />} />
               <Route path="fag/musikoere" element={<Navigate replace to="/fag/hoerelaere" />} />
               <Route path="statistik" element={<StatsPage />} />

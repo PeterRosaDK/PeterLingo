@@ -175,11 +175,11 @@ export function CubeNotationHelpPage() {
       </section>
 
       <div className="button-row notation-actions">
-        <Link className="button primary" to="/fag/roux/diagnostik">
-          Tilbage til GoCube-målingen
+        <Link className="button primary" to="/fag/roux/opsaetning">
+          Til Opsætning
         </Link>
-        <Link className="button secondary" to="/fag/roux">
-          Til Roux
+        <Link className="button secondary" to="/fag/roux/traening">
+          Til Træning
         </Link>
       </div>
     </div>

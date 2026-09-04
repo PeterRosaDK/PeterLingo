@@ -72,19 +72,24 @@ On iPhone/iPad:
 1. Install Beacio.
 2. Enable its Safari extension under **Indstillinger → Apps → Safari → Udvidelser**.
 3. Allow it for the PeterLingo site and reload the page.
-4. Open **Roux → GoCube-diagnostik**.
-5. Tap **Forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
+4. Open **Roux → Opsætning**.
+5. Tap **Find og forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
 
 After that first approval, PeterLingo makes one quiet startup attempt to reconnect the remembered
 cube without opening the chooser. This depends on browser support for `getDevices()` and can fail
-when the cube is asleep, out of range, or already used by another app; diagnostics keeps both a
+when the cube is asleep, out of range, or already used by another app; Opsætning keeps both a
 remembered-device button and the explicit chooser as fallbacks.
 
 See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
 has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
 under verification.
 
-The first real Roux teaching slice lives at **Roux → Begynd First Block**. It teaches the fixed
+Choosing **Roux** opens the four-phase training path directly. **Opsætning** is a secondary route
+for connection, a live 3D state, synchronization, and quick recovery solving. The unfolded facelet
+net remains available only as a technical disclosure. The old guided capture protocol is not part
+of the learner interface.
+
+The first real Roux teaching slice lives at **Roux → First Block**. It teaches the fixed
 orange-yellow left block as a front square plus a back pair, records the orientation and lesson
 units, and watches the five target cubies live when a synchronized GoCube is connected. Manual
 completion remains available as an explicitly self-reported offline fallback. This first slice

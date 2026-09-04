@@ -5,12 +5,13 @@ import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import type {
   ConnectionState,
   CubeMove,
+  CubeOrientation,
   CubeState,
   RememberedCube,
 } from '../../hardware/smartcube/types';
 import { CubeFaceletNet } from './CubeFaceletNet';
-import { validateFacelets } from './faceletSolver';
-import { GoCubeMoveCapture } from './GoCubeMoveCapture';
+import { CubeViewer } from './CubeViewer';
+import { solveFacelets, validateFacelets } from './faceletSolver';
 
 type RememberedCheck = 'checking' | 'ready' | 'unsupported' | 'error';
 
@@ -48,6 +49,12 @@ export function SmartCubeDiagnosticsPage() {
   const [connection, setConnection] = useState<ConnectionState>(() => adapter.getConnectionState());
   const [state, setState] = useState<CubeState | null>(() => adapter.getCubeState());
   const [history, setHistory] = useState<CubeMove[]>([]);
+  const [orientation, setOrientation] = useState<CubeOrientation | null>(
+    () => adapter.getOrientation?.() ?? null
+  );
+  const [orientationReference, setOrientationReference] = useState<CubeOrientation | null>(null);
+  const [viewerSolution, setViewerSolution] = useState('');
+  const [viewerStatus, setViewerStatus] = useState('Venter på cubens tilstand');
   const [battery, setBattery] = useState<number | null>(null);
   const [actionPending, setActionPending] = useState(false);
   const [rememberedCubes, setRememberedCubes] = useState<RememberedCube[]>([]);
@@ -65,6 +72,34 @@ export function SmartCubeDiagnosticsPage() {
   const liveSolveSearch = liveFacelets
     ? `?${new URLSearchParams({ facelets: liveFacelets, solve: '1' }).toString()}`
     : '';
+
+  useEffect(() => {
+    let cancelled = false;
+    let timeout = 0;
+    if (!liveFacelets || !validateFacelets(liveFacelets).ok) {
+      setViewerSolution('');
+      setViewerStatus('Forbind cuben for at se dens aktuelle farver i 3D');
+      return;
+    }
+    setViewerStatus('Opdaterer 3D-visningen …');
+    timeout = window.setTimeout(() => {
+      void solveFacelets(liveFacelets)
+        .then((solution) => {
+          if (cancelled) return;
+          setViewerSolution(solution.algorithm);
+          setViewerStatus('3D-farverne følger cubens aflæste tilstand');
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setViewerSolution('');
+          setViewerStatus('3D-visningen kunne ikke beregnes fra den aktuelle tilstand');
+        });
+    }, 140);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [liveFacelets]);
 
   const refreshRememberedCubes = useCallback(async () => {
     if (!adapter.getRememberedCubes) {
@@ -91,7 +126,15 @@ export function SmartCubeDiagnosticsPage() {
     });
     const offState = adapter.subscribeToState?.((nextState) => {
       setState(nextState);
-      setConnection(adapter.getConnectionState());
+      const nextConnection = adapter.getConnectionState();
+      setConnection(nextConnection);
+      if (nextConnection !== 'connected') {
+        setOrientation(null);
+        setOrientationReference(null);
+      }
+    });
+    const offOrientation = adapter.subscribeToOrientation?.((nextOrientation) => {
+      setOrientation(nextOrientation);
     });
     if (adapter.getConnectionState() === 'connected') {
       void adapter.getBatteryLevel?.().then((level) => setBattery(level ?? null));
@@ -104,6 +147,7 @@ export function SmartCubeDiagnosticsPage() {
     return () => {
       offMove();
       offState?.();
+      offOrientation?.();
     };
   }, [adapter, refreshRememberedCubes]);
 
@@ -148,6 +192,8 @@ export function SmartCubeDiagnosticsPage() {
     void adapter.disconnect().then(() => {
       setConnection('disconnected');
       setBattery(null);
+      setOrientation(null);
+      setOrientationReference(null);
       setMessage('Forbindelsen er lukket. Browserens tilladelse til cuben er bevaret.');
     });
   };
@@ -196,15 +242,13 @@ export function SmartCubeDiagnosticsPage() {
   return (
     <div className="page diagnostics-page">
       <header className="page-heading">
-        <p className="eyebrow">Roux · hardwarelaboratorium</p>
-        <h1>GoCube-diagnostik</h1>
-        <p>
-          Intet her tæller som fysisk validering, før du selv har kørt checklisten på din terning.
-        </p>
+        <p className="eyebrow">Roux · opsætning</p>
+        <h1>Opsætning</h1>
+        <p>Forbind GoCube, se hvad den aflæser, eller få cuben løst hurtigt.</p>
+        <Link className="button secondary" to="/fag/roux/traening">
+          Gå direkte til Træning
+        </Link>
       </header>
-      <div className="diagnostic-warning">
-        ✓ Live-tracking af almindelige ydertræk bekræftet · M-træk verificeres som næste trin
-      </div>
       <section className="cube-reference-grip" aria-labelledby="reference-grip-title">
         <div>
           <p className="eyebrow">Fælles nulpunkt</p>
@@ -218,8 +262,8 @@ export function SmartCubeDiagnosticsPage() {
           Hvad betyder R, R′ og M?
         </Link>
       </section>
-      <section className="diagnostic-grid">
-        <div className="diagnostic-panel">
+      <section className="diagnostic-grid setup-grid">
+        <div className="diagnostic-panel setup-technical-panel">
           <h2>Miljø</h2>
           <dl>
             <div>
@@ -267,8 +311,9 @@ export function SmartCubeDiagnosticsPage() {
             </p>
           )}
         </div>
-        <div className="diagnostic-panel">
-          <h2>Forbindelse</h2>
+        <div className="diagnostic-panel setup-connection-panel">
+          <p className="eyebrow">1 · Forbind</p>
+          <h2>GoCube</h2>
           <dl>
             <div>
               <dt>Status</dt>
@@ -344,26 +389,50 @@ export function SmartCubeDiagnosticsPage() {
             {message}
           </p>
         </div>
-        <div className="diagnostic-panel cube-diagnostic">
-          <h2>Aflæst fysisk tilstand</h2>
-          <CubeFaceletNet facelets={state?.facelets ?? null} />
-          <span
-            className={`status-pill ${state?.synchronization === 'synchronized' ? 'good' : ''}`}
-          >
-            {state?.synchronization ?? 'unknown'}
-          </span>
+        <div className="diagnostic-panel cube-diagnostic setup-cube-panel">
+          <p className="eyebrow">2 · Se og løs</p>
+          <h2>Din cube i 3D</h2>
+          <div className="live-cube-viewer">
+            <CubeViewer
+              algorithm={viewerSolution}
+              showAlgorithmStart
+              orientation={orientation}
+              orientationReference={orientationReference}
+            />
+            <div>
+              <span className={`status-pill ${liveStateIsSolvable ? 'good' : ''}`}>
+                {state?.synchronization ?? 'unknown'}
+              </span>
+              <p>{viewerStatus}</p>
+              <p>
+                {orientation
+                  ? orientationReference
+                    ? 'Gyroskopet sender nu cubens retning til 3D-visningen.'
+                    : 'Gyroskop fundet. Hold hvid/GO op og grøn frem, og sæt retningen.'
+                  : 'Venter på orienteringsdata fra GoCube.'}
+              </p>
+              <button
+                type="button"
+                className="button secondary"
+                disabled={!orientation}
+                onClick={() => setOrientationReference(orientation)}
+              >
+                Sæt denne retning som hvid op · grøn frem
+              </button>
+            </div>
+          </div>
           <p className="facelet-note">
-            Farvenettet følger GoCube løbende under dine træk. Synkroniseringskontrollen nedenfor er
-            kun en reserve ved genforbindelse, et mistet træk eller mistanke om en afvigelse.
+            3D-cuben følger farverne løbende. Gyroretningen nulstilles kun for visningen og ændrer
+            ikke GoCubens gemte cubetilstand.
           </p>
           <div className="button-row">
             {canSolveLiveState ? (
               <Link className="button primary" to={`/fag/roux/manuel-tilstand${liveSolveSearch}`}>
-                Løs den aflæste cube
+                Løs cuben hurtigt
               </Link>
             ) : (
               <button type="button" className="button primary" disabled>
-                Løs den aflæste cube
+                Løs cuben hurtigt
               </button>
             )}
             <button
@@ -397,8 +466,12 @@ export function SmartCubeDiagnosticsPage() {
               Forbind GoCube ovenfor for at løse eller kontrollere den.
             </p>
           )}
+          <details className="facelet-net-details">
+            <summary>Vis udfoldet farvenet</summary>
+            <CubeFaceletNet facelets={state?.facelets ?? null} />
+          </details>
         </div>
-        <div className="diagnostic-panel">
+        <div className="diagnostic-panel setup-technical-panel">
           <h2>Logisk state</h2>
           <dl>
             <div>
@@ -430,40 +503,6 @@ export function SmartCubeDiagnosticsPage() {
               Nulstilling løser ikke en blandet terning. Den må først bruges, når terningen fysisk
               er løst; ellers lærer elektronikken en forkert nulstilling.
             </p>
-          )}
-        </div>
-      </section>
-      <GoCubeMoveCapture
-        connected={connection === 'connected'}
-        history={history}
-        onClear={clearTracking}
-      />
-      <section className="move-history">
-        <h2>Rå trækhistorik</h2>
-        <p className="move-history-note">
-          Prøv ét M-træk fra referencegrebet. Hvis GoCube sender to ydertræk, viser +0 ms eller en
-          meget lille afstand, at de hører sammen. Vi normaliserer først til M/M′, når retningen er
-          fysisk bekræftet.
-        </p>
-        <div>
-          {history.length ? (
-            history.map((move, index) => {
-              const previous = history[index - 1];
-              const delta = previous
-                ? Math.max(0, Math.round(move.timestamp - previous.timestamp))
-                : null;
-              return (
-                <span key={`${move.timestamp}-${index}`}>
-                  {move.notation}
-                  <small>
-                    rå GoCube-kode · {new Date(move.timestamp).toLocaleTimeString('da-DK')}
-                    {delta === null ? '' : ` · +${delta} ms`}
-                  </small>
-                </span>
-              );
-            })
-          ) : (
-            <p>Ingen træk registreret.</p>
           )}
         </div>
       </section>

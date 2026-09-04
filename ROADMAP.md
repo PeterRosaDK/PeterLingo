@@ -17,14 +17,20 @@ confirmed by Peter. M-move normalization and the remaining device matrix are sti
 - Keep an approved connection alive during navigation inside PeterLingo. A single prompt-free
   startup reconnection through Web Bluetooth `getDevices()` is now implemented where the browser
   supports it; explicit remembered-device reconnection and the chooser remain fallbacks.
+- Open Roux directly on the four-phase training path. Keep **Opsætning** as the secondary place for
+  Bluetooth connection, live 3D state, synchronization tools, manual colour fallback, and quick
+  recovery solving. The former guided protocol and text-heavy physical-cube landing section are
+  removed from the learner flow.
+- Feed GoCubens orientation quaternion into the live 3D cube after a user-defined white-up,
+  green-front reference. The event pipeline and visual integration are implemented; physical axis
+  direction still needs verification on the actual cube before it is considered calibrated.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
   In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
   `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.
-- Capture isolated physical `M` and `M'` turns with raw event timing. Confirm the exact paired
-  outer-move signatures before normalising them into Roux slice moves. A guided
-  `R/R'/L/L'/M/M'` capture flow is implemented for this calibration. Outer moves must match their
-  standard letter in the fixed grip; only M/M′ retain device-specific multi-event evidence. The
-  locally saved sequence can now be copied as an exact report with inter-event timing.
+- Capture isolated physical `M` and `M'` turns in a developer test when normalization resumes.
+  Confirm the exact paired outer-move signatures before normalising them into Roux slice moves.
+  This calibration is deliberately not presented as a normal learner step; outer moves must match
+  their standard letter in the fixed grip, while M/M′ retain device-specific multi-event evidence.
 - Build a phase-aware Roux solver that can return any validated physical state to solved, expose
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback

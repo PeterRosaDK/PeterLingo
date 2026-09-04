@@ -628,8 +628,8 @@ export function ManualCubeStatePage({
       )}
 
       <div className="button-row manual-state-actions">
-        <Link className="button secondary" to="/fag/roux/diagnostik">
-          Tilbage til diagnostikken
+        <Link className="button secondary" to="/fag/roux/opsaetning">
+          Tilbage til Opsætning
         </Link>
         <Link className="button secondary" to="/fag/roux/notation">
           Se notationshjælpen

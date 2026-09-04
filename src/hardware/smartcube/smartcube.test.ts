@@ -314,6 +314,18 @@ describe('smart-cube adapters', () => {
 
     const adapter = new WebBluetoothSmartCubeAdapter();
     await adapter.connect();
+    const orientations: Array<{ x: number; y: number; z: number; w: number }> = [];
+    adapter.subscribeToOrientation((orientation) => orientations.push(orientation.quaternion));
+    events.next({
+      timestamp: 1.5,
+      type: 'GYRO',
+      quaternion: { x: 0.1, y: 0.2, z: 0.3, w: 0.9 },
+    });
+    expect(adapter.getOrientation()).toMatchObject({
+      quaternion: { x: 0.1, y: 0.2, z: 0.3, w: 0.9 },
+      timestamp: 1.5,
+    });
+    expect(orientations).toEqual([{ x: 0.1, y: 0.2, z: 0.3, w: 0.9 }]);
     events.next({
       timestamp: 2,
       type: 'MOVE',
@@ -342,5 +354,8 @@ describe('smart-cube adapters', () => {
       facelets: SOLVED_FACELETS,
       synchronization: 'synchronized',
     });
+
+    await adapter.disconnect();
+    expect(adapter.getOrientation()).toBeNull();
   });
 });
