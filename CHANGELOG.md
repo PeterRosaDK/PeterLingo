@@ -35,6 +35,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed automatic GoCube orientation, the live home-page cube, and the simplified Roux controls
+  as exact revision `37763b9` at `https://c3e9e883.peterlingo.pages.dev`.
 - Renamed the training shortcut **Se notation** to **Hjælp** and removed the unexplained daily
   three-move hand drill from both the Roux page and future daily-session selection.
 - Removed cubing.js' floating hint facelets and the separate unfolded diagnostic net. Hidden cube
