@@ -13,6 +13,14 @@ vi.mock('../../hardware/smartcube/physicalCube', async () => {
   return { physicalCubeAdapter: new MockAdapter() };
 });
 
+vi.mock('./CubeViewer', () => ({
+  CubeViewer: ({ ariaLabel }: { ariaLabel?: string }) => <div aria-label={ariaLabel} />,
+}));
+
+vi.mock('./LivePhysicalCubeViewer', () => ({
+  LivePhysicalCubeViewer: () => <div aria-label="Din fysiske cube i 3D" />,
+}));
+
 afterEach(cleanup);
 
 const SUNE_SETUP_FACELETS = 'RUFUUUUULBBURRRRRRBFUFFFFFFDDDDDDDDDFRRLLLLLLLLUBBBBBB';
@@ -34,6 +42,7 @@ describe('Roux beginner CMLL course', () => {
 
     expect(screen.getByRole('heading', { name: 'Begynder-CMLL', level: 1 })).toBeVisible();
     expect(screen.getByText(/hvid CMLL-farven/)).toBeVisible();
+    expect(screen.getByLabelText('Delmål i 3D: fire løste CMLL-hjørner')).toBeVisible();
 
     fireEvent.click(screen.getByRole('button', { name: 'Næste kig' }));
     expect(screen.getByText('Orientér')).toBeVisible();
@@ -76,13 +85,14 @@ describe('Roux beginner CMLL course', () => {
     await cube.connect();
     renderPage(cube, repository);
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Start CMLL med GoCube' }));
+    expect(await screen.findByText('GoCube vurderer næste kig')).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Start CMLL med GoCube' })).not.toBeInTheDocument();
     expect(screen.getByText('1/4 orienteret')).toBeVisible();
 
     const brokenBlock = [...SOLVED_FACELETS];
     brokenBlock[29] = 'X';
     await act(async () => cube.setFacelets(brokenBlock.join('')));
-    expect(await screen.findByText(/en af de to blokke er brudt/)).toBeVisible();
+    expect((await screen.findAllByText(/en af de to blokke er brudt/))[0]).toBeVisible();
     expect(screen.queryByText('CMLL gennemført')).not.toBeInTheDocument();
 
     await act(async () => cube.setFacelets(SOLVED_FACELETS));

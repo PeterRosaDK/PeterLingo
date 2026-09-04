@@ -5,6 +5,9 @@ import { fixedLseProgress } from '../../hardware/smartcube/state';
 import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import type { GeneratedExercise } from '../../learning/types';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
+import { CubeViewer } from './CubeViewer';
+import { RouxPhaseCubePanel } from './RouxPhaseCubePanel';
+import { RouxQuickSolvePanel, type RouxQuickSolveTarget } from './RouxQuickSolvePanel';
 
 export const ARROW_FRONT = "M' U M";
 export const FRONT_SWAP = "M' U2 M";
@@ -285,6 +288,7 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [mode, setMode] = useState<'idle' | 'live' | 'manual' | 'complete'>('idle');
   const [completionMessage, setCompletionMessage] = useState('');
+  const [preparing, setPreparing] = useState(false);
   const completionLocked = useRef(false);
   const exercise = useMemo<GeneratedExercise<{ mode: string; setup: string }>>(
     () => ({
@@ -317,6 +321,20 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const progress = fixedLseProgress(cubeState?.facelets ?? '');
   const isLiveReady =
     connection === 'connected' && cubeState?.synchronization === 'synchronized' && progress.valid;
+  const activeMode =
+    mode === 'idle' && isLiveReady && progress.cmllComplete && !progress.complete && !preparing
+      ? 'live'
+      : mode;
+  const liveAttemptActive = useRef(false);
+  const preparationTarget = useMemo<RouxQuickSolveTarget>(
+    () => ({
+      phaseName: 'Last Six Edges',
+      setupAlgorithm: selectedSetup.setup,
+      readyMessage:
+        'Begge blokke og de fire tophjørner er bevaret. Luk klargøringen og løs nu kun de sidste seks kanter.',
+    }),
+    [selectedSetup.setup]
+  );
 
   const finishAttempt = useCallback(
     async (verifiedByCube: boolean) => {
@@ -350,7 +368,16 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
     const inspect = (nextState: CubeState | null) => {
       setCubeState(nextState);
       setConnection(adapter.getConnectionState());
-      if (mode === 'live' && fixedLseProgress(nextState?.facelets ?? '').complete) {
+      const nextProgress = fixedLseProgress(nextState?.facelets ?? '');
+      if (
+        mode === 'idle' &&
+        nextProgress.valid &&
+        nextProgress.cmllComplete &&
+        !nextProgress.complete
+      ) {
+        liveAttemptActive.current = true;
+      }
+      if (mode !== 'manual' && liveAttemptActive.current && nextProgress.complete) {
         void finishAttempt(true);
       }
     };
@@ -388,10 +415,26 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
             ? 'Begge L/R-kanter står i bunden af M-skiven. Drej U, så hjørnerne passer, og udfør M2.'
             : `${progress.lrEdgesOnBottomCount}/2 L/R-kanter er klar i bunden. Brug front- eller bagbyttet med U2.`
           : 'EO og L/R er på plads. Løs de fire resterende kanter med U, M og M2; GoCube afslutter automatisk ved seks ensfarvede flader.';
+  const targetStep = !progress.edgesOriented ? 0 : !progress.lrEdgesRelative ? 1 : 2;
+  const targetTitles = [
+    'Vend alle seks kanter rigtigt',
+    'Placér den hvide-orange og hvide-røde kant',
+    'Løs de sidste fire kanter',
+  ];
+
+  if (preparing) {
+    return (
+      <RouxQuickSolvePanel
+        adapter={adapter}
+        onClose={() => setPreparing(false)}
+        target={preparationTarget}
+      />
+    );
+  }
 
   return (
     <section
-      className={`lesson-card first-block-practice lse-practice ${mode === 'live' ? 'is-live' : ''}`}
+      className={`lesson-card first-block-practice lse-practice ${activeMode === 'live' ? 'is-live' : ''}`}
       id="lse-practice"
       aria-labelledby="lse-practice-title"
     >
@@ -410,7 +453,51 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
         <span>Prime betyder modsat kvartdrejning; 2 betyder en halv omgang.</span>
       </div>
 
+      <div className="phase-preparation-row">
+        <p>
+          Klargøringen kan føre enhver gyldig cube hertil og efterlader blokke og hjørner færdige.
+        </p>
+        <button className="button solve" onClick={() => setPreparing(true)} type="button">
+          Løs hurtigt hertil
+        </button>
+      </div>
+
       <LseSetupPicker selected={selectedSetup} onSelect={setSelectedSetup} />
+
+      <div className="first-block-cube-comparison phase-cube-comparison">
+        <RouxPhaseCubePanel adapter={adapter} isLiveReady={isLiveReady} />
+        <article className="first-block-cube-panel target">
+          <header>
+            <div>
+              <p className="eyebrow">Dit delmål · {targetStep + 1} af 3</p>
+              <h3>{targetTitles[targetStep]}</h3>
+            </div>
+            <span className="target-badge">Mål</span>
+          </header>
+          <div className="first-block-viewer-frame target-view">
+            <CubeViewer
+              allowDrag={false}
+              ariaLabel="Delmål i 3D: Last Six Edges"
+              cameraLatitude={-18}
+              cameraLongitude={34}
+              stickering={targetStep === 0 ? 'L6EO' : 'L6E'}
+            />
+          </div>
+          <p className="viewer-caption">
+            De klare felter er de seks kanter, du arbejder med. Blokke og hjørner skal blive
+            færdige.
+          </p>
+        </article>
+      </div>
+
+      <div className="first-block-instruction phase-next-instruction" role="status">
+        <div>
+          <span>Gør dette nu</span>
+          <h3>{targetTitles[targetStep]}</h3>
+          <p>{liveCoach}</p>
+          <small>Hold hvid/GO op og grøn frem. I denne fase bruger du kun M- og U-træk.</small>
+        </div>
+      </div>
 
       <div className="first-block-live-grid">
         <div className="first-block-progress-panel lse-progress-panel">
@@ -477,7 +564,7 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
                 Træn én gang til
               </button>
             </div>
-          ) : mode === 'live' ? (
+          ) : activeMode === 'live' ? (
             <div className="live-coach-message" role="status">
               <span className="live-dot" aria-hidden="true" />
               <strong>GoCube vurderer næste delmål</strong>
@@ -511,9 +598,7 @@ function LsePractice({ adapter }: { adapter: SmartCubeAdapter }) {
                     startknappen klar.
                   </p>
                 ) : (
-                  <button type="button" className="button primary" onClick={() => start('live')}>
-                    Start LSE med GoCube
-                  </button>
+                  <p>GoCube starter automatisk kontrollen af Last Six Edges.</p>
                 )
               ) : (
                 <>
@@ -592,8 +677,8 @@ export function RouxLsePage({
         <span>→</span>
         <strong>LSE</strong>
       </nav>
-      <LseLesson onFinish={revealPractice} />
       <LsePractice adapter={cubeAdapter} />
+      <LseLesson onFinish={revealPractice} />
       <section className="lesson-card algorithm-ladder cmll-ladder">
         <div>
           <p className="eyebrow">Færdighedsstigen</p>

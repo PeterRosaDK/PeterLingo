@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { TwistyPlayerConfig } from 'cubing/twisty';
 import { Link } from 'react-router-dom';
 import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import {
@@ -8,6 +9,49 @@ import {
 import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import type { GeneratedExercise } from '../../learning/types';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
+import { CubeViewer } from './CubeViewer';
+import { RouxPhaseCubePanel } from './RouxPhaseCubePanel';
+import { RouxQuickSolvePanel, type RouxQuickSolveTarget } from './RouxQuickSolvePanel';
+
+type StickeringMask = NonNullable<TwistyPlayerConfig['experimentalStickeringMaskOrbits']>;
+
+const ignoredPiece = () => ({ facelets: Array.from({ length: 5 }, () => 'ignored' as const) });
+const regularPiece = () => ({ facelets: Array.from({ length: 5 }, () => 'regular' as const) });
+const dimPiece = () => ({ facelets: Array.from({ length: 5 }, () => 'dim' as const) });
+
+function secondBlockSubgoalMask(step: 0 | 1): StickeringMask {
+  const rightPieces = step === 0 ? { edges: [5], corners: [] } : { edges: [5, 8], corners: [4] };
+  return {
+    name: `PeterLingo Roux second block subgoal ${step + 1}`,
+    orbits: {
+      EDGES: {
+        pieces: Array.from({ length: 12 }, (_, index) =>
+          rightPieces.edges.includes(index)
+            ? regularPiece()
+            : [7, 9, 11].includes(index)
+              ? dimPiece()
+              : ignoredPiece()
+        ),
+      },
+      CORNERS: {
+        pieces: Array.from({ length: 8 }, (_, index) =>
+          rightPieces.corners.includes(index)
+            ? regularPiece()
+            : [5, 6].includes(index)
+              ? dimPiece()
+              : ignoredPiece()
+        ),
+      },
+      CENTERS: {
+        pieces: Array.from({ length: 6 }, (_, index) =>
+          index === 3 ? regularPiece() : index === 1 ? dimPiece() : ignoredPiece()
+        ),
+      },
+    },
+  };
+}
+
+const secondBlockSubgoalMasks = [secondBlockSubgoalMask(0), secondBlockSubgoalMask(1)] as const;
 
 const introExercise: GeneratedExercise<{ block: string; beginnerAlgorithms: number }> = {
   id: 'roux:second-block-intro:right-down:v1',
@@ -270,6 +314,7 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [mode, setMode] = useState<'idle' | 'live' | 'manual' | 'complete'>('idle');
   const [completionMessage, setCompletionMessage] = useState('');
+  const [preparing, setPreparing] = useState(false);
   const completionLocked = useRef(false);
   const exercise = useMemo<GeneratedExercise<{ mode: string; block: string }>>(
     () => ({
@@ -297,6 +342,24 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const progress = fixedRightSecondBlockProgress(cubeState?.facelets ?? '');
   const isLiveReady =
     connection === 'connected' && cubeState?.synchronization === 'synchronized' && progress.valid;
+  const activeMode =
+    mode === 'idle' &&
+    isLiveReady &&
+    progress.firstBlockComplete &&
+    !progress.complete &&
+    !preparing
+      ? 'live'
+      : mode;
+  const liveAttemptActive = useRef(false);
+  const preparationTarget = useMemo<RouxQuickSolveTarget>(
+    () => ({
+      phaseName: 'Second Block',
+      setupAlgorithm: SECOND_BLOCK_SETUPS[0],
+      readyMessage:
+        'Den orange First Block er bevaret, og højre side er gjort klar. Luk klargøringen og begynd direkte på Second Block.',
+    }),
+    []
+  );
 
   const finishAttempt = useCallback(
     async (verifiedByCube: boolean) => {
@@ -328,7 +391,16 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
     const inspect = (nextState: CubeState | null) => {
       setCubeState(nextState);
       setConnection(adapter.getConnectionState());
-      if (mode === 'live' && fixedRightSecondBlockProgress(nextState?.facelets ?? '').complete) {
+      const nextProgress = fixedRightSecondBlockProgress(nextState?.facelets ?? '');
+      if (
+        mode === 'idle' &&
+        nextProgress.valid &&
+        nextProgress.firstBlockComplete &&
+        !nextProgress.complete
+      ) {
+        liveAttemptActive.current = true;
+      }
+      if (mode !== 'manual' && liveAttemptActive.current && nextProgress.complete) {
         void finishAttempt(true);
       }
     };
@@ -363,10 +435,31 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
       : !progress.oneSquareComplete
         ? 'DR sidder. Saml nu enten det grøn-røde eller blå-røde hjørne-kant-par.'
         : 'Den første firkant er samlet. Bevar den og indsæt det sidste røde par.';
+  const targetStep = !progress.bottomEdgeComplete ? 0 : !progress.oneSquareComplete ? 1 : 2;
+  const targetTitles = [
+    'Placér den gul-røde bundkant',
+    'Byg den første røde firkant',
+    'Indsæt det sidste røde par',
+  ];
+  const targetCaptions = [
+    'Kun den klare gul-røde kant er målet nu. Den dæmpede orange blok til venstre skal blive stående.',
+    'De tre klare brikker danner den forreste røde firkant. Den dæmpede orange blok skal blive stående.',
+    'Alle klare felter afslutter den røde blok til højre. Den dæmpede orange blok skal stadig blive stående.',
+  ];
+
+  if (preparing) {
+    return (
+      <RouxQuickSolvePanel
+        adapter={adapter}
+        onClose={() => setPreparing(false)}
+        target={preparationTarget}
+      />
+    );
+  }
 
   return (
     <section
-      className={`lesson-card first-block-practice second-block-practice ${mode === 'live' ? 'is-live' : ''}`}
+      className={`lesson-card first-block-practice second-block-practice ${activeMode === 'live' ? 'is-live' : ''}`}
       id="second-block-practice"
       aria-labelledby="second-block-practice-title"
     >
@@ -388,7 +481,50 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
         <span>Træk skrives som R, U, R′ og U2. Farverne identificerer kun sider og brikker.</span>
       </div>
 
+      <div className="phase-preparation-row">
+        <p>
+          Er cuben ikke klar til denne fase? Klargøringen løser den først og laver derefter en
+          opstilling, hvor First Block bevares.
+        </p>
+        <button className="button solve" onClick={() => setPreparing(true)} type="button">
+          Løs hurtigt hertil
+        </button>
+      </div>
+
       <SetupGenerator />
+
+      <div className="first-block-cube-comparison phase-cube-comparison">
+        <RouxPhaseCubePanel adapter={adapter} isLiveReady={isLiveReady} />
+        <article className="first-block-cube-panel target">
+          <header>
+            <div>
+              <p className="eyebrow">Dit delmål · {targetStep + 1} af 3</p>
+              <h3>{targetTitles[targetStep]}</h3>
+            </div>
+            <span className="target-badge">Mål</span>
+          </header>
+          <div className="first-block-viewer-frame target-view">
+            <CubeViewer
+              allowDrag={false}
+              ariaLabel={`Delmål i 3D: ${targetTitles[targetStep]}`}
+              cameraLatitude={-18}
+              cameraLongitude={34}
+              stickering={targetStep === 2 ? 'SecondBlock' : null}
+              stickeringMask={targetStep === 2 ? undefined : secondBlockSubgoalMasks[targetStep]}
+            />
+          </div>
+          <p className="viewer-caption">{targetCaptions[targetStep]}</p>
+        </article>
+      </div>
+
+      <div className="first-block-instruction phase-next-instruction" role="status">
+        <div>
+          <span>Gør dette nu</span>
+          <h3>{targetTitles[targetStep]}</h3>
+          <p>{liveCoachText}</p>
+          <small>Hvid/GO op · grøn frem. Brug toppen som arbejdsbord og åbn kun højre side.</small>
+        </div>
+      </div>
 
       <div className="first-block-live-grid">
         <div className="first-block-progress-panel second-block-progress-panel">
@@ -463,10 +599,10 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
                 Træn én gang til
               </button>
             </div>
-          ) : mode === 'live' ? (
+          ) : activeMode === 'live' ? (
             <div className="live-coach-message" role="status">
               <span className="live-dot" aria-hidden="true" />
-              <strong>Forsøget er i gang</strong>
+              <strong>GoCube følger automatisk med</strong>
               <p>{liveCoachText}</p>
             </div>
           ) : mode === 'manual' ? (
@@ -500,9 +636,7 @@ function SecondBlockPractice({ adapter }: { adapter: SmartCubeAdapter }) {
                     bliver startknappen klar.
                   </p>
                 ) : (
-                  <button type="button" className="button primary" onClick={() => start('live')}>
-                    Start Second Block med GoCube
-                  </button>
+                  <p>GoCube starter automatisk kontrollen af Second Block.</p>
                 )
               ) : (
                 <>
@@ -572,8 +706,8 @@ export function RouxSecondBlockPage({
         <strong>Second Block</strong>
       </nav>
 
-      <SecondBlockLesson onFinish={revealPractice} />
       <SecondBlockPractice adapter={cubeAdapter} />
+      <SecondBlockLesson onFinish={revealPractice} />
 
       <section className="lesson-card algorithm-ladder" aria-labelledby="algorithm-ladder-title">
         <div>

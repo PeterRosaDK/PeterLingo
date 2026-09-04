@@ -1,6 +1,6 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DataProvider } from '../../app/DataProvider';
 import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
@@ -25,6 +25,8 @@ vi.mock('./LivePhysicalCubeViewer', () => ({
 
 const SCRAMBLED_FACELETS = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
 
+afterEach(cleanup);
+
 function renderPage(cube: MockSmartCubeAdapter, repository: InMemoryLearningRepository) {
   return render(
     <DataProvider repository={repository}>
@@ -45,6 +47,7 @@ describe('Roux First Block course', () => {
     expect(screen.getByLabelText('Delmål i 3D: Forreste firkant')).toBeVisible();
     fireEvent.click(screen.getByRole('tab', { name: /Hele First Block/ }));
     expect(screen.getByLabelText('Delmål i 3D: Hele First Block')).toBeVisible();
+    expect(screen.getByText(/blokkens blå bagside/)).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: 'Start uden GoCube' }));
     fireEvent.click(screen.getByRole('button', { name: 'Min First Block er samlet' }));
 
@@ -56,6 +59,20 @@ describe('Roux First Block course', () => {
         generatedParameters: { mode: 'self-reported', verifiedByCube: false },
       });
     });
+  });
+
+  it('keeps visual calibration available while solving without changing facelets', async () => {
+    const repository = new InMemoryLearningRepository();
+    const cube = new MockSmartCubeAdapter(SCRAMBLED_FACELETS);
+    await cube.connect();
+    cube.setOrientation({ x: 0.2, y: 0.1, z: 0.3, w: 0.9 });
+    renderPage(cube, repository);
+    const before = cube.getCubeState()?.facelets;
+
+    fireEvent.click(screen.getByRole('button', { name: 'Kalibrer 3D' }));
+
+    expect(screen.getByText(/Grøn vises nu direkte forfra/)).toBeVisible();
+    expect(cube.getCubeState()?.facelets).toBe(before);
   });
 
   it('finishes automatically when the connected GoCube reports the completed block', async () => {

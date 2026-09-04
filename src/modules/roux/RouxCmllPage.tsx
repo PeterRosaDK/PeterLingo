@@ -5,6 +5,9 @@ import { fixedCmllProgress } from '../../hardware/smartcube/state';
 import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardware/smartcube/types';
 import type { GeneratedExercise } from '../../learning/types';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
+import { CubeViewer } from './CubeViewer';
+import { RouxPhaseCubePanel } from './RouxPhaseCubePanel';
+import { RouxQuickSolvePanel, type RouxQuickSolveTarget } from './RouxQuickSolvePanel';
 
 export const SUNE = "R U R' U R U2 R'";
 export const T_PERM = "R U R' U' R' F R2 U' R' U' R U R' F'";
@@ -285,6 +288,7 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [mode, setMode] = useState<'idle' | 'live' | 'manual' | 'complete'>('idle');
   const [completionMessage, setCompletionMessage] = useState('');
+  const [preparing, setPreparing] = useState(false);
   const completionLocked = useRef(false);
   const exercise = useMemo<GeneratedExercise<{ mode: string; setup: string }>>(
     () => ({
@@ -309,6 +313,20 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
   const progress = fixedCmllProgress(cubeState?.facelets ?? '');
   const isLiveReady =
     connection === 'connected' && cubeState?.synchronization === 'synchronized' && progress.valid;
+  const activeMode =
+    mode === 'idle' && isLiveReady && progress.blocksComplete && !progress.complete && !preparing
+      ? 'live'
+      : mode;
+  const liveAttemptActive = useRef(false);
+  const preparationTarget = useMemo<RouxQuickSolveTarget>(
+    () => ({
+      phaseName: 'CMLL',
+      setupAlgorithm: selectedSetup.setup,
+      readyMessage:
+        'Begge blokke er bevaret, mens tophjørnerne er gjort klar. Luk klargøringen og begynd direkte på CMLL.',
+    }),
+    [selectedSetup.setup]
+  );
 
   const finishAttempt = useCallback(
     async (verifiedByCube: boolean) => {
@@ -341,7 +359,16 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
     const inspect = (nextState: CubeState | null) => {
       setCubeState(nextState);
       setConnection(adapter.getConnectionState());
-      if (mode === 'live' && fixedCmllProgress(nextState?.facelets ?? '').complete)
+      const nextProgress = fixedCmllProgress(nextState?.facelets ?? '');
+      if (
+        mode === 'idle' &&
+        nextProgress.valid &&
+        nextProgress.blocksComplete &&
+        !nextProgress.complete
+      ) {
+        liveAttemptActive.current = true;
+      }
+      if (mode !== 'manual' && liveAttemptActive.current && nextProgress.complete)
         void finishAttempt(true);
     };
     const offState = adapter.subscribeToState?.(inspect);
@@ -384,10 +411,23 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
             : progress.headlightFaces.length
               ? `Forlygterne står ved ${progress.headlightFaces.map((face) => headlightNames[face]).join(', ')}. Flyt dem til L · orange med U-træk.`
               : `Ingen forlygter endnu. Udfør T-perm én gang; find derefter det nye par: ${displayAlg(T_PERM)}`;
+  const targetStep = progress.cornersOriented ? 1 : 0;
+  const targetTitle =
+    targetStep === 0 ? 'Vend alle fire hvide hjørner op' : 'Placér hjørnerne ved de rigtige centre';
+
+  if (preparing) {
+    return (
+      <RouxQuickSolvePanel
+        adapter={adapter}
+        onClose={() => setPreparing(false)}
+        target={preparationTarget}
+      />
+    );
+  }
 
   return (
     <section
-      className={`lesson-card first-block-practice cmll-practice ${mode === 'live' ? 'is-live' : ''}`}
+      className={`lesson-card first-block-practice cmll-practice ${activeMode === 'live' ? 'is-live' : ''}`}
       id="cmll-practice"
       aria-labelledby="cmll-practice-title"
     >
@@ -411,7 +451,52 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
         </span>
       </div>
 
+      <div className="phase-preparation-row">
+        <p>
+          Du kan gå direkte hertil fra enhver gyldig cube-state. Klargøringen bevarer begge blokke
+          og efterlader kun CMLL-opgaven.
+        </p>
+        <button className="button solve" onClick={() => setPreparing(true)} type="button">
+          Løs hurtigt hertil
+        </button>
+      </div>
+
       <CmllSetupPicker selected={selectedSetup} onSelect={setSelectedSetup} />
+
+      <div className="first-block-cube-comparison phase-cube-comparison">
+        <RouxPhaseCubePanel adapter={adapter} isLiveReady={isLiveReady} />
+        <article className="first-block-cube-panel target">
+          <header>
+            <div>
+              <p className="eyebrow">Dit delmål · {targetStep + 1} af 2</p>
+              <h3>{targetTitle}</h3>
+            </div>
+            <span className="target-badge">Mål</span>
+          </header>
+          <div className="first-block-viewer-frame target-view">
+            <CubeViewer
+              allowDrag={false}
+              ariaLabel="Delmål i 3D: fire løste CMLL-hjørner"
+              cameraLatitude={-18}
+              cameraLongitude={34}
+              stickering="CMLL"
+            />
+          </div>
+          <p className="viewer-caption">
+            Kun de fire klare tophjørner er målet. Topkanterne må gerne være blandede til næste
+            fase.
+          </p>
+        </article>
+      </div>
+
+      <div className="first-block-instruction phase-next-instruction" role="status">
+        <div>
+          <span>Gør dette nu</span>
+          <h3>{targetTitle}</h3>
+          <p>{liveCoach}</p>
+          <small>Begge 1×2×3-blokke skal blive stående hele vejen.</small>
+        </div>
+      </div>
 
       <div className="first-block-live-grid">
         <div className="first-block-progress-panel cmll-progress-panel">
@@ -477,7 +562,7 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
                 Træn én gang til
               </button>
             </div>
-          ) : mode === 'live' ? (
+          ) : activeMode === 'live' ? (
             <div className="live-coach-message" role="status">
               <span className="live-dot" aria-hidden="true" />
               <strong>GoCube vurderer næste kig</strong>
@@ -514,9 +599,7 @@ function CmllPractice({ adapter }: { adapter: SmartCubeAdapter }) {
                     startknappen klar.
                   </p>
                 ) : (
-                  <button type="button" className="button primary" onClick={() => start('live')}>
-                    Start CMLL med GoCube
-                  </button>
+                  <p>GoCube starter automatisk kontrollen af CMLL.</p>
                 )
               ) : (
                 <>
@@ -594,8 +677,8 @@ export function RouxCmllPage({
         <span>→</span>
         <strong>CMLL</strong>
       </nav>
-      <CmllLesson onFinish={revealPractice} />
       <CmllPractice adapter={cubeAdapter} />
+      <CmllLesson onFinish={revealPractice} />
       <section className="lesson-card algorithm-ladder cmll-ladder">
         <div>
           <p className="eyebrow">Algoritmestigen</p>

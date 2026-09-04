@@ -13,6 +13,14 @@ vi.mock('../../hardware/smartcube/physicalCube', async () => {
   return { physicalCubeAdapter: new MockAdapter() };
 });
 
+vi.mock('./CubeViewer', () => ({
+  CubeViewer: ({ ariaLabel }: { ariaLabel?: string }) => <div aria-label={ariaLabel} />,
+}));
+
+vi.mock('./LivePhysicalCubeViewer', () => ({
+  LivePhysicalCubeViewer: () => <div aria-label="Din fysiske cube i 3D" />,
+}));
+
 afterEach(cleanup);
 
 // Solved cube after the first standard-notation setup shown by the course.
@@ -35,6 +43,9 @@ describe('Roux Second Block course', () => {
 
     expect(screen.getByRole('heading', { name: 'Second Block', level: 1 })).toBeVisible();
     expect(screen.getByText('Rød til højre · gul i bunden')).toBeVisible();
+    expect(screen.getByLabelText('Din fysiske cube i 3D')).toBeVisible();
+    expect(screen.getByLabelText(/Delmål i 3D: (Placér|Byg|Indsæt)/)).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Kalibrer 3D' })).toBeDisabled();
     for (let step = 0; step < 4; step += 1) {
       fireEvent.click(screen.getByRole('button', { name: 'Næste delmål' }));
     }
@@ -67,12 +78,15 @@ describe('Roux Second Block course', () => {
     renderPage(cube, repository);
 
     expect((await screen.findAllByText('Orange First Block'))[0]).toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: 'Start Second Block med GoCube' }));
+    expect(await screen.findByText('GoCube følger automatisk med')).toBeVisible();
+    expect(
+      screen.queryByRole('button', { name: 'Start Second Block med GoCube' })
+    ).not.toBeInTheDocument();
 
     const brokenFirstBlock = [...SOLVED_FACELETS];
     brokenFirstBlock[27] = 'X';
     await act(async () => cube.setFacelets(brokenFirstBlock.join('')));
-    expect(await screen.findByText(/First Block er brudt/)).toBeVisible();
+    expect((await screen.findAllByText(/First Block er brudt/))[0]).toBeVisible();
     expect(screen.queryByText('Second Block gennemført')).not.toBeInTheDocument();
 
     await act(async () => cube.setFacelets(SOLVED_FACELETS));
@@ -84,5 +98,16 @@ describe('Roux Second Block course', () => {
         generatedParameters: { mode: 'live-gocube', verifiedByCube: true },
       });
     });
+  });
+
+  it('offers verified quick preparation for direct phase access', async () => {
+    const repository = new InMemoryLearningRepository();
+    renderPage(new MockSmartCubeAdapter(FIRST_BLOCK_ONLY_FACELETS), repository);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Løs hurtigt hertil' }));
+    expect(
+      await screen.findByRole('heading', { name: 'Gør cuben klar til Second Block' })
+    ).toBeVisible();
+    expect(await screen.findByText(/træk løser cuben; derefter klargør/i)).toBeVisible();
   });
 });

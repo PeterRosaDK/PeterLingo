@@ -13,6 +13,14 @@ vi.mock('../../hardware/smartcube/physicalCube', async () => {
   return { physicalCubeAdapter: new MockAdapter() };
 });
 
+vi.mock('./CubeViewer', () => ({
+  CubeViewer: ({ ariaLabel }: { ariaLabel?: string }) => <div aria-label={ariaLabel} />,
+}));
+
+vi.mock('./LivePhysicalCubeViewer', () => ({
+  LivePhysicalCubeViewer: () => <div aria-label="Din fysiske cube i 3D" />,
+}));
+
 afterEach(cleanup);
 
 const LSE_EO_SETUP_FACELETS = 'UUUFUFURUFDFRRRRRRLULFFFFUFDLDDDDDDDBUBLLLLLLRBRBBBBBB';
@@ -34,6 +42,7 @@ describe('Roux beginner LSE course', () => {
 
     expect(screen.getByRole('heading', { name: 'Last Six Edges', level: 1 })).toBeVisible();
     expect(screen.getByText('0 lange algoritmer')).toBeVisible();
+    expect(screen.getByLabelText('Delmål i 3D: Last Six Edges')).toBeVisible();
 
     fireEvent.click(screen.getByRole('button', { name: 'Næste delmål' }));
     expect(screen.getByText('God kant')).toBeVisible();
@@ -72,13 +81,14 @@ describe('Roux beginner LSE course', () => {
     await cube.connect();
     renderPage(cube, repository);
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Start LSE med GoCube' }));
+    expect(await screen.findByText('GoCube vurderer næste delmål')).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Start LSE med GoCube' })).not.toBeInTheDocument();
     expect(screen.getByText('2/6 gode kanter')).toBeVisible();
 
     const brokenCmll = [...LSE_EO_SETUP_FACELETS];
     brokenCmll[8] = 'X';
     await act(async () => cube.setFacelets(brokenCmll.join('')));
-    expect(await screen.findByText(/hjørnerne er ikke længere løst/)).toBeVisible();
+    expect((await screen.findAllByText(/hjørnerne er ikke længere løst/))[0]).toBeVisible();
     expect(screen.queryByText('Hele cuben er løst')).not.toBeInTheDocument();
 
     await act(async () => cube.setFacelets(SOLVED_FACELETS));

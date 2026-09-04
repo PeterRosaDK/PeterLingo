@@ -12,62 +12,84 @@ const COLOR_NAMES: Record<string, string> = {
   B: 'blå',
 };
 
+export interface RouxQuickSolveTarget {
+  phaseName: string;
+  setupAlgorithm: string;
+  readyMessage: string;
+}
+
 export function RouxQuickSolvePanel({
   adapter,
   onClose,
   faceletsOverride = null,
+  target,
 }: {
   adapter: SmartCubeAdapter;
   onClose(): void;
   faceletsOverride?: string | null;
+  target?: RouxQuickSolveTarget;
 }) {
   const [connection, setConnection] = useState<ConnectionState>(() =>
     faceletsOverride ? 'disconnected' : adapter.getConnectionState()
   );
   const [status, setStatus] = useState<'working' | 'ready' | 'error'>('working');
-  const [message, setMessage] = useState('Beregner den korteste sikre redningsvej …');
+  const [message, setMessage] = useState('Beregner en sikker redningsvej …');
   const [trackingMessage, setTrackingMessage] = useState('');
   const [solution, setSolution] = useState<CubeSolution | null>(null);
   const [completedMoves, setCompletedMoves] = useState(0);
+  const [recoveryMoveCount, setRecoveryMoveCount] = useState(0);
   const solveRequest = useRef(0);
   const solutionRef = useRef<CubeSolution | null>(null);
   const completedMovesRef = useRef(0);
   const pendingHalfTurn = useRef<PendingHalfTurn | null>(null);
 
-  const calculate = useCallback(async (state: CubeState | null, replanning = false) => {
-    const facelets = state?.facelets ?? null;
-    if (!facelets || !validateFacelets(facelets).ok) {
-      setStatus('error');
-      setMessage('GoCube har endnu ikke sendt en fuld, fysisk mulig tilstand.');
-      return;
-    }
-    const request = ++solveRequest.current;
-    setStatus('working');
-    setMessage(
-      replanning ? 'Tilpasser løsningen til cubens nye tilstand …' : 'Beregner løsningen …'
-    );
-    setSolution(null);
-    solutionRef.current = null;
-    setCompletedMoves(0);
-    completedMovesRef.current = 0;
-    pendingHalfTurn.current = null;
-    try {
-      const nextSolution = await solveFacelets(facelets);
-      if (request !== solveRequest.current) return;
-      setSolution(nextSolution);
-      solutionRef.current = nextSolution;
-      setStatus('ready');
+  const calculate = useCallback(
+    async (state: CubeState | null, replanning = false) => {
+      const facelets = state?.facelets ?? null;
+      if (!facelets || !validateFacelets(facelets).ok) {
+        setStatus('error');
+        setMessage('GoCube har endnu ikke sendt en fuld, fysisk mulig tilstand.');
+        return;
+      }
+      const request = ++solveRequest.current;
+      setStatus('working');
       setMessage(
-        nextSolution.moves.length
-          ? `${nextSolution.moves.length} træk. GoCube går automatisk videre efter hvert korrekt træk.`
-          : 'Cuben er allerede løst.'
+        replanning ? 'Tilpasser løsningen til cubens nye tilstand …' : 'Beregner løsningen …'
       );
-    } catch (error) {
-      if (request !== solveRequest.current) return;
-      setStatus('error');
-      setMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
-    }
-  }, []);
+      setSolution(null);
+      solutionRef.current = null;
+      setCompletedMoves(0);
+      completedMovesRef.current = 0;
+      pendingHalfTurn.current = null;
+      try {
+        const nextSolution = await solveFacelets(facelets);
+        if (request !== solveRequest.current) return;
+        const setupMoves = target?.setupAlgorithm.trim().split(/\s+/).filter(Boolean) ?? [];
+        const completeSolution = target
+          ? {
+              algorithm: [...nextSolution.moves, ...setupMoves].join(' '),
+              moves: [...nextSolution.moves, ...setupMoves],
+            }
+          : nextSolution;
+        setRecoveryMoveCount(nextSolution.moves.length);
+        setSolution(completeSolution);
+        solutionRef.current = completeSolution;
+        setStatus('ready');
+        setMessage(
+          completeSolution.moves.length
+            ? target
+              ? `${nextSolution.moves.length} træk løser cuben; derefter klargør ${setupMoves.length} enkle træk ${target.phaseName}.`
+              : `${nextSolution.moves.length} træk. GoCube går automatisk videre efter hvert korrekt træk.`
+            : 'Cuben er allerede løst.'
+        );
+      } catch (error) {
+        if (request !== solveRequest.current) return;
+        setStatus('error');
+        setMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
+      }
+    },
+    [target]
+  );
 
   useEffect(() => {
     const initialTimer = window.setTimeout(
@@ -133,22 +155,34 @@ export function RouxQuickSolvePanel({
       ? '↺'
       : '↻';
   const complete = Boolean(solution && completedMoves >= solution.moves.length);
+  const preparingTarget = Boolean(target && completedMoves >= recoveryMoveCount);
 
   return (
     <section className="roux-quick-solve" aria-labelledby="quick-solve-title">
       <header className="stage-heading">
         <div>
-          <p className="eyebrow">Løs hurtigt</p>
-          <h2 id="quick-solve-title">Følg ét træk ad gangen</h2>
+          <p className="eyebrow">
+            {target ? `Løs hurtigt til ${target.phaseName}` : 'Løs hurtigt'}
+          </p>
+          <h2 id="quick-solve-title">
+            {target ? `Gør cuben klar til ${target.phaseName}` : 'Følg ét træk ad gangen'}
+          </h2>
         </div>
         <button type="button" className="button secondary compact" onClick={onClose}>
-          Tilbage til faserne
+          {target ? `Tilbage til ${target.phaseName}` : 'Tilbage til faserne'}
         </button>
       </header>
 
       <p className={`solve-message ${status}`} role="status">
         {message}
       </p>
+
+      {target && (
+        <p className="quick-solve-method-note">
+          Først løser du cuben med den enkle farvevej. Derefter vises faseopstillingen særskilt med
+          standardnotation som R, R′ og U.
+        </p>
+      )}
 
       {solution && (
         <>
@@ -168,8 +202,12 @@ export function RouxQuickSolvePanel({
 
           {complete ? (
             <div className="cube-solved-message">
-              <strong>Cuben er løst</strong>
-              <p>Alle træk er gennemført. Du kan gå direkte tilbage til træningsfaserne.</p>
+              <strong>{target ? `${target.phaseName} er klar` : 'Cuben er løst'}</strong>
+              <p>
+                {target
+                  ? target.readyMessage
+                  : 'Alle træk er gennemført. Du kan gå direkte tilbage til træningsfaserne.'}
+              </p>
             </div>
           ) : (
             <div className="quick-solve-current-step">
@@ -178,11 +216,25 @@ export function RouxQuickSolvePanel({
               </div>
               <div>
                 <p className="eyebrow">
-                  Næste træk · {completedMoves + 1} af {solution.moves.length}
+                  {preparingTarget ? `Klargør ${target!.phaseName}` : 'Løs cuben'} · træk{' '}
+                  {preparingTarget ? completedMoves - recoveryMoveCount + 1 : completedMoves + 1} af{' '}
+                  {preparingTarget
+                    ? solution.moves.length - recoveryMoveCount
+                    : target
+                      ? recoveryMoveCount
+                      : solution.moves.length}
                 </p>
-                <h3>{COLOR_NAMES[currentFace]} side</h3>
+                <h3>
+                  {preparingTarget
+                    ? currentMove.replaceAll("'", '′')
+                    : `${COLOR_NAMES[currentFace]} side`}
+                </h3>
                 <p>{describeMove(currentMove)}</p>
-                <small>Notation: {currentMove}</small>
+                <small>
+                  {preparingTarget
+                    ? 'Faseopstilling · standardnotation'
+                    : `Notation: ${currentMove}`}
+                </small>
               </div>
             </div>
           )}

@@ -163,18 +163,27 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
 
 test('Roux workbench has no horizontal overflow at iPad-like sizes', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium');
+  const routes = [
+    '/fag/roux',
+    '/fag/roux/first-block',
+    '/fag/roux/second-block',
+    '/fag/roux/cmll',
+    '/fag/roux/lse',
+  ];
   for (const viewport of [
     { width: 820, height: 1180 },
     { width: 1180, height: 820 },
   ]) {
     await page.setViewportSize(viewport);
-    await page.goto('/fag/roux');
-    await expect(page.getByRole('heading', { name: 'Træn med din cube' })).toBeVisible();
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth
-      )
-    ).toBe(true);
+    for (const route of routes) {
+      await page.goto(route);
+      await expect(page.locator('main')).toBeVisible();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= document.documentElement.clientWidth
+        )
+      ).toBe(true);
+    }
   }
 });
 
@@ -210,11 +219,13 @@ test('First Block compares the live cube with two fixed 3D goals and keeps manua
   await expect(page.getByLabel('Interaktiv 3D Rubiks terning').first()).toBeVisible();
   await expect(page.getByLabel('Delmål i 3D: Forreste firkant')).toBeVisible();
   await expect(page.getByText('gul-orange-grøn')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Kalibrer 3D' })).toBeDisabled();
   await expect(page.getByText('30 sekunder')).toHaveCount(0);
 
   await page.getByRole('tab', { name: /Hele First Block/ }).click();
   await expect(page.getByLabel('Delmål i 3D: Hele First Block')).toBeVisible();
   await expect(page.getByText('gul-orange-blå', { exact: true })).toBeVisible();
+  await expect(page.getByText(/blokkens blå bagside/)).toBeVisible();
 
   await page.getByRole('button', { name: 'Start uden GoCube' }).click();
   await page.getByRole('button', { name: 'Min First Block er samlet' }).click();
@@ -229,6 +240,11 @@ test('Second Block preserves fixed colors and keeps the starter repertoire small
   await expect(page.getByText('Rød til højre · gul i bunden')).toBeVisible();
   await expect(page.getByText(/R, U, R′ og U2/)).toBeVisible();
   await expect(page.getByLabel('Aktuel øvelsesblanding')).toContainText(/^[RU2′ ]+$/);
+  await expect(page.getByRole('heading', { name: 'Det GoCube ser lige nu' })).toBeVisible();
+  await expect(page.getByLabel(/Delmål i 3D:/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Kalibrer 3D' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Løs hurtigt hertil' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Start Second Block med GoCube' })).toHaveCount(0);
 
   for (let step = 0; step < 4; step += 1) {
     await page.getByRole('button', { name: 'Næste delmål' }).click();
@@ -251,6 +267,9 @@ test('beginner CMLL teaches two looks with exactly two standard-notation algorit
   await page.goto('/fag/roux/cmll');
   await expect(page.getByRole('heading', { name: 'Begynder-CMLL', level: 1 })).toBeVisible();
   await expect(page.getByText(/hvid CMLL-farven/)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Det GoCube ser lige nu' })).toBeVisible();
+  await expect(page.getByLabel(/Delmål i 3D:/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Løs hurtigt hertil' })).toBeVisible();
   await expect(page.getByRole('tab', { name: /Kig 1 · orientering/ })).toHaveAttribute(
     'aria-selected',
     'true'
@@ -278,6 +297,9 @@ test('beginner LSE completes Roux with three subgoals and two M/U patterns', asy
   await page.goto('/fag/roux/lse');
   await expect(page.getByRole('heading', { name: 'Last Six Edges', level: 1 })).toBeVisible();
   await expect(page.getByText('0 lange algoritmer')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Det GoCube ser lige nu' })).toBeVisible();
+  await expect(page.getByLabel(/Delmål i 3D:/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Løs hurtigt hertil' })).toBeVisible();
   await expect(page.getByRole('tab', { name: /Delmål 1 · EO/ })).toHaveAttribute(
     'aria-selected',
     'true'

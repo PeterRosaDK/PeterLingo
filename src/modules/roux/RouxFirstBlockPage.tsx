@@ -10,7 +10,7 @@ import type { ConnectionState, CubeState, SmartCubeAdapter } from '../../hardwar
 import type { GeneratedExercise } from '../../learning/types';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
 import { CubeViewer } from './CubeViewer';
-import { LivePhysicalCubeViewer } from './LivePhysicalCubeViewer';
+import { RouxPhaseCubePanel } from './RouxPhaseCubePanel';
 
 type StickeringMask = NonNullable<TwistyPlayerConfig['experimentalStickeringMaskOrbits']>;
 
@@ -111,7 +111,7 @@ function FirstBlockGoalViewer({ goal }: { goal: 0 | 1 }) {
       allowDrag={false}
       ariaLabel={`Delmål i 3D: ${goalSteps[goal].shortTitle}`}
       cameraLatitude={-18}
-      cameraLongitude={-34}
+      cameraLongitude={goal === 1 ? -146 : -34}
       stickering={goal === 1 ? 'FirstBlock' : null}
       stickeringMask={goal === 0 ? frontSquareMask : undefined}
     />
@@ -292,24 +292,7 @@ function FirstBlockCourse({ adapter }: { adapter: SmartCubeAdapter }) {
       </div>
 
       <div className="first-block-cube-comparison">
-        <article className="first-block-cube-panel physical">
-          <header>
-            <div>
-              <p className="eyebrow">Din cube</p>
-              <h3>Det GoCube ser lige nu</h3>
-            </div>
-            <span className={`live-indicator ${isLiveReady ? 'connected' : ''}`}>
-              {isLiveReady ? 'Live' : 'Offline'}
-            </span>
-          </header>
-          <div className="first-block-viewer-frame">
-            <LivePhysicalCubeViewer adapter={adapter} />
-          </div>
-          <p className="viewer-caption">
-            {isLiveReady
-              ? 'Drej modellen med en finger eller mus. Farverne følger din fysiske cube.'
-              : 'Forbind GoCube for live farver. Du kan stadig bruge modellen som visuel støtte.'}
-          </p>
+        <RouxPhaseCubePanel adapter={adapter} isLiveReady={isLiveReady}>
           {!isLiveReady && (
             <div className="first-block-connect-inline">
               <button
@@ -323,7 +306,7 @@ function FirstBlockCourse({ adapter }: { adapter: SmartCubeAdapter }) {
               {connectionMessage && <small role="status">{connectionMessage}</small>}
             </div>
           )}
-        </article>
+        </RouxPhaseCubePanel>
 
         <article className="first-block-cube-panel target">
           <header>
@@ -337,7 +320,9 @@ function FirstBlockCourse({ adapter }: { adapter: SmartCubeAdapter }) {
             <FirstBlockGoalViewer goal={selectedGoal} />
           </div>
           <p className="viewer-caption">
-            De klare felter er dem, du bygger nu. De grå felter er kun pejlemærker.
+            {selectedGoal === 1
+              ? 'Her ser du blokkens blå bagside. De klare orange-blå-gule felter afslutter hele blokken.'
+              : 'De klare felter er dem, du bygger nu. De grå felter er kun pejlemærker.'}
           </p>
         </article>
       </div>
