@@ -42,6 +42,9 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the square-on calibration view, one-tap calibration, simplified setup, and accurate
+  browser-pairing guidance as exact revision `2838dfa` at
+  `https://02f59a50.peterlingo.pages.dev`.
 - Made **Kalibrer** a direct one-tap action without a confirmation dialog, renamed the ambiguous
   **Start helt fra begyndelsen** action to **Start First Block**, and reduced Roux Opsætning to
   GoCube connection plus quick solving/manual colour entry.
