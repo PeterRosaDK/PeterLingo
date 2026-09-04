@@ -62,6 +62,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   that physical reference without changing facelets.
 - Detect the installed iPhone/iPad standalone web-app context and explain that Beacio must be used
   in Safari itself. The installed PWA remains available for ordinary learning and offline practice.
+- Deployed the restored square-on calibration and iPad standalone guidance as exact app revision
+  `cdb3d53` at `https://7cccc5c9.peterlingo.pages.dev`.
 - Deployed the iPad/Beacio connection fix, integrated manual color correction, and expanded Roux
   help as exact app revision `d720109` at `https://27b0a9d1.peterlingo.pages.dev`.
 - Updated `@beacio/core` from 1.2.0 to 2.1.1 and made its auto-initialization a dependency of every
