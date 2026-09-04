@@ -127,13 +127,16 @@ test('daily stars reward practice rather than correctness', async ({ page }) => 
 
 test('Roux opens directly in the pedagogical training path', async ({ page }) => {
   await page.goto('/fag/roux');
-  await expect(page.getByRole('heading', { name: 'Én fase ad gangen' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Træn med din cube' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Start med First Block' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start fase 1: First Block' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Hjælp', exact: true })).toBeVisible();
   const liveCube = page.getByLabel('Interaktiv 3D Rubiks terning');
   await expect(liveCube).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Kalibrer' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Kalibrer 3D' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Tilslut' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Løs hurtigt' })).toBeDisabled();
   await expect
     .poll(() =>
       liveCube.locator('twisty-player').evaluate(async (player) => {
@@ -144,33 +147,25 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
       })
     )
     .toBe(1);
-  const setupLink = page.locator('.roux-training-heading').getByRole('link', {
-    name: 'Opsætning',
-    exact: true,
-  });
-  await expect(setupLink).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Opsætning', exact: true })).toHaveCount(0);
   await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
   await expect(page.getByText('Dagens håndtræning')).toHaveCount(0);
-  await setupLink.click();
-  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
 });
 
-test('First Block has a complete beginner lesson and manual practice fallback', async ({
+test('First Block compares the live cube with two fixed 3D goals and keeps manual fallback', async ({
   page,
 }) => {
   await page.goto('/fag/roux/first-block');
   await expect(page.getByRole('heading', { name: 'First Block', level: 1 })).toBeVisible();
-  await expect(page.getByText('Orange til venstre · gul i bunden').first()).toBeVisible();
-
+  await expect(page.getByRole('heading', { name: 'Det GoCube ser lige nu' })).toBeVisible();
+  await expect(page.getByLabel('Interaktiv 3D Rubiks terning').first()).toBeVisible();
+  await expect(page.getByLabel('Delmål i 3D: Forreste firkant')).toBeVisible();
+  await expect(page.getByText('gul-orange-grøn')).toBeVisible();
   await expect(page.getByText('30 sekunder')).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Næste delmål' }).click();
-  await expect(page.getByText('gul · orange · grøn').first()).toBeVisible();
-  await page.getByRole('button', { name: 'Næste delmål' }).click();
-  await expect(page.getByText('= forreste firkant')).toBeVisible();
-  await page.getByRole('button', { name: 'Næste delmål' }).click();
-  await expect(page.getByText('= First Block')).toBeVisible();
-  await page.getByRole('button', { name: 'Jeg er klar til at bygge blokken' }).click();
+  await page.getByRole('tab', { name: /Hele First Block/ }).click();
+  await expect(page.getByLabel('Delmål i 3D: Hele First Block')).toBeVisible();
+  await expect(page.getByText('gul-orange-blå', { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Start uden GoCube' }).click();
   await page.getByRole('button', { name: 'Min First Block er samlet' }).click();
@@ -257,21 +252,12 @@ test('beginner LSE completes Roux with three subgoals and two M/U patterns', asy
   await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
 });
 
-test('GoCube setup keeps only connection and quick solving', async ({ page }) => {
+test('legacy GoCube setup route returns to the unified Roux workbench', async ({ page }) => {
   await page.goto('/fag/roux/opsaetning');
-  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Find GoCube' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Løs en blandet cube' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Løs cuben hurtigt' })).toBeDisabled();
-  await expect(page.getByRole('link', { name: 'Indtast farver manuelt' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Miljø' })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Logisk state' })).toHaveCount(0);
-  await expect(page.getByLabel('Interaktiv 3D Rubiks terning')).toHaveCount(0);
-  await expect(page.getByLabel('Farver aflæst direkte fra GoCube')).toHaveCount(0);
-  await expect(page.getByText('Guidet protokol')).toHaveCount(0);
-  await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: /Mock/ })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: /Nulstil efter fysisk løsning/ })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/fag\/roux$/);
+  await expect(page.getByRole('heading', { name: 'Træn med din cube', level: 1 })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tilslut' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Løs hurtigt' })).toBeDisabled();
 });
 
 test('Roux notation help distinguishes prime from the number one and explains M', async ({
@@ -287,15 +273,15 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   ).toBeVisible();
   await expect(page.getByText(/M-laget ligger mellem det orange L-lag.*røde R-lag/)).toBeVisible();
   await expect(page.getByText(/grøn er F foran.*blå er B bagpå.*rød er R/)).toBeVisible();
-  await page.getByRole('link', { name: 'Til Opsætning' }).click();
-  await expect(page.getByRole('heading', { name: 'Opsætning', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Roux løser cuben i fire faser' })).toBeVisible();
+  await page.getByRole('link', { name: 'Tilbage til Roux' }).click();
+  await expect(page.getByRole('heading', { name: 'Træn med din cube', level: 1 })).toBeVisible();
 });
 
 test('manual cube state entry cycles stickers and reports color-count differences', async ({
   page,
 }) => {
-  await page.goto('/fag/roux/opsaetning');
-  await page.getByRole('link', { name: 'Indtast farver manuelt' }).click();
+  await page.goto('/fag/roux/manuel-tilstand');
   await expect(
     page.getByRole('heading', { name: 'Fortæl hvordan cuben faktisk ser ud' })
   ).toBeVisible();

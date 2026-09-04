@@ -13,6 +13,16 @@ vi.mock('../../hardware/smartcube/physicalCube', async () => {
   return { physicalCubeAdapter: new MockAdapter() };
 });
 
+vi.mock('./CubeViewer', () => ({
+  CubeViewer: ({ ariaLabel }: { ariaLabel?: string }) => (
+    <div aria-label={ariaLabel ?? 'Interaktiv 3D Rubiks terning'} />
+  ),
+}));
+
+vi.mock('./LivePhysicalCubeViewer', () => ({
+  LivePhysicalCubeViewer: () => <div aria-label="Din fysiske cube i 3D" />,
+}));
+
 const SCRAMBLED_FACELETS = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
 
 function renderPage(cube: MockSmartCubeAdapter, repository: InMemoryLearningRepository) {
@@ -31,7 +41,10 @@ describe('Roux First Block course', () => {
     renderPage(new MockSmartCubeAdapter(SCRAMBLED_FACELETS), repository);
 
     expect(screen.getByRole('heading', { name: 'First Block', level: 1 })).toBeVisible();
-    expect(screen.getByText(/orange-gul 1×2×3-blok/)).toBeVisible();
+    expect(screen.getByLabelText('Din fysiske cube i 3D')).toBeVisible();
+    expect(screen.getByLabelText('Delmål i 3D: Forreste firkant')).toBeVisible();
+    fireEvent.click(screen.getByRole('tab', { name: /Hele First Block/ }));
+    expect(screen.getByLabelText('Delmål i 3D: Hele First Block')).toBeVisible();
     fireEvent.click(screen.getByRole('button', { name: 'Start uden GoCube' }));
     fireEvent.click(screen.getByRole('button', { name: 'Min First Block er samlet' }));
 

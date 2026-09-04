@@ -47,11 +47,6 @@ const RouxCmllPage = lazy(() =>
 const RouxLsePage = lazy(() =>
   import('../modules/roux/RouxLsePage').then((module) => ({ default: module.RouxLsePage }))
 );
-const SmartCubeDiagnosticsPage = lazy(() =>
-  import('../modules/roux/SmartCubeDiagnosticsPage').then((module) => ({
-    default: module.SmartCubeDiagnosticsPage,
-  }))
-);
 const CubeNotationHelpPage = lazy(() =>
   import('../modules/roux/CubeNotationHelpPage').then((module) => ({
     default: module.CubeNotationHelpPage,
@@ -97,7 +92,7 @@ export function App() {
               <Route path="fag/roux/lse" element={<RouxLsePage />} />
               <Route path="fag/roux/notation" element={<CubeNotationHelpPage />} />
               <Route path="fag/roux/manuel-tilstand" element={<ManualCubeStatePage />} />
-              <Route path="fag/roux/opsaetning" element={<SmartCubeDiagnosticsPage />} />
+              <Route path="fag/roux/opsaetning" element={<Navigate replace to="/fag/roux" />} />
               <Route
                 path="fag/roux/diagnostik"
                 element={<Navigate replace to="/fag/roux/opsaetning" />}

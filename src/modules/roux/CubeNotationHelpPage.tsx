@@ -38,6 +38,52 @@ export function CubeNotationHelpPage() {
         </p>
       </header>
 
+      <section
+        className="notation-section roux-method-overview"
+        aria-labelledby="roux-method-title"
+      >
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Metoden på ét minut</p>
+            <h2 id="roux-method-title">Roux løser cuben i fire faser</h2>
+          </div>
+        </div>
+        <ol>
+          <li>
+            <b>1</b>
+            <span>
+              <strong>First Block</strong>
+              <small>Byg en orange-gul 1×2×3-blok til venstre.</small>
+            </span>
+          </li>
+          <li>
+            <b>2</b>
+            <span>
+              <strong>Second Block</strong>
+              <small>Byg den tilsvarende røde-gule blok til højre.</small>
+            </span>
+          </li>
+          <li>
+            <b>3</b>
+            <span>
+              <strong>CMLL</strong>
+              <small>Løs de fire øverste hjørner uden at ødelægge blokkene.</small>
+            </span>
+          </li>
+          <li>
+            <b>4</b>
+            <span>
+              <strong>Last Six Edges</strong>
+              <small>Løs de sidste seks kanter med især M- og U-træk.</small>
+            </span>
+          </li>
+        </ol>
+        <p className="notation-rule">
+          I begynderforløbet bruger vi altid hvid op og grøn frem. Det holder farverne og notationen
+          faste, mens du lærer rækkefølgen.
+        </p>
+      </section>
+
       <section className="notation-reference">
         <div>
           <p className="eyebrow">Vores fælles greb</p>
@@ -175,11 +221,8 @@ export function CubeNotationHelpPage() {
       </section>
 
       <div className="button-row notation-actions">
-        <Link className="button primary" to="/fag/roux/opsaetning">
-          Til Opsætning
-        </Link>
-        <Link className="button secondary" to="/fag/roux/traening">
-          Til Træning
+        <Link className="button primary" to="/fag/roux">
+          Tilbage til Roux
         </Link>
       </div>
     </div>

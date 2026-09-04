@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const viewer = vi.hoisted(() => ({
@@ -93,5 +93,16 @@ describe('CubeViewer GoCube orientation', () => {
       cameraLongitude: 0,
       experimentalDragInput: 'none',
     });
+  });
+
+  it('passes a fixed Roux target stickering to the 3D renderer', async () => {
+    render(<CubeViewer allowDrag={false} stickering="FirstBlock" ariaLabel="Fast 3D-mål" />);
+
+    await waitFor(() => expect(viewer.constructorOptions).toHaveLength(1));
+    expect(viewer.constructorOptions[0]).toMatchObject({
+      experimentalDragInput: 'none',
+      experimentalStickering: 'FirstBlock',
+    });
+    expect(screen.getByLabelText('Fast 3D-mål')).toBeVisible();
   });
 });

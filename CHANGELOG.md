@@ -6,6 +6,12 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added an in-place Roux recovery panel. **Løs hurtigt** now replaces the phase list beside the
+  live cube, calculates the verified two-phase route, follows matching GoCube moves automatically,
+  and replans visibly after an unexpected move.
+- Added two real 3D target views to First Block: a custom mask isolates the three-piece front
+  square, while cubing.js' Roux stickering shows the complete 1×2×3 block. The learner's
+  interactive live cube remains visible beside both targets on desktop and mobile.
 - Added a square-on green-face calibration view with all other cube faces hidden and a graphic
   white/GO-up, green-front holding guide.
 - Added the live 3D GoCube directly to the Roux training entry and a guarded **Kalibrer** action.
@@ -42,6 +48,16 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Rebuilt the Roux entry as one workbench: the live 3D cube and **Tilslut**, **Kalibrer 3D**,
+  **Læs cuben igen**, and **Løs hurtigt** actions stay on the left while the four directly
+  selectable training phases stay on the right. The former Opsætning route now redirects here.
+- **Kalibrer 3D** now changes only the visual orientation reference and never overwrites the
+  reported cube state. A separate **Læs cuben igen** action requests fresh facelets when the live
+  model appears wrong.
+- A manual connection reuses the sole already-approved GoCube directly; otherwise the browser's
+  required first-time device chooser opens. Roux also retries quiet reconnection when the page
+  becomes visible or focused.
+- Expanded **Hjælp** with a concise four-phase Roux overview before the notation reference.
 - Deployed the square-on calibration view, one-tap calibration, simplified setup, and accurate
   browser-pairing guidance as exact revision `2838dfa` at
   `https://02f59a50.peterlingo.pages.dev`.

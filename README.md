@@ -72,33 +72,36 @@ On iPhone/iPad:
 1. Install Beacio.
 2. Enable its Safari extension under **Indstillinger → Apps → Safari → Udvidelser**.
 3. Allow it for the PeterLingo site and reload the page.
-4. Open **Roux → Opsætning**.
-5. Tap **Find og forbind GoCube**. The device chooser is intentionally opened only by this direct tap.
+4. Open **Roux**.
+5. Tap **Tilslut**. The device chooser is intentionally opened only by this direct tap.
 
 On desktop Chrome/Edge, PeterLingo makes a quiet startup attempt to reconnect a remembered cube
 without opening the chooser. Entering Roux permits one additional quiet retry, which helps when the
-cube has only just been woken. The browser must support `getDevices()`, and the cube must be awake,
-in range, and free from other apps. Beacio on iPhone/iPad does not persist pairing across a page
-load, so iOS Safari requires a new tap on **Find GoCube** after reopening the page.
+cube has only just been woken; returning focus to the page triggers another quiet retry. The browser
+must support `getDevices()`, and the cube must be awake, in range, and free from other apps. If
+exactly one approved GoCube is available, **Tilslut** reconnects it directly. A first-time device
+still requires the browser-controlled chooser. Beacio on iPhone/iPad does not persist pairing
+across a page load, so iOS Safari requires a new tap on **Tilslut** after reopening the page.
 
 See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
 has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
 under verification.
 
-Choosing **Roux** opens directly on the live 3D cube and the four-phase training path. Its reference
-view is square-on to the green face, with every other face hidden, and a small graphic shows
-white/GO upward. **Kalibrer** is one direct action: while the physically solved cube is held in that
-frame, it resets the reported solved state and adopts the current gyro reading as the 3D reference.
-**Opsætning** is reduced to explicit connection and quick recovery solving. The physical cube's
-state and relative orientation also drive the 3D cube on the home-page Roux card. The old guided
-capture protocol, timed grip quiz, environment/state diagnostics, and unfolded facelet net are not
-part of the learner interface.
+Choosing **Roux** opens one workbench: the interactive live 3D cube and hardware controls are on the
+left, and the four phase choices are on the right. **Kalibrer 3D** adopts the current gyro reading
+as the display reference without changing any facelets. **Læs cuben igen** requests a fresh full
+state, and **Løs hurtigt** replaces the phase list in place with a verified recovery route that
+advances from live moves. The former **Opsætning** URL redirects to this workbench. The physical
+cube's state and relative orientation also drive the 3D cube on the home-page Roux card. The old
+guided capture protocol, timed grip quiz, environment/state diagnostics, and unfolded facelet net
+are not part of the learner interface.
 
-The first real Roux teaching slice lives at **Roux → First Block**. It teaches the fixed
-orange-yellow left block as a front square plus a back pair, records the lesson unit, and watches
-the five target cubies live when a synchronized GoCube is connected. Manual
-completion remains available as an explicitly self-reported offline fallback. This first slice
-uses only outer turns until M/M′ normalization has been physically confirmed.
+The first real Roux teaching slice lives at **Roux → First Block**. The interactive physical cube
+remains visible on the left while a fixed 3D target on the right first isolates the three-piece
+front square and then the complete orange-yellow 1×2×3 block. It watches all five target cubies live
+and advances automatically when a synchronized GoCube is connected. Manual completion remains an
+explicitly self-reported offline fallback. This first slice uses only outer turns until M/M′
+normalization has been physically confirmed.
 
 **Roux → Second Block** continues with the fixed red-yellow right block while requiring the orange
 First Block to remain intact. The beginner repertoire is deliberately limited to `R`/`U` moves and

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { TwistyPlayer } from 'cubing/twisty';
+import type { ExperimentalStickering, TwistyPlayerConfig } from 'cubing/twisty';
 import type { CubeOrientation } from '../../hardware/smartcube/types';
 import { multiplyQuaternion, relativeGoCubeQuaternion, type Quaternion } from './cubeOrientation';
 
@@ -14,6 +15,9 @@ export function CubeViewer({
   cameraLatitude = 28,
   cameraLongitude = 32,
   allowDrag = true,
+  stickering = null,
+  stickeringMask,
+  ariaLabel = 'Interaktiv 3D Rubiks terning',
 }: {
   algorithm?: string;
   compact?: boolean;
@@ -23,6 +27,9 @@ export function CubeViewer({
   cameraLatitude?: number;
   cameraLongitude?: number;
   allowDrag?: boolean;
+  stickering?: ExperimentalStickering | null;
+  stickeringMask?: TwistyPlayerConfig['experimentalStickeringMaskOrbits'];
+  ariaLabel?: string;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<TwistyPlayer | null>(null);
@@ -43,6 +50,8 @@ export function CubeViewer({
       cameraLatitude,
       cameraLongitude,
       hintFacelets: 'none',
+      experimentalStickering: stickering,
+      experimentalStickeringMaskOrbits: stickeringMask,
     });
     host.current.replaceChildren(instance);
     player.current = instance;
@@ -63,7 +72,7 @@ export function CubeViewer({
       puzzleObject.current = null;
       baseQuaternion.current = null;
     };
-  }, [allowDrag, cameraLatitude, cameraLongitude, compact]);
+  }, [allowDrag, cameraLatitude, cameraLongitude, compact, stickering, stickeringMask]);
 
   useEffect(() => {
     if (!player.current) return;
@@ -102,7 +111,7 @@ export function CubeViewer({
     <div
       className={`cube-viewer ${compact ? 'compact' : ''} ${orientation ? 'gyro-live' : ''}`}
       ref={host}
-      aria-label="Interaktiv 3D Rubiks terning"
+      aria-label={ariaLabel}
     />
   );
 }
