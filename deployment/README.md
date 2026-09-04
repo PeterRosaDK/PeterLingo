@@ -6,9 +6,9 @@ project at `peterlingo.petergpt.dk`.
 
 ## Current state
 
-The Direct Upload project `peterlingo` was created on 2026-08-23. Revision `c5c65da` is deployed
+The Direct Upload project `peterlingo` was created on 2026-08-23. Revision `a8d5b15` is deployed
 with its Pages Function and D1 binding. The production alias rejects unauthenticated API requests,
-and the unique deployment is `https://ca39f4ec.peterlingo.pages.dev`.
+and the unique deployment is `https://94d19f41.peterlingo.pages.dev`.
 
 `https://peterlingo.petergpt.dk` is active and is the canonical production origin. Cloudflare
 Access redirects unauthenticated requests and permits only Peter's approved identity through the

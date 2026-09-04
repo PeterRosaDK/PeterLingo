@@ -40,6 +40,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the direct live Roux entry, guarded calibration, quiet retry, and removal of the timed
+  grip quiz as exact revision `a8d5b15` at `https://94d19f41.peterlingo.pages.dev`.
 - Removed the timed three-question orientation quiz and its `roux:cube-orientation` daily unit;
   the fixed grip remains contextual guidance instead of a standalone 30-second exercise.
 - Deployed automatic GoCube orientation, the live home-page cube, and the simplified Roux controls
