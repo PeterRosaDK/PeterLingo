@@ -2155,6 +2155,46 @@ p {
   color: var(--ink-soft);
   font-size: 0.65rem;
 }
+.roux-cube-action-help {
+  display: grid;
+  gap: 5px;
+  margin: 1px 0 0;
+  padding-left: 18px;
+  color: var(--ink-soft);
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+.roux-cube-action-help b {
+  color: var(--ink);
+}
+.roux-bluetooth-details {
+  padding-top: 2px;
+  color: var(--ink-soft);
+  font-size: 0.65rem;
+}
+.roux-bluetooth-details summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--brand-2);
+  font-weight: 800;
+}
+.roux-bluetooth-details dl {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0 7px;
+}
+.roux-bluetooth-details dl > div {
+  display: grid;
+  grid-template-columns: minmax(105px, auto) 1fr;
+  gap: 8px;
+}
+.roux-bluetooth-details dt {
+  font-weight: 800;
+}
+.roux-bluetooth-details dd,
+.roux-bluetooth-details p {
+  margin: 0;
+}
 .roux-cube-primary-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3884,7 +3924,7 @@ p {
 }
 .roux-method-overview ol {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
   margin: 22px 0;
   padding: 0;
@@ -3921,6 +3961,80 @@ p {
   color: var(--ink-soft);
   font-size: 0.67rem;
   line-height: 1.45;
+}
+.roux-beginner-intro {
+  border-color: color-mix(in srgb, var(--mint) 32%, var(--line));
+  background: color-mix(in srgb, var(--mint) 7%, var(--surface));
+}
+.roux-block-picture {
+  width: min(330px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 46px 1fr;
+  grid-template-areas:
+    'top top top'
+    'left middle right';
+  gap: 7px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #26342f;
+  color: #fff;
+}
+.roux-block-picture span,
+.roux-block-picture i,
+.roux-block-picture b {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  text-align: center;
+}
+.roux-block-picture .left-block {
+  grid-area: left;
+  background: #e7822e;
+}
+.roux-block-picture .right-block {
+  grid-area: right;
+  background: #d94c4c;
+}
+.roux-block-picture i {
+  grid-area: middle;
+  min-height: 92px;
+  border: 2px dashed rgba(255, 255, 255, 0.55);
+  color: var(--citrine);
+  font-size: 1.3rem;
+  font-style: normal;
+}
+.roux-block-picture b {
+  grid-area: top;
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.roux-learning-balance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.roux-learning-balance article {
+  padding: 15px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--ice) 9%, var(--bg));
+}
+.roux-learning-balance p {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+}
+.roux-orientation-explainer h2,
+.notation-chapter-heading h2,
+.notation-chapter-heading p {
+  margin-top: 0;
+}
+.notation-chapter-heading {
+  padding: 20px 2px 2px;
+}
+.notation-chapter-heading p:last-child {
+  color: var(--ink-soft);
 }
 .notation-net {
   width: 150px;
@@ -4134,6 +4248,21 @@ p {
 .manual-cube-page {
   display: grid;
   gap: 20px;
+}
+.manual-cube-embedded {
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+.manual-cube-embedded > .stage-heading > div > p:last-child {
+  margin-bottom: 0;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+}
+.manual-cube-embedded .manual-face-grid {
+  grid-template-columns: 1fr;
 }
 .manual-state-warning {
   padding: 13px 16px;
@@ -5263,6 +5392,15 @@ p {
   }
 }
 
+@media (max-width: 960px) {
+  .roux-workbench {
+    grid-template-columns: 1fr;
+  }
+  .roux-workbench-cube-column {
+    position: static;
+  }
+}
+
 @media (max-width: 800px) {
   .topbar {
     height: 76px;
@@ -5398,12 +5536,6 @@ p {
   .roux-layout,
   .diagnostic-grid {
     grid-template-columns: 1fr;
-  }
-  .roux-workbench {
-    grid-template-columns: 1fr;
-  }
-  .roux-workbench-cube-column {
-    position: static;
   }
   .setup-simple-grid {
     grid-template-columns: 1fr;
@@ -5625,7 +5757,8 @@ p {
   }
   .roux-workbench-heading,
   .roux-phase-picker .stage-heading,
-  .roux-quick-solve .stage-heading {
+  .roux-quick-solve .stage-heading,
+  .manual-cube-embedded > .stage-heading {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -5647,6 +5780,9 @@ p {
     grid-template-columns: 1fr;
   }
   .roux-method-overview ol {
+    grid-template-columns: 1fr;
+  }
+  .roux-learning-balance {
     grid-template-columns: 1fr;
   }
   .first-block-course .stage-heading,

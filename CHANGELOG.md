@@ -6,6 +6,16 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Added an integrated **Ret farver manuelt** panel to the Roux workbench by reusing the validated
+  six-face editor and solver. A saved correction remains locked against later hardware snapshots
+  until **Synkronisér farver** explicitly returns authority to GoCube.
+- Added concise connection diagnosis for inactive/missing Beacio, missing Bluetooth API, typed
+  chooser cancellation/no match, unreachable granted devices, and GATT connections without a
+  valid color state, with optional technical details rather than a permanent diagnostics panel.
+- Expanded Roux Help into a beginner introduction explaining the two 1×2×3 blocks, CMLL, Last Six
+  Edges, M/U turns, intuitive versus algorithmic work, the fixed orientation, and the later
+  algorithm ladder before the notation reference.
+
 - Added an in-place Roux recovery panel. **Løs hurtigt** now replaces the phase list beside the
   live cube, calculates the verified two-phase route, follows matching GoCube moves automatically,
   and replans visibly after an unexpected move.
@@ -14,9 +24,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   interactive live cube remains visible beside both targets on desktop and mobile.
 - Added a square-on green-face calibration view with all other cube faces hidden and a graphic
   white/GO-up, green-front holding guide.
-- Added the live 3D GoCube directly to the Roux training entry and a guarded **Kalibrer** action.
-  After physical-solved confirmation it resets GoCubens logical solved state and makes the current
-  white-up, green-front gyro reading the visual reference.
+- Added the live 3D GoCube directly to the Roux training entry. Its current **Kalibrer 3D** action
+  changes only the white-up, green-front visual reference.
 - Added a Roux-specific quiet retry for an already browser-approved GoCube, including recovery from
   the adapter's prior error state without opening the Bluetooth chooser.
 - Added a live 3D GoCube view built from the synchronized facelets. GoCubens orientation
@@ -48,13 +57,25 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Updated `@beacio/core` from 1.2.0 to 2.1.1 and made its auto-initialization a dependency of every
+  Bluetooth capability check. PeterLingo no longer treats Beacio's inactive `navigator.bluetooth`
+  installation stub as a working API.
+- Kept iPad `requestDevice()` directly in the **Tilslut** tap chain by removing the preceding
+  `getDevices()` await. Remembered-device reconnection now runs only on native Web Bluetooth and
+  only for exactly one compatible approved cube.
+- Narrowed first-time selection to the reviewed GoCube protocol's `GoCube_…`, `GoCube…`, and
+  `Rubiks…` filters instead of the library's complete multi-brand chooser.
+- Renamed **Læs cuben igen** to **Synkronisér farver** and clarified that it requests only fresh
+  facelets. It does not change the physical cube, 3D calibration, or solved state; the app no longer
+  exposes the protocol's solved-state reset command.
+
 - Deployed the unified Roux workbench and visual First Block course as exact app revision
   `427f9aa` at `https://4b0b090c.peterlingo.pages.dev`.
 - Rebuilt the Roux entry as one workbench: the live 3D cube and **Tilslut**, **Kalibrer 3D**,
-  **Læs cuben igen**, and **Løs hurtigt** actions stay on the left while the four directly
+  **Synkronisér farver**, **Ret farver manuelt**, and **Løs hurtigt** actions stay on the left while the four directly
   selectable training phases stay on the right. The former Opsætning route now redirects here.
 - **Kalibrer 3D** now changes only the visual orientation reference and never overwrites the
-  reported cube state. A separate **Læs cuben igen** action requests fresh facelets when the live
+  reported cube state. A separate **Synkronisér farver** action requests fresh facelets when the live
   model appears wrong.
 - A manual connection reuses the sole already-approved GoCube directly; otherwise the browser's
   required first-time device chooser opens. Roux also retries quiet reconnection when the page
@@ -79,8 +100,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
   three-move hand drill from both the Roux page and future daily-session selection.
 - Removed cubing.js' floating hint facelets and the separate unfolded diagnostic net. Hidden cube
   faces are now revealed by rotating the physical cube or dragging the 3D view.
-- Roux now opens directly on the four-phase training path. **Opsætning** is a secondary route for
-  Bluetooth connection, synchronization, manual colour fallback, and quick recovery solving.
+- Roux now opens directly on the four-phase training path; the former **Opsætning** route redirects
+  to the same workbench.
 - Removed the intermediate Roux landing page, the learner-facing guided calibration protocol, and
   the raw move-history section. The unfolded facelet net was initially moved into an optional
   technical disclosure and was subsequently removed from the normal setup flow.

@@ -1,4 +1,4 @@
-import '@beacio/core/auto';
+import './hardware/smartcube/initializeBluetooth';
 import { installPwaUpdateReload } from './app/pwaUpdate';
 
 installPwaUpdateReload();

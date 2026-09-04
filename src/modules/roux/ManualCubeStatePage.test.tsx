@@ -1,6 +1,6 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SOLVED_FACELETS } from '../../hardware/smartcube/state';
 import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
 import { colorCounts, ManualCubeStatePage, withCanonicalCenters } from './ManualCubeStatePage';
@@ -10,6 +10,8 @@ vi.mock('../../hardware/smartcube/physicalCube', async () => {
     await import('../../hardware/smartcube/MockSmartCubeAdapter');
   return { physicalCubeAdapter: new MockAdapter() };
 });
+
+afterEach(cleanup);
 
 describe('manual cube state', () => {
   const physicalState = 'RFFLUBDBDBRDRRUUFFRDLFFFBBLUUFRDLLBRUDBULUDDLRDBLBRULF';
@@ -42,6 +44,27 @@ describe('manual cube state', () => {
     expect(screen.getByText('Afvigende positioner: hvid side · øverst til venstre')).toBeVisible();
     expect(screen.getByRole('button', { name: 'Kopiér sammenligningen' })).toBeVisible();
   });
+
+  it('reuses validation and solving when embedded in the Roux workbench', async () => {
+    const saved = vi.fn();
+    render(
+      <MemoryRouter initialEntries={['/fag/roux']}>
+        <ManualCubeStatePage
+          embedded
+          initialFacelets={SOLVED_FACELETS}
+          onManualStateSaved={saved}
+        />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.getByRole('heading', { name: 'Ret farverne efter den fysiske cube' })
+    ).toBeVisible();
+    expect(screen.getByText('9 af hver farve')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Gem og lav løsning' }));
+    await waitFor(() => expect(saved).toHaveBeenCalledWith(SOLVED_FACELETS));
+    await screen.findByText('Stillingen er allerede løst.', {}, { timeout: 20_000 });
+  }, 25_000);
 
   it('lets a connected GoCube confirm solution turns and restores manual fallback on disconnect', async () => {
     const cube = new MockSmartCubeAdapter(physicalState);

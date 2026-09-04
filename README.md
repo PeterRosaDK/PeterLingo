@@ -61,7 +61,11 @@ returning to the app.
 
 ## GoCube and iOS
 
-PeterLingo imports `@beacio/core/auto` before the React application or any Bluetooth capability check. The real adapter uses the generic API from `smartcube-web-bluetooth`, pinned to a reviewed commit supporting GoCube/Rubik's Connected.
+PeterLingo imports `@beacio/core/auto` before the React application or any Bluetooth capability
+check. Capability detection uses Beacio's real API detector, so the SDK's installation stub is not
+mistaken for an active Safari extension. `@beacio/core` is pinned at **2.1.1**, aligned with the
+current extension line; the GoCube protocol remains pinned to reviewed
+`smartcube-web-bluetooth` commit `44f1f091c6e980d9cc31e6d2863c4437eca3ab3c`.
 
 All calibration and notation teaching uses one fixed, WCA-compatible reference orientation: white/GO upward and green toward the learner. In that grip, `U` is white, `R` red, `F` green, `D` yellow, `L` orange, and `B` blue. Keep that grip unless the app explicitly introduces a whole-cube rotation.
 
@@ -73,25 +77,40 @@ On iPhone/iPad:
 2. Enable its Safari extension under **Indstillinger → Apps → Safari → Udvidelser**.
 3. Allow it for the PeterLingo site and reload the page.
 4. Open **Roux**.
-5. Tap **Tilslut**. The device chooser is intentionally opened only by this direct tap.
+5. Tap **Tilslut**. PeterLingo calls `requestDevice()` directly from that tap and sends only the
+   GoCube/Rubik's Connected name filters `GoCube_…`, `GoCube…`, and `Rubiks…` plus the protocol's
+   UART service permission. The chooser remains controlled by Safari/Beacio.
 
 On desktop Chrome/Edge, PeterLingo makes a quiet startup attempt to reconnect a remembered cube
-without opening the chooser. Entering Roux permits one additional quiet retry, which helps when the
-cube has only just been woken; returning focus to the page triggers another quiet retry. The browser
-must support `getDevices()`, and the cube must be awake, in range, and free from other apps. If
-exactly one approved GoCube is available, **Tilslut** reconnects it directly. A first-time device
-still requires the browser-controlled chooser. Beacio on iPhone/iPad does not persist pairing
-across a page load, so iOS Safari requires a new tap on **Tilslut** after reopening the page.
+without opening the chooser. Entering Roux permits one additional quiet retry. Direct reconnection
+is used only when native Web Bluetooth exposes `getDevices()` and returns exactly one compatible
+approved cube; zero or multiple matches fall back to the chooser on the next **Tilslut** tap. Beacio
+on iPhone/iPad does not persist pairing across a page load, so iOS Safari never enters this
+remembered-device path and requires a new tap after reopening the page.
 
-See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing
-has succeeded physically; state accuracy, move mapping, and the remaining device matrix are still
-under verification.
+Connection feedback distinguishes a missing/inactive Beacio extension, a missing Bluetooth API,
+typed chooser cancellation, no matching device, a granted device that cannot be reached, and a
+GATT connection that produces no valid full color state. Native browsers expose some of these
+conditions through the same `NotFoundError` or `NetworkError`; where the browser does not reveal
+more, PeterLingo says so instead of claiming a single cause. A discreet disclosure on the Roux
+workbench shows the active API path, reconnect support, Beacio version, and actual name filters.
+
+See [GOCUBE_TESTING.md](GOCUBE_TESTING.md) for the complete manual verification. Desktop pairing,
+ordinary outer-turn tracking, state comparison, and one complete recovery have succeeded
+physically. M-move normalization and the remaining iPhone/iPad device matrix are still under
+verification.
 
 Choosing **Roux** opens one workbench: the interactive live 3D cube and hardware controls are on the
 left, and the four phase choices are on the right. **Kalibrer 3D** adopts the current gyro reading
-as the display reference without changing any facelets. **Læs cuben igen** requests a fresh full
-state, and **Løs hurtigt** replaces the phase list in place with a verified recovery route that
-advances from live moves. The former **Opsætning** URL redirects to this workbench. The physical
+as the display reference without changing any facelets. **Synkronisér farver** requests a fresh
+full facelet state from GoCube; it does not turn or reset the physical cube, alter 3D calibration,
+or mark a mixed state as solved. The app no longer exposes GoCube's solved-state reset command.
+**Ret farver manuelt** opens the existing validated six-face editor in the right side of the same
+workbench. A saved correction is kept as an explicit local override and is not silently replaced by
+later hardware snapshots; choosing **Synkronisér farver** deliberately returns authority to the
+hardware. **Løs hurtigt** replaces the phase list in place with a verified recovery route that
+advances from live moves or uses manual step controls for a corrected state. The former
+**Opsætning** URL redirects to this workbench. The physical
 cube's state and relative orientation also drive the 3D cube on the home-page Roux card. The old
 guided capture protocol, timed grip quiz, environment/state diagnostics, and unfolded facelet net
 are not part of the learner interface.

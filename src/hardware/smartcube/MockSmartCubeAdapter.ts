@@ -100,10 +100,6 @@ export class MockSmartCubeAdapter implements SmartCubeAdapter {
     this.notifyState();
   }
 
-  async calibrateSolvedState(): Promise<void> {
-    this.reset();
-  }
-
   emitMove(notation: string, timestamp = Date.now()): void {
     if (this.connectionState !== 'connected') throw new Error('Mock-terningen er ikke forbundet.');
     const move: CubeMove = { notation, timestamp, source: 'mock' };

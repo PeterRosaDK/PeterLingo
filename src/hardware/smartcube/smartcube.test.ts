@@ -2,18 +2,17 @@ import { Subject } from 'rxjs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('smartcube-web-bluetooth', () => ({
-  connectSmartCube: vi.fn(),
   getRegisteredProtocols: vi.fn(),
 }));
 
 import {
-  connectSmartCube,
   getRegisteredProtocols,
   type SmartCubeCommand,
   type SmartCubeConnection,
   type SmartCubeEvent,
   type SmartCubeProtocol,
 } from 'smartcube-web-bluetooth';
+import { bluetoothInitializationComplete } from './initializeBluetooth';
 import { MockSmartCubeAdapter } from './MockSmartCubeAdapter';
 import {
   fixedCmllProgress,
@@ -233,6 +232,34 @@ describe('smart-cube adapters', () => {
     expect(adapter.getConnectionState()).toBe('unsupported');
   });
 
+  it('initializes the Beacio bridge before any Bluetooth capability check', () => {
+    expect(bluetoothInitializationComplete).toBe(true);
+    const adapter = new WebBluetoothSmartCubeAdapter();
+    expect(adapter.getBluetoothDiagnostics()).toMatchObject({
+      requestDevice: false,
+      rememberedReconnect: false,
+    });
+  });
+
+  it('does not mistake Beacio installation stub for an active iPad Bluetooth API', () => {
+    vi.stubGlobal('navigator', {
+      bluetooth: { __beacioCDNStub: true, requestDevice: vi.fn() },
+      userAgent:
+        'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+      platform: 'iPad',
+      maxTouchPoints: 5,
+    });
+    const adapter = new WebBluetoothSmartCubeAdapter();
+
+    expect(adapter.isSupported()).toBe(false);
+    expect(adapter.getBluetoothDiagnostics()).toMatchObject({
+      api: 'missing',
+      extension: 'not-installed',
+      requestDevice: false,
+      rememberedReconnect: false,
+    });
+  });
+
   it('lists and reconnects a GoCube already approved for this origin', async () => {
     const device = {
       id: 'remembered-gocube',
@@ -288,14 +315,14 @@ describe('smart-cube adapters', () => {
     expect(sendCommand).toHaveBeenCalledWith({ type: 'REQUEST_FACELETS' });
   });
 
-  it('keeps re-read, local log clearing, and solved calibration separate', async () => {
+  it('keeps fresh-state requests separate from local move-log clearing', async () => {
     const events = new Subject<SmartCubeEvent>();
     const sendCommand = vi.fn(async (command: SmartCubeCommand) => {
       if (command.type === 'REQUEST_FACELETS') {
         events.next({ timestamp: 1, type: 'FACELETS', facelets: SOLVED_FACELETS });
       }
     });
-    vi.mocked(connectSmartCube).mockResolvedValue({
+    const connection = {
       deviceName: 'GoCube',
       deviceMAC: '',
       protocol: { id: 'gocube', name: 'GoCube' },
@@ -309,11 +336,30 @@ describe('smart-cube adapters', () => {
       events$: events,
       sendCommand,
       disconnect: vi.fn(async () => undefined),
-    } satisfies SmartCubeConnection);
-    vi.stubGlobal('navigator', { bluetooth: {}, userAgent: 'Chrome', maxTouchPoints: 0 });
+    } satisfies SmartCubeConnection;
+    const protocol = {
+      nameFilters: [{ namePrefix: 'GoCube_' }, { namePrefix: 'GoCube' }, { namePrefix: 'Rubiks' }],
+      optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'],
+      matchesDevice: vi.fn(() => true),
+      gattAffinity: vi.fn(() => 1),
+      connect: vi.fn(async () => connection),
+    } satisfies SmartCubeProtocol;
+    vi.mocked(getRegisteredProtocols).mockReturnValue([protocol]);
+    const device = { id: 'new-gocube', name: 'GoCube_1234' } as BluetoothDevice;
+    const requestDevice = vi.fn(async () => device);
+    vi.stubGlobal('navigator', {
+      bluetooth: { requestDevice },
+      userAgent: 'Chrome',
+      maxTouchPoints: 0,
+    });
 
     const adapter = new WebBluetoothSmartCubeAdapter();
-    await adapter.connect();
+    const connecting = adapter.connect();
+    expect(requestDevice).toHaveBeenCalledWith({
+      filters: [{ namePrefix: 'GoCube_' }, { namePrefix: 'GoCube' }, { namePrefix: 'Rubiks' }],
+      optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'],
+    });
+    await connecting;
     const orientations: Array<{ x: number; y: number; z: number; w: number }> = [];
     adapter.subscribeToOrientation((orientation) => orientations.push(orientation.quaternion));
     events.next({
@@ -345,9 +391,8 @@ describe('smart-cube adapters', () => {
     });
 
     await adapter.requestState();
-    await adapter.calibrateSolvedState();
     expect(sendCommand).toHaveBeenCalledWith({ type: 'REQUEST_FACELETS' });
-    expect(sendCommand).toHaveBeenCalledWith({ type: 'REQUEST_RESET' });
+    expect(sendCommand).not.toHaveBeenCalledWith({ type: 'REQUEST_RESET' });
     expect(adapter.getCubeState()).toMatchObject({
       algorithm: '',
       moveCount: 0,

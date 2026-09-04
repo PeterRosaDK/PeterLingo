@@ -9,18 +9,21 @@ export function LivePhysicalCubeViewer({
   orientationReference,
   adapter = physicalCubeAdapter,
   frontView = false,
+  faceletsOverride = null,
 }: {
   compact?: boolean;
   orientationReference?: CubeOrientation | null;
   adapter?: SmartCubeAdapter;
   frontView?: boolean;
+  faceletsOverride?: string | null;
 }) {
   const [facelets, setFacelets] = useState(() => adapter.getCubeState()?.facelets ?? null);
   const [orientation, setOrientation] = useState<CubeOrientation | null>(
     () => adapter.getOrientation?.() ?? null
   );
   const [solution, setSolution] = useState('');
-  const faceletsAreValid = Boolean(facelets && validateFacelets(facelets).ok);
+  const displayedFacelets = faceletsOverride ?? facelets;
+  const faceletsAreValid = Boolean(displayedFacelets && validateFacelets(displayedFacelets).ok);
 
   useEffect(() => {
     const offState = adapter.subscribeToState?.((state) => {
@@ -37,9 +40,9 @@ export function LivePhysicalCubeViewer({
   useEffect(() => {
     let cancelled = false;
     let timeout = 0;
-    if (!facelets || !validateFacelets(facelets).ok) return;
+    if (!displayedFacelets || !validateFacelets(displayedFacelets).ok) return;
     timeout = window.setTimeout(() => {
-      void solveFacelets(facelets)
+      void solveFacelets(displayedFacelets)
         .then((result) => {
           if (!cancelled) setSolution(result.algorithm);
         })
@@ -51,7 +54,7 @@ export function LivePhysicalCubeViewer({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [facelets]);
+  }, [displayedFacelets]);
 
   return (
     <CubeViewer

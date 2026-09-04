@@ -135,7 +135,8 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
   await expect(liveCube).toBeVisible();
   await expect(page.getByRole('button', { name: 'Kalibrer 3D' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Tilslut' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Læs cuben igen' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Synkronisér farver' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Ret farver manuelt' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Løs hurtigt' })).toBeDisabled();
   await expect
     .poll(() =>
@@ -150,6 +151,31 @@ test('Roux opens directly in the pedagogical training path', async ({ page }) =>
   await expect(page.getByRole('link', { name: 'Opsætning', exact: true })).toHaveCount(0);
   await expect(page.getByText('Fysisk GoCube')).toHaveCount(0);
   await expect(page.getByText('Dagens håndtræning')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Ret farver manuelt' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Ret farverne efter den fysiske cube' })
+  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Indtast én side ad gangen' })).toBeVisible();
+  await page.getByRole('button', { name: 'Tilbage til faserne' }).click();
+  await expect(page.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
+});
+
+test('Roux workbench has no horizontal overflow at iPad-like sizes', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium');
+  for (const viewport of [
+    { width: 820, height: 1180 },
+    { width: 1180, height: 820 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/fag/roux');
+    await expect(page.getByRole('heading', { name: 'Træn med din cube' })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth
+      )
+    ).toBe(true);
+  }
 });
 
 test('First Block compares the live cube with two fixed 3D goals and keeps manual fallback', async ({
@@ -264,6 +290,8 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   page,
 }) => {
   await page.goto('/fag/roux/notation');
+  await expect(page.getByRole('heading', { name: 'Sådan virker Roux' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Byg to blokke—ikke en hel side' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cubens alfabet' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'R, R′ og R2 er ikke det samme' })).toBeVisible();
   await expect(page.getByText('Er det R1?')).toBeVisible();
@@ -273,7 +301,9 @@ test('Roux notation help distinguishes prime from the number one and explains M'
   ).toBeVisible();
   await expect(page.getByText(/M-laget ligger mellem det orange L-lag.*røde R-lag/)).toBeVisible();
   await expect(page.getByText(/grøn er F foran.*blå er B bagpå.*rød er R/)).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Roux løser cuben i fire faser' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'De fire faser, trin for trin' })).toBeVisible();
+  await expect(page.getByText(/især M-midterskiven og U-toppen/)).toBeVisible();
+  await expect(page.getByText(/kan senere udvides med hurtigere algoritmer/)).toBeVisible();
   await page.getByRole('link', { name: 'Tilbage til Roux' }).click();
   await expect(page.getByRole('heading', { name: 'Træn med din cube', level: 1 })).toBeVisible();
 });

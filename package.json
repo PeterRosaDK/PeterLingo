@@ -21,7 +21,7 @@
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run typecheck:functions && npm run test && npm run build"
   },
   "dependencies": {
-    "@beacio/core": "1.2.0",
+    "@beacio/core": "2.1.1",
     "cubing": "0.63.3",
     "idb": "8.0.3",
     "jose": "6.1.3",

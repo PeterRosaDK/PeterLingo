@@ -8,28 +8,37 @@ The remaining physical GoCube device matrix and M-move normalization are deliber
 
 ## Milestone 1 — Hardware & Roux
 
-Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop connection,
-reset/calibration, and live facelet tracking through ordinary outer turns have been physically
-confirmed by Peter. M-move normalization and the remaining device matrix are still open.
+Status: resumed on 2026-09-02 after Peter bought a replacement GoCube. Desktop connection and live
+facelet tracking through ordinary outer turns have been physically confirmed by Peter. The old
+solved-state reset has been removed from the app; visual-only calibration, M-move normalization,
+and the remaining device matrix still require their stated physical checks.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
 - Keep an approved connection alive during navigation inside PeterLingo. A prompt-free startup
   reconnection through Web Bluetooth `getDevices()` is implemented where the browser supports it;
-  entering Roux permits one additional quiet retry after the cube has been woken. Explicit
-  remembered-device reconnection and the chooser remain fallbacks.
+  entering Roux permits one additional quiet retry after the cube has been woken. It is now limited
+  to native Web Bluetooth with exactly one compatible approved cube. Beacio/iPad correctly skips
+  this unsupported persistence path and starts its chooser directly from the user's tap.
 - Open Roux as one two-column workbench: the live cube and local hardware actions remain on the
   left, while the four phase choices or the active quick-recovery instructions occupy the right.
   **Tilslut**, visual calibration, fresh-state requests, and quick solving no longer navigate to a
-  separate setup page; the legacy Opsætning URL redirects to the workbench. Manual colour entry
-  remains a direct diagnostic reserve route rather than part of the normal learner flow.
+  separate setup page; the legacy Opsætning URL redirects to the workbench. The existing validated
+  six-face colour editor now opens visibly in the workbench's right panel. A saved manual correction
+  remains locked until the user explicitly returns authority to GoCube with **Synkronisér farver**.
 - Feed GoCubens orientation quaternion into the live 3D cube from the standard white-up,
   green-front grip. The first gyro reading establishes an automatic reference. Roux now opens on
   that live cube with a small holding guide. **Kalibrer 3D** adopts the current white-up,
   green-front reading only as a visual reference; it does not overwrite the logical facelets.
-  **Læs cuben igen** separately requests a fresh full state. The home-page Roux card also follows
+  **Synkronisér farver** separately requests only a fresh full state and never resets a mixed cube.
+  The solved-state reset command is no longer exposed by the app. The home-page Roux card also follows
   subsequent readings. Physical axis direction
   still needs verification on the actual cube before it is considered calibrated end to end.
+- Initialize Beacio before every capability check, distinguish the SDK's inactive installation stub
+  from a usable API, and start the filtered GoCube chooser synchronously from **Tilslut**. The
+  workbench now reports missing/inactive Beacio, missing API, cancellation/no match where the SDK
+  distinguishes them, unreachable granted devices, and connected-without-valid-state. Physical
+  iPad/GoCube confirmation remains open.
 - Use the conventional white/GO-up, green-front orientation as the repeatable physical test frame.
   In that grip the app, WCA notation, cubing.js, and GoCubens outer-move codes share the same
   `U/R/F/D/L/B` frame; finished Roux analysis may still become colour-neutral later.

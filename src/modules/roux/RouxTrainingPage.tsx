@@ -4,6 +4,7 @@ import { physicalCubeAdapter } from '../../hardware/smartcube/physicalCube';
 import type { SmartCubeAdapter } from '../../hardware/smartcube/types';
 import { RouxQuickSolvePanel } from './RouxQuickSolvePanel';
 import { RouxStartCube } from './RouxStartCube';
+import { ManualCubeStatePage } from './ManualCubeStatePage';
 
 const phases = [
   {
@@ -49,7 +50,8 @@ export function RouxTrainingPage({
 }: {
   cubeAdapter?: SmartCubeAdapter;
 }) {
-  const [rightPanel, setRightPanel] = useState<'phases' | 'solve'>('phases');
+  const [rightPanel, setRightPanel] = useState<'phases' | 'solve' | 'manual'>('phases');
+  const [manualFacelets, setManualFacelets] = useState<string | null>(null);
 
   return (
     <div className="page roux-training-page roux-workbench-page">
@@ -66,12 +68,30 @@ export function RouxTrainingPage({
 
       <div className="roux-workbench">
         <aside className="roux-workbench-cube-column">
-          <RouxStartCube adapter={cubeAdapter} onQuickSolve={() => setRightPanel('solve')} />
+          <RouxStartCube
+            adapter={cubeAdapter}
+            manualFacelets={manualFacelets}
+            onHardwareStateRequested={() => setManualFacelets(null)}
+            onManualCorrection={() => setRightPanel('manual')}
+            onQuickSolve={() => setRightPanel('solve')}
+          />
         </aside>
 
         <div className="roux-workbench-main">
           {rightPanel === 'solve' ? (
-            <RouxQuickSolvePanel adapter={cubeAdapter} onClose={() => setRightPanel('phases')} />
+            <RouxQuickSolvePanel
+              adapter={cubeAdapter}
+              faceletsOverride={manualFacelets}
+              onClose={() => setRightPanel('phases')}
+            />
+          ) : rightPanel === 'manual' ? (
+            <ManualCubeStatePage
+              cubeAdapter={cubeAdapter}
+              embedded
+              initialFacelets={manualFacelets ?? cubeAdapter.getCubeState()?.facelets}
+              onClose={() => setRightPanel('phases')}
+              onManualStateSaved={setManualFacelets}
+            />
           ) : (
             <section className="roux-phase-picker" aria-labelledby="training-path-title">
               <div className="stage-heading">
@@ -104,8 +124,8 @@ export function RouxTrainingPage({
       </div>
 
       <p className="roux-workbench-note">
-        Første Bluetooth-godkendelse styres af browseren. Når cuben først er godkendt, forsøger
-        PeterLingo automatisk at genforbinde den uden et nyt valg.
+        Første Bluetooth-godkendelse styres af browseren. Chrome/Edge kan genbruge præcis én
+        godkendt cube; Beacio på iPad kræver et nyt tryk efter en genindlæsning.
       </p>
     </div>
   );

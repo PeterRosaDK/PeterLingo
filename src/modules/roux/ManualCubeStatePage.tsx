@@ -89,10 +89,18 @@ export function withCanonicalCenters(facelets: string): string {
 
 interface ManualCubeStatePageProps {
   cubeAdapter?: SmartCubeAdapter;
+  embedded?: boolean;
+  initialFacelets?: string | null;
+  onClose?(): void;
+  onManualStateSaved?(facelets: string): void;
 }
 
 export function ManualCubeStatePage({
   cubeAdapter = physicalCubeAdapter,
+  embedded = false,
+  initialFacelets = null,
+  onClose,
+  onManualStateSaved,
 }: ManualCubeStatePageProps = {}) {
   const location = useLocation();
   const supplied = (location.state as { facelets?: unknown } | null)?.facelets;
@@ -100,7 +108,13 @@ export function ManualCubeStatePage({
   const linkedFacelets = search.get('facelets');
   const imported = isFacelets(linkedFacelets) ? linkedFacelets : null;
   const directSolve = search.get('solve') === '1' && imported !== null;
-  const reported = isFacelets(supplied) ? supplied : directSolve ? imported : null;
+  const reported = isFacelets(initialFacelets)
+    ? initialFacelets
+    : isFacelets(supplied)
+      ? supplied
+      : directSolve
+        ? imported
+        : null;
   const [savedCube, setSavedCube] = useState<SavedCubeState | null>(() => loadSavedCube());
   const startingState = withCanonicalCenters(
     imported ?? reported ?? savedCube?.facelets ?? SOLVED_FACELETS
@@ -113,7 +127,7 @@ export function ManualCubeStatePage({
   const [completedMoves, setCompletedMoves] = useState(0);
   const [manualEditorOpen, setManualEditorOpen] = useState(!directSolve);
   const [cubeConnection, setCubeConnection] = useState<ConnectionState>(() =>
-    cubeAdapter.getConnectionState()
+    directSolve ? cubeAdapter.getConnectionState() : 'disconnected'
   );
   const [liveTrackingMessage, setLiveTrackingMessage] = useState('');
   const directSolveStarted = useRef(false);
@@ -174,54 +188,58 @@ export function ManualCubeStatePage({
     setCompletedMoves(0);
   };
 
-  const solveCubeState = useCallback(async (nextFacelets: string, liveUpdate = false) => {
-    const validation = validateFacelets(nextFacelets);
-    if (!validation.ok) {
-      setSolveStatus('error');
-      setSolveMessage(validation.message);
-      return;
-    }
-    const request = solveRequest.current + 1;
-    solveRequest.current = request;
-    const saved = { facelets: nextFacelets, savedAt: new Date().toISOString() };
-    try {
-      localStorage.setItem(SAVED_CUBE_KEY, JSON.stringify(saved));
-    } catch {
-      setSolveStatus('error');
-      setSolveMessage('Browseren kunne ikke gemme cubens tilstand på denne enhed.');
-      return;
-    }
-    setSavedCube(saved);
-    faceletsRef.current = nextFacelets;
-    setFacelets(nextFacelets);
-    setSolveStatus('working');
-    setSolveMessage(
-      liveUpdate
-        ? 'Cubens live-tilstand ændrede ruten. Beregner en ny løsning …'
-        : 'Kontrollerer stillingen og beregner en redningsløsning …'
-    );
-    setSolution(null);
-    solutionRef.current = null;
-    completedMovesRef.current = 0;
-    setCompletedMoves(0);
-    pendingHalfTurn.current = null;
-    try {
-      const nextSolution = await solveFacelets(nextFacelets);
-      if (request !== solveRequest.current) return;
-      setSolution(nextSolution);
-      solutionRef.current = nextSolution;
-      setSolveStatus('ready');
+  const solveCubeState = useCallback(
+    async (nextFacelets: string, liveUpdate = false) => {
+      const validation = validateFacelets(nextFacelets);
+      if (!validation.ok) {
+        setSolveStatus('error');
+        setSolveMessage(validation.message);
+        return;
+      }
+      const request = solveRequest.current + 1;
+      solveRequest.current = request;
+      const saved = { facelets: nextFacelets, savedAt: new Date().toISOString() };
+      try {
+        localStorage.setItem(SAVED_CUBE_KEY, JSON.stringify(saved));
+      } catch {
+        setSolveStatus('error');
+        setSolveMessage('Browseren kunne ikke gemme cubens tilstand på denne enhed.');
+        return;
+      }
+      setSavedCube(saved);
+      onManualStateSaved?.(nextFacelets);
+      faceletsRef.current = nextFacelets;
+      setFacelets(nextFacelets);
+      setSolveStatus('working');
       setSolveMessage(
-        nextSolution.moves.length
-          ? `Stillingen er fysisk mulig. Løsningen er kontrolleret og bruger ${nextSolution.moves.length} træk.`
-          : 'Stillingen er allerede løst.'
+        liveUpdate
+          ? 'Cubens live-tilstand ændrede ruten. Beregner en ny løsning …'
+          : 'Kontrollerer stillingen og beregner en redningsløsning …'
       );
-    } catch (error) {
-      if (request !== solveRequest.current) return;
-      setSolveStatus('error');
-      setSolveMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
-    }
-  }, []);
+      setSolution(null);
+      solutionRef.current = null;
+      completedMovesRef.current = 0;
+      setCompletedMoves(0);
+      pendingHalfTurn.current = null;
+      try {
+        const nextSolution = await solveFacelets(nextFacelets);
+        if (request !== solveRequest.current) return;
+        setSolution(nextSolution);
+        solutionRef.current = nextSolution;
+        setSolveStatus('ready');
+        setSolveMessage(
+          nextSolution.moves.length
+            ? `Stillingen er fysisk mulig. Løsningen er kontrolleret og bruger ${nextSolution.moves.length} træk.`
+            : 'Stillingen er allerede løst.'
+        );
+      } catch (error) {
+        if (request !== solveRequest.current) return;
+        setSolveStatus('error');
+        setSolveMessage(error instanceof Error ? error.message : 'Løsningen kunne ikke beregnes.');
+      }
+    },
+    [onManualStateSaved]
+  );
 
   const saveAndSolve = useCallback(
     () => solveCubeState(facelets, false),
@@ -340,17 +358,32 @@ export function ManualCubeStatePage({
   };
 
   return (
-    <div className="page manual-cube-page">
-      <header className="page-heading">
-        <p className="eyebrow">
-          {directSolve ? 'Roux · live GoCube' : 'Roux · diagnostisk reservevej'}
-        </p>
-        <h1>{directSolve ? 'Løs den aflæste cube' : 'Fortæl hvordan cuben faktisk ser ud'}</h1>
-        <p>
-          {directSolve
-            ? 'GoCubens løbende tilstand er overført direkte. Løsningen beregnes automatisk.'
-            : 'Du skal kun tænke på farver—ikke på bogstaver som U, R og F. Klik på et felt for at skifte farve. Centrene kan ikke ændres.'}
-        </p>
+    <div className={`${embedded ? 'manual-cube-embedded' : 'page'} manual-cube-page`}>
+      <header className={embedded ? 'stage-heading' : 'page-heading'}>
+        <div>
+          <p className="eyebrow">
+            {directSolve
+              ? 'Roux · live GoCube'
+              : embedded
+                ? 'Roux · farvekorrektion'
+                : 'Roux · diagnostisk reservevej'}
+          </p>
+          {embedded ? (
+            <h2>Ret farverne efter den fysiske cube</h2>
+          ) : (
+            <h1>{directSolve ? 'Løs den aflæste cube' : 'Fortæl hvordan cuben faktisk ser ud'}</h1>
+          )}
+          <p>
+            {directSolve
+              ? 'GoCubens løbende tilstand er overført direkte. Løsningen beregnes automatisk.'
+              : 'Du skal kun tænke på farver—ikke på bogstaver som U, R og F. Klik på et felt for at skifte farve. Centrene kan ikke ændres.'}
+          </p>
+        </div>
+        {embedded && onClose && (
+          <button type="button" className="button secondary compact" onClick={onClose}>
+            Tilbage til faserne
+          </button>
+        )}
       </header>
 
       {directSolve && !manualEditorOpen && (
@@ -378,8 +411,8 @@ export function ManualCubeStatePage({
       {manualEditorOpen && (
         <>
           <div className="manual-state-warning">
-            Manuel farveredigering er en reserve, hvis GoCubens løbende tilstand ikke passer med den
-            fysiske cube.
+            Din rettelse bruges som en låst lokal tilstand. Nye målinger fra GoCube overskriver den
+            ikke lydløst; vælg Synkronisér farver, når du igen vil bruge hardwarens aflæsning.
           </div>
 
           <section className="manual-entry-card" aria-labelledby="manual-entry-title">
@@ -627,14 +660,16 @@ export function ManualCubeStatePage({
         </section>
       )}
 
-      <div className="button-row manual-state-actions">
-        <Link className="button secondary" to="/fag/roux/opsaetning">
-          Tilbage til Opsætning
-        </Link>
-        <Link className="button secondary" to="/fag/roux/notation">
-          Se notationshjælpen
-        </Link>
-      </div>
+      {!embedded && (
+        <div className="button-row manual-state-actions">
+          <Link className="button secondary" to="/fag/roux">
+            Tilbage til Roux
+          </Link>
+          <Link className="button secondary" to="/fag/roux/notation">
+            Se notationshjælpen
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

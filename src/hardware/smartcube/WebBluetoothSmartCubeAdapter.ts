@@ -1,11 +1,15 @@
+import { detectPlatform, getBluetoothAPI } from '@beacio/core';
+import { getInstallState, isIOSSafari } from '@beacio/core/detect';
 import {
-  connectSmartCube,
   getRegisteredProtocols,
   type SmartCubeConnection,
   type SmartCubeEvent,
+  type SmartCubeProtocol,
 } from 'smartcube-web-bluetooth';
-import { appendMove, SOLVED_FACELETS } from './state';
+import { bluetoothInitializationComplete } from './initializeBluetooth';
+import { appendMove } from './state';
 import type {
+  BluetoothDiagnostics,
   ConnectionState,
   CubeMove,
   CubeOrientation,
@@ -14,6 +18,23 @@ import type {
   SmartCubeAdapter,
   Unsubscribe,
 } from './types';
+
+const BEACIO_VERSION = '2.1.1';
+const FACELET_TIMEOUT_MS = 8_000;
+
+function isGoCubeName(name: string): boolean {
+  return name.startsWith('GoCube') || name.startsWith('Rubiks');
+}
+
+function getGoCubeProtocol(): SmartCubeProtocol {
+  const protocol = (getRegisteredProtocols() ?? []).find((candidate) =>
+    candidate.nameFilters.some(
+      (filter) => 'namePrefix' in filter && isGoCubeName(filter.namePrefix)
+    )
+  );
+  if (!protocol) throw new Error('GoCube-protokollen blev ikke indlæst. Genindlæs PeterLingo.');
+  return protocol;
+}
 
 export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   private connectionState: ConnectionState = 'disconnected';
@@ -30,9 +51,15 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   private orientationHandlers = new Set<(orientation: CubeOrientation) => void>();
   private battery: number | null = null;
   private orientation: CubeOrientation | null = null;
+  private faceletTimeout: number | null = null;
 
   isSupported(): boolean {
-    return typeof navigator !== 'undefined' && 'bluetooth' in navigator;
+    const bluetooth = getBluetoothAPI();
+    return (
+      bluetoothInitializationComplete &&
+      bluetooth !== null &&
+      typeof bluetooth.requestDevice === 'function'
+    );
   }
 
   async connect(onStatus?: (message: string) => void): Promise<void> {
@@ -43,7 +70,28 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     this.connectionState = 'connecting';
     this.notifyState();
     try {
-      const connection = await connectSmartCube({ onStatus });
+      const bluetooth = this.getBluetooth();
+      if (!bluetooth) throw new Error('Bluetooth-API’et er ikke klar i denne browser.');
+      const protocol = getGoCubeProtocol();
+      const filters = protocol.nameFilters.map((filter) => ({
+        ...filter,
+      })) as BluetoothLEScanFilter[];
+      onStatus?.('Select your cube…');
+      // Keep this request as the first awaited browser operation. On iPad it must
+      // remain in the synchronous call chain of the user's tap.
+      const device = await bluetooth.requestDevice({
+        filters,
+        optionalServices: [...protocol.optionalServices],
+      });
+      if (!protocol.matchesDevice(device)) {
+        device.gatt?.disconnect();
+        throw new Error('Den valgte Bluetooth-enhed er ikke en understøttet GoCube.');
+      }
+      onStatus?.('Connecting…');
+      const connection = await protocol.connect(device, undefined, {
+        serviceUuids: new Set(protocol.optionalServices.map(String)),
+        onStatus,
+      });
       this.activateConnection(connection);
     } catch (error) {
       this.connectionState = 'error';
@@ -88,13 +136,14 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   }
 
   async getRememberedCubes(): Promise<RememberedCube[] | null> {
+    if (!this.canReconnectRemembered()) return null;
     const bluetooth = this.getBluetooth();
     if (!bluetooth || typeof bluetooth.getDevices !== 'function') return null;
     const devices = await bluetooth.getDevices();
     return devices
       .filter((device) => {
         const name = device.name ?? '';
-        return name.startsWith('GoCube') || name.startsWith('Rubiks');
+        return isGoCubeName(name);
       })
       .map((device) => ({ id: device.id, name: device.name ?? 'GoCube' }));
   }
@@ -106,9 +155,38 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
   }
 
   private getBluetooth(): Bluetooth | null {
+    if (!getBluetoothAPI()) return null;
     return typeof navigator !== 'undefined' && 'bluetooth' in navigator
       ? navigator.bluetooth
       : null;
+  }
+
+  canReconnectRemembered(): boolean {
+    const bluetooth = this.getBluetooth();
+    return detectPlatform() === 'native' && typeof bluetooth?.getDevices === 'function';
+  }
+
+  getBluetoothDiagnostics(): BluetoothDiagnostics {
+    const platform = detectPlatform();
+    const bluetooth = this.getBluetooth();
+    const protocol = (getRegisteredProtocols() ?? []).find((candidate) =>
+      candidate.nameFilters.some(
+        (filter) => 'namePrefix' in filter && isGoCubeName(filter.namePrefix)
+      )
+    );
+    return {
+      api:
+        platform === 'safari-extension' ? 'beacio' : platform === 'native' ? 'native' : 'missing',
+      extension: platform === 'native' || !isIOSSafari() ? 'not-needed' : getInstallState(),
+      requestDevice: typeof bluetooth?.requestDevice === 'function',
+      getDevices: typeof bluetooth?.getDevices === 'function',
+      rememberedReconnect: this.canReconnectRemembered(),
+      filters:
+        protocol?.nameFilters.flatMap((filter) =>
+          'namePrefix' in filter ? [`navn begynder med “${filter.namePrefix}”`] : []
+        ) ?? [],
+      libraryVersion: BEACIO_VERSION,
+    };
   }
 
   private activateConnection(connection: SmartCubeConnection): void {
@@ -117,9 +195,12 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     this.orientation = null;
     this.subscription = connection.events$.subscribe((event) => this.onEvent(event));
     this.connectionState = 'connected';
-    this.state = { ...this.state, synchronization: 'unknown' };
+    this.state = { ...this.state, facelets: null, synchronization: 'unknown' };
     this.notifyState();
-    if (connection.capabilities.facelets) void connection.sendCommand({ type: 'REQUEST_FACELETS' });
+    if (connection.capabilities.facelets) {
+      this.startFaceletTimeout();
+      void connection.sendCommand({ type: 'REQUEST_FACELETS' });
+    }
     if (connection.capabilities.battery) void connection.sendCommand({ type: 'REQUEST_BATTERY' });
   }
 
@@ -133,6 +214,7 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       this.state = appendMove(this.state, move);
       for (const handler of this.handlers) handler(move);
     } else if (event.type === 'FACELETS') {
+      this.clearFaceletTimeout();
       this.state = { ...this.state, facelets: event.facelets, synchronization: 'synchronized' };
     } else if (event.type === 'GYRO') {
       this.orientation = { quaternion: { ...event.quaternion }, timestamp: event.timestamp };
@@ -141,12 +223,14 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
     } else if (event.type === 'BATTERY') {
       this.battery = event.batteryLevel;
     } else if (event.type === 'DISCONNECT') {
+      this.clearFaceletTimeout();
       this.connectionState = 'disconnected';
     }
     for (const handler of this.stateHandlers) handler(this.getCubeState());
   }
 
   async disconnect(): Promise<void> {
+    this.clearFaceletTimeout();
     this.subscription?.unsubscribe();
     this.subscription = null;
     await this.connection?.disconnect();
@@ -193,7 +277,36 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       throw new Error('Denne terning kan ikke rapportere sin fulde tilstand.');
     this.state = { ...this.state, synchronization: 'unknown' };
     this.notifyState();
-    await connection.sendCommand({ type: 'REQUEST_FACELETS' });
+    this.startFaceletTimeout();
+    await new Promise<void>((resolve, reject) => {
+      let settled = false;
+      let timeout = 0;
+      let subscription: { unsubscribe(): void } | null = null;
+      const finish = (error?: unknown) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeout);
+        subscription?.unsubscribe();
+        if (error) reject(error);
+        else resolve();
+      };
+      subscription = connection.events$.subscribe((event) => {
+        if (event.type === 'FACELETS') finish();
+        else if (event.type === 'DISCONNECT') {
+          finish(new Error('GoCube mistede forbindelsen, før farverne blev modtaget.'));
+        }
+      });
+      timeout = window.setTimeout(
+        () =>
+          finish(
+            new Error(
+              'Bluetooth er forbundet, men GoCube sendte ingen gyldig farvetilstand. Væk cuben, og prøv igen.'
+            )
+          ),
+        FACELET_TIMEOUT_MS
+      );
+      void connection.sendCommand({ type: 'REQUEST_FACELETS' }).catch(finish);
+    });
   }
 
   clearTracking(): void {
@@ -202,22 +315,6 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
       algorithm: '',
       moveCount: 0,
       synchronization: this.state.facelets ? 'synchronized' : 'unknown',
-    };
-    this.notifyState();
-  }
-
-  async calibrateSolvedState(): Promise<void> {
-    const connection = this.connection;
-    if (!connection || this.connectionState !== 'connected')
-      throw new Error('Forbind GoCube, før den kalibreres.');
-    if (!connection.capabilities.reset)
-      throw new Error('Denne terning understøtter ikke nulstilling af referencepunktet.');
-    await connection.sendCommand({ type: 'REQUEST_RESET' });
-    this.state = {
-      facelets: SOLVED_FACELETS,
-      algorithm: '',
-      moveCount: 0,
-      synchronization: 'synchronized',
     };
     this.notifyState();
   }
@@ -256,5 +353,23 @@ export class WebBluetoothSmartCubeAdapter implements SmartCubeAdapter {
 
   getProtocolName(): string | null {
     return this.connection?.protocol.name ?? null;
+  }
+
+  private startFaceletTimeout(): void {
+    this.clearFaceletTimeout();
+    this.faceletTimeout = window.setTimeout(() => {
+      this.faceletTimeout = null;
+      if (this.connectionState !== 'connected' || this.state.synchronization === 'synchronized') {
+        return;
+      }
+      this.state = { ...this.state, facelets: null, synchronization: 'desynchronized' };
+      this.notifyState();
+    }, FACELET_TIMEOUT_MS);
+  }
+
+  private clearFaceletTimeout(): void {
+    if (this.faceletTimeout === null) return;
+    window.clearTimeout(this.faceletTimeout);
+    this.faceletTimeout = null;
   }
 }

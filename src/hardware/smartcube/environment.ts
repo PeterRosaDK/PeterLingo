@@ -1,4 +1,6 @@
-import { detectPlatform } from '@beacio/core';
+import { detectPlatform, getBluetoothAPI } from '@beacio/core';
+import { getInstallState } from '@beacio/core/detect';
+import './initializeBluetooth';
 
 export interface BluetoothEnvironment {
   platform: string;
@@ -14,7 +16,7 @@ export function detectBluetoothEnvironment(userAgent = navigator.userAgent): Blu
     /iPad|iPhone|iPod/.test(userAgent) ||
     (userAgent.includes('Macintosh') && navigator.maxTouchPoints > 1);
   const mac = !ios && /Macintosh|Mac OS X/.test(userAgent);
-  const webBluetooth = 'bluetooth' in navigator;
+  const webBluetooth = getBluetoothAPI() !== null;
   const platform = detectPlatform();
   const browser = ios
     ? 'Safari på iOS/iPadOS'
@@ -23,7 +25,11 @@ export function detectBluetoothEnvironment(userAgent = navigator.userAgent): Blu
       : /Chrome\//.test(userAgent)
         ? 'Google Chrome'
         : 'Anden browser';
-  const beacio = ios ? (webBluetooth ? 'active' : 'missing-or-disabled') : 'not-needed';
+  const beacio = ios
+    ? platform === 'safari-extension' && getInstallState() === 'active'
+      ? 'active'
+      : 'missing-or-disabled'
+    : 'not-needed';
   let guidance = 'Tryk Forbind først, når terningen er vågen og tæt på enheden.';
   if (!window.isSecureContext) guidance = 'Bluetooth kræver HTTPS eller localhost.';
   else if (ios && !webBluetooth)

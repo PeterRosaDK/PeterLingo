@@ -26,6 +26,16 @@ export interface RememberedCube {
   name: string;
 }
 
+export interface BluetoothDiagnostics {
+  api: 'beacio' | 'native' | 'missing';
+  extension: 'active' | 'installed-inactive' | 'not-installed' | 'not-needed';
+  requestDevice: boolean;
+  getDevices: boolean;
+  rememberedReconnect: boolean;
+  filters: string[];
+  libraryVersion: string;
+}
+
 export interface SmartCubeAdapter {
   isSupported(): boolean;
   connect(onStatus?: (message: string) => void): Promise<void>;
@@ -39,10 +49,11 @@ export interface SmartCubeAdapter {
   subscribeToOrientation?(handler: (orientation: CubeOrientation) => void): Unsubscribe;
   requestState?(): Promise<void>;
   clearTracking?(): void;
-  calibrateSolvedState?(): Promise<void>;
   getBatteryLevel?(): Promise<number | null>;
   getDeviceName?(): string | null;
   getProtocolName?(): string | null;
   getRememberedCubes?(): Promise<RememberedCube[] | null>;
   getBluetoothAvailability?(): Promise<boolean | null>;
+  canReconnectRemembered?(): boolean;
+  getBluetoothDiagnostics?(): BluetoothDiagnostics;
 }

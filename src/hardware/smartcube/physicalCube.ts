@@ -30,10 +30,15 @@ export function reconnectApprovedCube(
   attemptedAdapters.add(adapter);
 
   const attempt = (async () => {
-    if (!adapter.getRememberedCubes || !adapter.connectRemembered) return false;
+    if (
+      !adapter.getRememberedCubes ||
+      !adapter.connectRemembered ||
+      adapter.canReconnectRemembered?.() === false
+    )
+      return false;
     try {
       const remembered = await adapter.getRememberedCubes();
-      const cube = remembered?.[0];
+      const cube = remembered?.length === 1 ? remembered[0] : undefined;
       const currentState = adapter.getConnectionState();
       if (!cube || currentState === 'connecting') {
         return adapter.getConnectionState() === 'connected';

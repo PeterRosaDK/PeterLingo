@@ -15,11 +15,15 @@ const COLOR_NAMES: Record<string, string> = {
 export function RouxQuickSolvePanel({
   adapter,
   onClose,
+  faceletsOverride = null,
 }: {
   adapter: SmartCubeAdapter;
   onClose(): void;
+  faceletsOverride?: string | null;
 }) {
-  const [connection, setConnection] = useState<ConnectionState>(() => adapter.getConnectionState());
+  const [connection, setConnection] = useState<ConnectionState>(() =>
+    faceletsOverride ? 'disconnected' : adapter.getConnectionState()
+  );
   const [status, setStatus] = useState<'working' | 'ready' | 'error'>('working');
   const [message, setMessage] = useState('Beregner den korteste sikre redningsvej …');
   const [trackingMessage, setTrackingMessage] = useState('');
@@ -66,7 +70,23 @@ export function RouxQuickSolvePanel({
   }, []);
 
   useEffect(() => {
-    const initialTimer = window.setTimeout(() => void calculate(adapter.getCubeState()), 0);
+    const initialTimer = window.setTimeout(
+      () =>
+        void calculate(
+          faceletsOverride
+            ? {
+                facelets: faceletsOverride,
+                algorithm: '',
+                moveCount: 0,
+                synchronization: 'synchronized',
+              }
+            : adapter.getCubeState()
+        ),
+      0
+    );
+    if (faceletsOverride) {
+      return () => window.clearTimeout(initialTimer);
+    }
     const inspectState = () => {
       const nextConnection = adapter.getConnectionState();
       setConnection(nextConnection);
@@ -103,7 +123,7 @@ export function RouxQuickSolvePanel({
       offMove();
       offState?.();
     };
-  }, [adapter, calculate]);
+  }, [adapter, calculate, faceletsOverride]);
 
   const currentMove = solution?.moves[completedMoves] ?? '';
   const currentFace = currentMove[0] ?? 'U';

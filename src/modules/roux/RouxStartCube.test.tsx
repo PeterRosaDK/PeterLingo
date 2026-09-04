@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MockSmartCubeAdapter } from '../../hardware/smartcube/MockSmartCubeAdapter';
-import { RouxStartCube } from './RouxStartCube';
+import { connectionErrorMessage, RouxStartCube } from './RouxStartCube';
 
 vi.mock('../../hardware/smartcube/physicalCube', () => ({
   physicalCubeAdapter: {},
@@ -21,6 +21,30 @@ afterEach(() => {
 });
 
 describe('Roux start cube', () => {
+  it('distinguishes Beacio, cancellation, no-device, and remembered-connection failures', () => {
+    const error = (name: string, code?: string) => Object.assign(new Error(name), { name, code });
+    expect(connectionErrorMessage(error('Error', 'USER_CANCELLED'), 'chooser')).toMatch(
+      /lukkede enhedsvælgeren/
+    );
+    expect(connectionErrorMessage(error('Error', 'DEVICE_NOT_FOUND'), 'chooser')).toMatch(
+      /Ingen kompatibel cube/
+    );
+    expect(connectionErrorMessage(error('NetworkError'), 'remembered')).toMatch(
+      /tilladelsen findes/
+    );
+    expect(
+      connectionErrorMessage(error('NotFoundError'), 'chooser', {
+        api: 'missing',
+        extension: 'installed-inactive',
+        requestDevice: false,
+        getDevices: false,
+        rememberedReconnect: false,
+        filters: [],
+        libraryVersion: '2.1.1',
+      })
+    ).toMatch(/installeret, men Safari-udvidelsen er ikke aktiv/);
+  });
+
   it('shows the 3D cube immediately and keeps calibration unavailable while disconnected', () => {
     render(
       <MemoryRouter>
@@ -38,7 +62,7 @@ describe('Roux start cube', () => {
     const cube = new MockSmartCubeAdapter(SCRAMBLED_FACELETS);
     await cube.connect();
     cube.setOrientation({ x: 0.2, y: 0.1, z: 0.3, w: 0.9 });
-    const calibrate = vi.spyOn(cube, 'calibrateSolvedState');
+    const requestState = vi.spyOn(cube, 'requestState');
 
     render(
       <MemoryRouter>
@@ -48,7 +72,7 @@ describe('Roux start cube', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Kalibrer 3D' }));
 
     await screen.findByText(/3D-cuben er rettet ind/);
-    expect(calibrate).not.toHaveBeenCalled();
+    expect(requestState).not.toHaveBeenCalled();
     await waitFor(() => expect(cube.getCubeState()?.facelets).toBe(SCRAMBLED_FACELETS));
   });
 
@@ -67,8 +91,10 @@ describe('Roux start cube', () => {
     await screen.findByText('GoCube er klar. Du kan begynde med det samme.');
     expect(connect).toHaveBeenCalledOnce();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Læs cuben igen' }));
-    await screen.findByText('Cubens fulde tilstand er læst igen.');
+    fireEvent.click(screen.getByRole('button', { name: 'Synkronisér farver' }));
+    await screen.findByText(
+      'Farverne er hentet fra GoCube igen. Den fysiske cube blev ikke ændret.'
+    );
     expect(requestState).toHaveBeenCalledOnce();
   });
 
@@ -85,8 +111,77 @@ describe('Roux start cube', () => {
       </MemoryRouter>
     );
 
+    await waitFor(() => expect(cube.getRememberedCubes).toHaveBeenCalled());
     fireEvent.click(screen.getByRole('button', { name: 'Tilslut' }));
     await screen.findByText('GoCube er klar. Du kan begynde med det samme.');
     expect(cube.connectRemembered).toHaveBeenCalledWith('cube-1', expect.any(Function));
+  });
+
+  it('lets a new chooser open on the next tap after remembered reconnect fails', async () => {
+    const cube = Object.assign(new MockSmartCubeAdapter(SCRAMBLED_FACELETS), {
+      getRememberedCubes: vi.fn(async () => [{ id: 'cube-1', name: 'GoCube_1234' }]),
+      connectRemembered: vi.fn(async function (this: MockSmartCubeAdapter) {
+        await this.disconnect();
+        const error = new Error('Cuben kan ikke nås.');
+        error.name = 'NetworkError';
+        throw error;
+      }),
+    });
+    const chooser = vi.spyOn(cube, 'connect');
+    render(
+      <MemoryRouter>
+        <RouxStartCube adapter={cube} />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(cube.getRememberedCubes).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole('button', { name: 'Tilslut' }));
+    await screen.findByText(/Tryk Tilslut igen for at åbne enhedsvælgeren/);
+    expect(chooser).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Tilslut' }));
+    await screen.findByText('GoCube er klar. Du kan begynde med det samme.');
+    expect(chooser).toHaveBeenCalledOnce();
+  });
+
+  it('keeps a manual correction visible until an explicit hardware sync', async () => {
+    const cube = new MockSmartCubeAdapter(SCRAMBLED_FACELETS);
+    await cube.connect();
+    const clearManual = vi.fn();
+    render(
+      <MemoryRouter>
+        <RouxStartCube
+          adapter={cube}
+          manualFacelets={SCRAMBLED_FACELETS}
+          onHardwareStateRequested={clearManual}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/Manuelt rettede farver er låst/)).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Kalibrer 3D' }));
+    expect(clearManual).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Synkronisér farver' }));
+    await waitFor(() => expect(clearManual).toHaveBeenCalledOnce());
+  });
+
+  it('keeps the manual correction when a hardware sync fails', async () => {
+    const cube = new MockSmartCubeAdapter(SCRAMBLED_FACELETS);
+    await cube.connect();
+    vi.spyOn(cube, 'requestState').mockRejectedValueOnce(new Error('Cuben svarede ikke.'));
+    const clearManual = vi.fn();
+    render(
+      <MemoryRouter>
+        <RouxStartCube
+          adapter={cube}
+          manualFacelets={SCRAMBLED_FACELETS}
+          onHardwareStateRequested={clearManual}
+        />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Synkronisér farver' }));
+    await screen.findByText('Cuben svarede ikke.');
+    expect(clearManual).not.toHaveBeenCalled();
   });
 });

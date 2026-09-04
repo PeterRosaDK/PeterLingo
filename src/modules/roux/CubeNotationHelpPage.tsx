@@ -26,17 +26,51 @@ function MiddleSliceDiagram({ inverse = false }: { inverse?: boolean }) {
   );
 }
 
+function RouxBlockPicture() {
+  return (
+    <div className="roux-block-picture" aria-label="To sideblokke med et frit midterlag">
+      <span className="left-block">First Block</span>
+      <i>M</i>
+      <span className="right-block">Second Block</span>
+      <b>U · fri top</b>
+    </div>
+  );
+}
+
 export function CubeNotationHelpPage() {
   return (
     <div className="page notation-help-page">
       <header className="page-heading">
-        <p className="eyebrow">Roux · hurtig hjælp</p>
-        <h1>Cubens alfabet</h1>
+        <p className="eyebrow">Roux · hjælp fra begyndelsen</p>
+        <h1>Sådan virker Roux</h1>
         <p>
-          Et bogstav fortæller, hvilket lag du drejer. Et lille tegn bagefter fortæller retningen
-          eller antallet af kvartdrejninger.
+          Målet er stadig en helt løst cube. Roux vælger bare en anden vej dertil: først to solide
+          blokke på siderne, derefter de øverste hjørner og til sidst de seks kanter, som endnu er
+          frie.
         </p>
       </header>
+
+      <section
+        className="notation-reference roux-beginner-intro"
+        aria-labelledby="why-blocks-title"
+      >
+        <div>
+          <p className="eyebrow">Den grundlæggende idé</p>
+          <h2 id="why-blocks-title">Byg to blokke—ikke en hel side</h2>
+          <p>
+            Hvis du løser en hel side med det samme, følger der normalt også et helt lag med, som du
+            bagefter skal passe på. I Roux samler du i stedet en 1×2×3-klods på hver side. Det
+            efterlader toppen og den lodrette midterskive fri som et arbejdsrum. Du kan derfor
+            flytte de sidste brikker med færre store omveje uden at ødelægge blokkene.
+          </p>
+          <p>
+            “1×2×3” beskriver blot blokkens form: én brik tyk, to brikker høj og tre brikker lang.
+            Du behøver ikke kunne navnet på alle brikker for at begynde—se efter farver, der hører
+            sammen omkring centerfelterne.
+          </p>
+        </div>
+        <RouxBlockPicture />
+      </section>
 
       <section
         className="notation-section roux-method-overview"
@@ -44,8 +78,8 @@ export function CubeNotationHelpPage() {
       >
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Metoden på ét minut</p>
-            <h2 id="roux-method-title">Roux løser cuben i fire faser</h2>
+            <p className="eyebrow">Fra blandet til løst</p>
+            <h2 id="roux-method-title">De fire faser, trin for trin</h2>
           </div>
         </div>
         <ol>
@@ -53,36 +87,81 @@ export function CubeNotationHelpPage() {
             <b>1</b>
             <span>
               <strong>First Block</strong>
-              <small>Byg en orange-gul 1×2×3-blok til venstre.</small>
+              <small>
+                Find brikkerne omkring det orange center og den gule bund, og saml den første
+                1×2×3-blok til venstre. Du må prøve dig frem; denne fase er mest intuitiv.
+              </small>
             </span>
           </li>
           <li>
             <b>2</b>
             <span>
               <strong>Second Block</strong>
-              <small>Byg den tilsvarende røde-gule blok til højre.</small>
+              <small>
+                Byg en tilsvarende rød-gul blok til højre, mens den første bliver liggende. Toppen
+                fungerer som arbejdsbord; to korte indstik hjælper, når et par er klar.
+              </small>
             </span>
           </li>
           <li>
             <b>3</b>
             <span>
               <strong>CMLL</strong>
-              <small>Løs de fire øverste hjørner uden at ødelægge blokkene.</small>
+              <small>
+                Løs kun de fire hjørnebrikker øverst: vend først deres hvide felter opad, og flyt
+                dem derefter til de rigtige pladser. De seks kantbrikker må stadig være blandede.
+              </small>
             </span>
           </li>
           <li>
             <b>4</b>
             <span>
               <strong>Last Six Edges</strong>
-              <small>Løs de sidste seks kanter med især M- og U-træk.</small>
+              <small>
+                Vend og placér de sidste seks kantbrikker. Blokkene og hjørnerne er allerede
+                færdige, så især M-midterskiven og U-toppen kan arbejde uden at rive blokkene op.
+              </small>
             </span>
           </li>
         </ol>
+        <div className="roux-learning-balance">
+          <article>
+            <strong>Det intuitive</strong>
+            <p>
+              First Block og meget af Second Block læres ved at finde farvepar og bygge små former.
+              Du lærer at se muligheder frem for at huske en opskrift til alt.
+            </p>
+          </article>
+          <article>
+            <strong>De små algoritmer</strong>
+            <p>
+              CMLL kræver i starten Sune og T-perm. LSE bruger to genkendelige M–U-mønstre. Det
+              lille repertoire giver en fuld begynderrute og kan senere udvides med hurtigere
+              algoritmer én ad gangen.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        className="notation-section roux-orientation-explainer"
+        aria-labelledby="orientation-reason-title"
+      >
+        <p className="eyebrow">Ét fast udgangspunkt</p>
+        <h2 id="orientation-reason-title">Hvorfor hvid/GO op og grøn frem?</h2>
         <p className="notation-rule">
-          I begynderforløbet bruger vi altid hvid op og grøn frem. Det holder farverne og notationen
-          faste, mens du lærer rækkefølgen.
+          En cube kan holdes på mange måder. I begynderforløbet vælger vi altid hvid/GO op og grøn
+          frem, så “venstre blok”, farverne og bogstaverne betyder det samme på alle skærme. Det er
+          støttehjul, ikke en begrænsning i Roux: når mønstrene sidder fast, kan du lære at starte
+          med andre farver og vælge bedre blokke.
         </p>
       </section>
+
+      <div className="notation-chapter-heading">
+        <p className="eyebrow">Notation</p>
+        <h2>Cubens alfabet</h2>
+        <p>Et bogstav vælger et lag. Tegnet bagefter fortæller retningen eller antal drejninger.</p>
+      </div>
 
       <section className="notation-reference">
         <div>

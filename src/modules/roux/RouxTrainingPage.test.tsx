@@ -9,11 +9,20 @@ vi.mock('../../hardware/smartcube/physicalCube', () => ({
 }));
 
 vi.mock('./RouxStartCube', () => ({
-  RouxStartCube: ({ onQuickSolve }: { onQuickSolve(): void }) => (
+  RouxStartCube: ({
+    onQuickSolve,
+    onManualCorrection,
+  }: {
+    onQuickSolve(): void;
+    onManualCorrection(): void;
+  }) => (
     <section aria-label="Live GoCube">
       <div aria-label="Interaktiv 3D Rubiks terning" />
       <button type="button" onClick={onQuickSolve}>
         Løs hurtigt
+      </button>
+      <button type="button" onClick={onManualCorrection}>
+        Ret farver manuelt
       </button>
     </section>
   ),
@@ -23,6 +32,17 @@ vi.mock('./RouxQuickSolvePanel', () => ({
   RouxQuickSolvePanel: ({ onClose }: { onClose(): void }) => (
     <section>
       <h2>Følg ét træk ad gangen</h2>
+      <button type="button" onClick={onClose}>
+        Tilbage til faserne
+      </button>
+    </section>
+  ),
+}));
+
+vi.mock('./ManualCubeStatePage', () => ({
+  ManualCubeStatePage: ({ onClose }: { onClose(): void }) => (
+    <section>
+      <h2>Ret farverne efter den fysiske cube</h2>
       <button type="button" onClick={onClose}>
         Tilbage til faserne
       </button>
@@ -65,5 +85,19 @@ describe('Roux workbench', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Tilbage til faserne' }));
     expect(screen.getByRole('heading', { name: 'De fire Roux-faser' })).toBeVisible();
+  });
+
+  it('opens the existing manual color correction in the right-hand panel', () => {
+    render(
+      <MemoryRouter>
+        <RouxTrainingPage cubeAdapter={new MockSmartCubeAdapter()} />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ret farver manuelt' }));
+    expect(
+      screen.getByRole('heading', { name: 'Ret farverne efter den fysiske cube' })
+    ).toBeVisible();
+    expect(screen.queryByRole('heading', { name: 'De fire Roux-faser' })).not.toBeInTheDocument();
   });
 });
