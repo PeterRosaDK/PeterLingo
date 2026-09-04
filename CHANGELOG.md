@@ -48,6 +48,8 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Deployed the unified Roux workbench and visual First Block course as exact app revision
+  `427f9aa` at `https://4b0b090c.peterlingo.pages.dev`.
 - Rebuilt the Roux entry as one workbench: the live 3D cube and **Tilslut**, **Kalibrer 3D**,
   **Læs cuben igen**, and **Løs hurtigt** actions stay on the left while the four directly
   selectable training phases stay on the right. The former Opsætning route now redirects here.
