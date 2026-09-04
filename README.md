@@ -59,8 +59,8 @@ shared attempt history. The app shell remains available offline; when the Access
 expired, the shell shows **Log ind** and sends a network navigation through `/login` before
 returning to the app.
 
-The current tested app artifact is revision `cdb3d53`, deployed directly at
-`https://7cccc5c9.peterlingo.pages.dev` and promoted to the custom production domain.
+The current tested app artifact is revision `8cf63df`, deployed directly at
+`https://d33e7c1e.peterlingo.pages.dev` and promoted to the custom production domain.
 
 ## GoCube and iOS
 
@@ -127,7 +127,9 @@ are not part of the learner interface.
 
 The first real Roux teaching slice lives at **Roux → First Block**. The interactive physical cube
 remains visible on the left while a fixed 3D target on the right first isolates the three-piece
-front square and then the complete orange-yellow 1×2×3 block. It watches all five target cubies live
+front square and then turns squarely toward the blue back pair of the complete orange-yellow 1×2×3
+block. **Kalibrer 3D** remains available inside the phase workspace and changes only the model's
+view. The course watches all five target cubies live
 and advances automatically when a synchronized GoCube is connected. Manual completion remains an
 explicitly self-reported offline fallback. This first slice uses only outer turns until M/M′
 normalization has been physically confirmed.
@@ -136,8 +138,9 @@ normalization has been physically confirmed.
 First Block to remain intact. The beginner repertoire is deliberately limited to `R`/`U` moves and
 the two short insertion tools `R U R'` and `R U' R'`. Each selectable exercise setup preserves First
 Block, and synchronized GoCube facelets track the five new pieces, the DR edge, the first square,
-and both completed blocks. Wide `r` insertions and M-based shortcuts remain later algorithm-ladder
-steps instead of being mixed into the first training round.
+and both completed blocks. Its comparison view marks only the current target—first the yellow-red
+bottom edge, then the first square, then the complete red block. Wide `r` insertions and M-based
+shortcuts remain later algorithm-ladder steps instead of being mixed into the first training round.
 
 **Roux → Begynder-CMLL** is phase three of four. With both fixed blocks complete, it solves only
 the four white U-layer corners in two looks: Sune orients all four white stickers upward, then
@@ -151,6 +154,16 @@ The initial repertoire is not a list of cases: it reuses two `M`–`U`–undo-`M
 quarter `U` for the arrow and `U2` for an orientation-preserving swap. Live GoCube progress guards
 the completed blocks and corner ring, counts all six oriented edges, recognizes both relative
 left/right edges, and completes only when all six faces are solved.
+
+All four phase pages now use the same physical-cube/target-cube workspace, keep **Kalibrer 3D**
+beside the physical view, and state the next concrete task before the progress details. When a
+synchronized GoCube already satisfies the preceding phase, live assessment begins automatically;
+otherwise the page says which earlier result is missing. **Løs hurtigt hertil** is available on
+Second Block, CMLL, and LSE. It deliberately keeps the playful colour-face recovery used by the
+ordinary **Løs hurtigt**, first returning any valid state to solved, and then shows a separate,
+verified phase setup in standard notation such as `R`, `R'`, `U`, and `M`. It is not presented as a
+phase-aware Roux solution; a true Roux solver that can choose pedagogical phase boundaries directly
+from an arbitrary current state remains future work.
 
 ## Learning data
 

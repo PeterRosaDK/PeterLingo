@@ -13,8 +13,8 @@ facelet tracking through ordinary outer turns have been physically confirmed by 
 solved-state reset has been removed from the app; visual-only calibration, M-move normalization,
 and the remaining device matrix still require their stated physical checks.
 The software-side iPad/Beacio correction, integrated color-recovery workbench, restored square-on
-calibration, and standalone-PWA guidance are deployed as tested app revision `cdb3d53` at
-`https://7cccc5c9.peterlingo.pages.dev`.
+calibration, standalone-PWA guidance, and unified four-phase comparison workspace are deployed as
+tested app revision `8cf63df` at `https://d33e7c1e.peterlingo.pages.dev`.
 
 - Run and document the physical matrix on iPhone Safari + Beacio, iPad Safari + Beacio, and desktop Chrome/Edge.
 - Verify pairing, initial facelets, move direction, battery, disconnect/reconnect, background behavior, and visual/logical synchronization.
@@ -56,6 +56,11 @@ calibration, and standalone-PWA guidance are deployed as tested app revision `cd
   its First Block, Second Block, CMLL, and LSE boundaries, and stop at the start of a chosen phase.
   Keep the existing two-phase solver available only as an explicitly labelled recovery fallback
   and verification oracle, not as a Roux solution.
+- Direct phase preparation now has an explicit hybrid fallback: **Løs hurtigt hertil** first uses
+  the verified colour-face recovery to reach solved and then applies one separately labelled
+  standard-notation exercise setup for Second Block, CMLL, or LSE. The ordinary **Løs hurtigt**
+  retains its playful colour-face instructions. This does not close the phase-aware Roux-solver
+  item above, because it does not derive a Roux path directly from the arbitrary starting state.
 - The first recovery fallback is implemented for manually entered states: it checks full physical
   cube legality, verifies the cubing.js two-phase result against the input state, and presents the
   route one colour-based move at a time. Phase-aware Roux solving remains open.
@@ -72,17 +77,20 @@ calibration, and standalone-PWA guidance are deployed as tested app revision `cd
   stage timing and explanations of why a suggested move advances the current Roux phase.
 - The first fixed-orientation teaching slice is implemented as one visual comparison workspace.
   The interactive physical cube stays beside a fixed 3D image of the active subgoal: first a custom
-  mask showing only the three-piece front square, then the complete orange-yellow 1×2×3 block.
+  mask showing only the three-piece front square, then a square-on view of the blue back pair in the
+  complete orange-yellow 1×2×3 block. Visual calibration remains available inside the phase.
   Piece-by-piece live recognition advances the view and completes automatically, with an explicitly
   self-reported offline fallback. It deliberately uses outer turns until M/M′ normalization is
-  physically confirmed. Generated phase setup, move-level coaching, and orientation independence
-  remain open.
+  physically confirmed. Direct phase-aware Roux solving, move-level coaching, and orientation
+  independence remain open.
 - The fixed-orientation Second Block slice is implemented with the red-yellow right block, a
   five-part introduction, DR/first-square/final-pair subgoals, `R`/`U` exercise setups, live
   recognition of all five new pieces, and a hard requirement that the orange First Block remains
-  intact. The first repertoire has only `R U R'` and `R U' R'`; wide `r` insertions and M-based
-  shortcuts are explicit later ladder steps. Generated coaching for arbitrary full scrambles and
-  orientation independence remain open.
+  intact. The physical cube and a fixed 3D target now remain side by side, and custom target masks
+  reveal only the current DR edge or first square before the complete block. The first repertoire
+  has only `R U R'` and `R U' R'`; wide `r` insertions and M-based shortcuts are explicit later
+  ladder steps. Generated coaching for arbitrary full scrambles and orientation independence remain
+  open.
 - The fixed-orientation beginner CMLL slice is implemented as phase three of four. It requires both
   blocks, tracks the four white U-layer corners and headlights live, and separates orientation from
   permutation. The initial repertoire is exactly Sune plus T-perm; `U` setup turns do not count as

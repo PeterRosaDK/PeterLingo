@@ -6,6 +6,14 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Added
 
+- Extended the First Block physical-cube/target-cube workspace through Second Block, CMLL, and Last
+  Six Edges. Every phase now keeps visual calibration beside the physical view, presents a fixed 3D
+  target, and states the next concrete task before detailed progress.
+- Added **Løs hurtigt hertil** to Second Block, CMLL, and LSE. It first uses the existing verified,
+  playful colour-face recovery and then presents the chosen phase's exercise setup separately in
+  standard notation; it does not claim to be a direct phase-aware Roux solution.
+- Added progressive Second Block target masks for the yellow-red bottom edge, first red square, and
+  complete block, plus iPad portrait/landscape overflow coverage across every Roux phase route.
 - Added an integrated **Ret farver manuelt** panel to the Roux workbench by reusing the validated
   six-face editor and solver. A saved correction remains locked against later hardware snapshots
   until **Synkronisér farver** explicitly returns authority to GoCube.
@@ -57,6 +65,14 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ### Changed
 
+- Kept **Kalibrer 3D** available during all four solving phases. It still changes only the visual
+  reference. First Block's second target now faces the blue back pair directly instead of hiding it
+  in an oblique view.
+- Removed the extra **Start ... med GoCube** step from Second Block, CMLL, and LSE. Live assessment
+  now begins automatically when the synchronized state satisfies the preceding phase; otherwise the
+  page names the missing prerequisite.
+- Deployed the unified four-phase workspace as exact app revision `8cf63df` at
+  `https://d33e7c1e.peterlingo.pages.dev`.
 - Restored the square-on calibration frame in the unified Roux workbench. After **Kalibrer 3D**,
   the model camera is fixed directly on the green face with white/GO above it; disconnecting clears
   that physical reference without changing facelets.
