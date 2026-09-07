@@ -1,3 +1,4 @@
+import provenance from './decks/hsk-provenance.json';
 import { createHintProgress, revealNextHint } from '../../learning/hints/hintProgress';
 import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -25,7 +26,17 @@ function Content({ content }: { content: CardContent }) {
     </>
   );
 }
-function FlipCard({ unit, deck, next }: { unit: DeckUnit; deck: FlashcardDeck; next: () => void }) {
+function FlipCard({
+  unit,
+  deck,
+  next,
+  select,
+}: {
+  unit: DeckUnit;
+  deck: FlashcardDeck;
+  next: () => void;
+  select: () => void;
+}) {
   const { snapshot } = useLearningData();
   const [card] = useState(() =>
     deck.generateCard(unit, {
@@ -51,6 +62,7 @@ function FlipCard({ unit, deck, next }: { unit: DeckUnit; deck: FlashcardDeck; n
   async function rate(grade: SchedulerGrade) {
     if (lock.current || saved || !flipped) return;
     lock.current = true;
+    select();
     setBusy(true);
     try {
       await record({
@@ -246,7 +258,7 @@ function ReadyFlashcardsPage() {
       <section className="lesson-card">
         <h2>{deck.title} · dit udvalg</h2>
         <fieldset>
-          <legend>Subsets</legend>
+          <legend>{deck.id === 'hsk' ? 'HSK-niveauer' : 'Subsets'}</legend>
           {deck.getSubsets().map((s) => (
             <label key={s}>
               <input
@@ -261,7 +273,9 @@ function ReadyFlashcardsPage() {
                   })
                 }
               />
-              {s}
+              {deck.id === 'hsk'
+                ? `HSK ${s.split('/').at(-1)} · ${provenance.levels[s.split('/').at(-1) as keyof typeof provenance.levels]} ord`
+                : s}
             </label>
           ))}
         </fieldset>
@@ -287,8 +301,16 @@ function ReadyFlashcardsPage() {
         </fieldset>
         {deck.id === 'hsk' && (
           <p>
-            Lokalt startudvalg fra HSK 3.0, pensum udgivet november 2025. Engelsk facit fra
-            CC-CEDICT. Dette er ikke hele HSK-listen; 7–9 er en samlet officiel gruppe.
+            Hele ordlisten: 11.000 records fra HSK 3.0, pensum udgivet november 2025. Vælg frit
+            mellem tegn (Hanzi), udtale (pinyin) og betydning som forside og facit.{' '}
+            {provenance.danishRecords} ord har et redaktionelt dansk facit; resten bruger CC-CEDICT
+            på engelsk. Niveau 7–9 er én samlet officiel gruppe.{' '}
+            {provenance.unresolvedMeanings.length} ord afventer afklaring af betydning og trænes kun
+            mellem tegn og pinyin. Data:{' '}
+            <a href="https://github.com/krmanik/HSK-3.0">Mani / HSK-3.0</a> og{' '}
+            <a href="https://www.mdbg.net/chinese/dictionary?page=cedict">CC-CEDICT</a>, tilpasset
+            med danske betydninger af PeterLingo,{' '}
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
           </p>
         )}
       </section>
@@ -298,6 +320,7 @@ function ReadyFlashcardsPage() {
           key={`${active.id}:${counter}`}
           unit={active as DeckUnit}
           deck={deck}
+          select={() => setSelectedUnit(active.id)}
           next={() => {
             setSelectedUnit(recommendedUnit(units, snapshot)?.id ?? null);
             setCounter((n) => n + 1);

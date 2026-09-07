@@ -217,8 +217,7 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
   and continuous groups remain open.
 - Flashkort: generic static/generated deck contract, keyboard/touch reveal and self-rating,
   persistent subset/direction selection, daily eligibility, HSK sample, 12-country geography,
-  four conversion skills. Only 21 HSK level-1 words are bundled; full official redistribution
-  permission, heteronym/sense review and a complete import remain content work.
+  four conversion skills. The initial 21-word seed is superseded by the 0.3.0 release below.
 - Fonetik: explicit synthetic fixtures, local WAV/mel PNG, manifest/cache validation and optional
   build-time endpoint adapter; IPA segment feedback and class→vowel spectrogram prerequisites.
   Natural Danish/English corpora, documented dialect/transcription policy, VOT and word tiers
@@ -232,7 +231,7 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
 
 ### Next content and product work
 
-- HSK: full licensed official import, more recall directions, audio, example sentences and
+- HSK: resolve eight dictionary readings, review syllabus-specific senses, audio, example sentences and
   writing mode; gradual reviewed Danish meanings, never invented bulk translations.
 - Flashkort: user-created decks, versioned deck import/export, other knowledge decks and
   numeric-answer mode for conversions. Local SVG fallback for platforms without flag glyphs.
@@ -243,3 +242,16 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
   long-term fluency statistics, longitudinal calibration of Koch/mastery thresholds.
 - BCS/MBCS: PAO/loci may be added as an optional card-stack learning strategy **inside** the cards
   module. Memory palace/PAO is not a separate discipline. GeoGuessing and touch typing are excluded.
+
+## Milestone 9 — HSK and beginner phonetics (0.3.0)
+
+- Complete licensed, official-cross-checked HSK 2025 list, all 11,000 records and level groups
+  1–6/7–9; six independent Hanzi/pinyin/meaning directions, persistent subsets, 106 editorial
+  Danish meanings with labelled English fallback. Eight unresolved meanings are pinyin-only.
+- Four-step Danish IPA introduction: sound vs spelling, tongue/lip position, length/stress/stød
+  distinction, and spectrogram time/frequency/formants. Three CC BY-SA human vowel recordings
+  and derived local spectrograms complement the five original synthetic laboratory fixtures.
+- Catalogs and attempt lookups scale to the larger deck without changing FSRS/persistence IDs.
+- Still open: native Danish words and accent/transcription review, full Danish vocabulary,
+  physical device listening/tap calibration, Lehrer recording alignment and the older subjects'
+  exact-unit routing. A beginner introduction is not yet a complete Danish phonetics curriculum.

@@ -79,6 +79,7 @@ test('phonetics reveals audio only after spectrogram answer; Python grades exact
   page,
 }) => {
   await page.goto('/fag/phonetics');
+  await page.getByRole('button', { name: 'Spektrogram', exact: true }).click();
   await expect(page.getByRole('img', { name: /Spektrogram med/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Afspil lyd' })).toHaveCount(0);
   await page.getByRole('textbox', { name: 'Dit svar' }).fill('vokal');
@@ -108,9 +109,18 @@ test('precache supports all five new routes without network', async ({
     await expect(page.locator('h1')).toBeVisible();
   }
   await page.goto('/fag/phonetics');
+  await page.getByRole('button', { name: 'Spektrogram', exact: true }).click();
   const img = page.locator('.spectrogram');
   await expect(img).toBeVisible();
   expect(await img.evaluate((e) => (e as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.goto('/fag/flashcards');
+  await page.getByLabel('HSK 7-9 · 5600 ord').check();
+  await page.getByLabel('HSK 1 · 300 ord', { exact: true }).uncheck();
+  await page.getByRole('button', { name: 'Vend kortet', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Kortets bagside' })).toContainText('Engelsk');
+  expect(await page.evaluate(async () => (await fetch('/assets/phonetics/human-i.wav')).ok)).toBe(
+    true
+  );
   await page.goto('/fag/flashcards?unit=flashcards%3Aconversion%3Askill%3AF-to-C');
   await page.getByRole('button', { name: 'Vend kortet', exact: true }).click();
   await page.getByRole('button', { name: 'Kunne', exact: true }).click();
@@ -184,4 +194,44 @@ test('local song audio and a sparse timestamp map enable bounded playback', asyn
   await expect
     .poll(() => page.locator('audio').evaluate((e) => (e as HTMLAudioElement).paused))
     .toBe(true);
+});
+
+test('HSK six directions and all levels persist; pinyin can be the front', async ({ page }) => {
+  await page.goto('/fag/flashcards');
+  await expect(page.getByLabel('HSK 7-9 · 5600 ord')).toBeVisible();
+  await page.getByLabel('Hanzi → betydning', { exact: true }).uncheck();
+  await page.getByLabel('Pinyin → betydning', { exact: true }).check();
+  await expect(page.getByRole('button', { name: 'Vend kortet', exact: true })).toContainText('ài');
+  await page.getByRole('button', { name: 'Vend kortet', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Kortets bagside' })).toContainText('elske');
+  await page.getByRole('button', { name: 'Kunne', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Gemt');
+  await page.getByLabel('HSK 7-9 · 5600 ord').check();
+  await expect(page.getByLabel('HSK 7-9 · 5600 ord')).toBeEnabled();
+  await page.reload();
+  await expect(page.getByLabel('Pinyin → betydning', { exact: true })).toBeChecked();
+  await expect(page.getByLabel('HSK 7-9 · 5600 ord')).toBeChecked();
+});
+
+test('Danish IPA teaching leads into human-vowel recall', async ({ page }) => {
+  await page.goto('/fag/phonetics');
+  await expect(page.getByRole('heading', { name: '1 · Skriv det, du hører' })).toBeVisible();
+  await page.getByRole('button', { name: 'Næste lille trin' }).click();
+  await expect(page.locator('.ipa-examples audio')).toHaveCount(3);
+  const loaded = await page
+    .locator('.ipa-examples audio')
+    .first()
+    .evaluate(async (node) => {
+      const audio = node as HTMLAudioElement;
+      await audio.play();
+      audio.pause();
+      return audio.duration;
+    });
+  expect(loaded).toBeGreaterThan(0);
+  await page.getByRole('button', { name: 'IPA-transskription', exact: true }).click();
+  await page.getByRole('button', { name: 'Afspil lyd', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Dit svar' }).fill('i');
+  await expect(page.getByRole('button', { name: 'Tjek svar' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Tjek svar' }).click();
+  await expect(page.getByRole('status')).toContainText('Korrekt');
 });

@@ -20,7 +20,14 @@ def generate(manifest,endpoint=None):
     for row in manifest:
         name=row['id']; assert name.replace('-','').isalnum()
         audio=OUT/f'{name}.wav'; image=OUT/f'{name}.png'; sr=16000
-        if endpoint:
+        if row.get('localAudio'):
+            local=ROOT/'public'/row['localAudio'].lstrip('/')
+            assert local.resolve().is_relative_to((ROOT/'public/assets/phonetics').resolve())
+            with wave.open(str(local)) as wav:
+                assert wav.getnchannels()==1 and wav.getsampwidth()==2
+                sr=wav.getframerate(); signal=np.frombuffer(wav.readframes(wav.getnframes()),dtype='<i2')/32768
+            if local != audio: audio.write_bytes(local.read_bytes())
+        elif endpoint:
             request=urllib.request.Request(endpoint,json.dumps({'text':row['text'],'language':row['language'],'format':'wav'}).encode(),{'Content-Type':'application/json'})
             with urllib.request.urlopen(request,timeout=60) as response: audio.write_bytes(response.read())
             with wave.open(str(audio)) as wav:

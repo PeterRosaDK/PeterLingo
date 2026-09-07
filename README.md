@@ -9,9 +9,10 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Ten subjects sha
 - Hørelære with a four-step interval introduction, adaptive three-question daily test, and
   instrument geography
 
-Current repository version: **0.2.0**. Five additional vertical slices use the existing engine:
-Grundstoffer, Morse, Flashkort (HSK/Lande/Omregninger), Fonetik and Python-hjernen. HSK currently
-ships 21 level-1 words; phonetics uses five explicitly synthetic fixtures. These are not full curricula.
+Current repository version: **0.3.0**. Five additional vertical slices use the existing engine:
+Grundstoffer, Morse, Flashkort (HSK/Lande/Omregninger), Fonetik and Python-hjernen. HSK now
+ships all 11,000 official 2025 records with six directions and Danish/English meanings. Phonetics
+adds a Danish beginner introduction and three licensed human vowels alongside five synthetic fixtures.
 See [the expansion report](docs/FIVE_DISCIPLINES_REPORT.md) and module READMEs for exact scope.
 
 Three daily effort stars per subject provide a deliberately small motivation loop. A completed
@@ -63,9 +64,8 @@ shared attempt history. The app shell remains available offline; when the Access
 expired, the shell shows **Log ind** and sends a network navigation through `/login` before
 returning to the app.
 
-The current production artifact remains revision `8cf63df`, deployed directly at
-`https://d33e7c1e.peterlingo.pages.dev` and promoted to the custom production domain. Repository
-version 0.2.0 is locally built and browser-tested; this feature task does not change that deployment.
+See [deployment status](deployment/README.md) for the exact tested production revision.
+Releases use Cloudflare Pages Direct Upload; pushing Git alone does not deploy.
 
 ## GoCube and iOS
 

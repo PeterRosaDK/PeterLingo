@@ -19,8 +19,16 @@ export interface SessionSelectionInput {
 function expandedCatalog(input: SessionSelectionInput): LearningUnit[] {
   const masteryById = new Map(input.mastery.map((record) => [record.learningUnitId, record]));
   const catalog = [...input.catalog];
+  const knownIds = new Set(catalog.map((u) => u.id));
+  const attemptsById = new Map<string, Attempt[]>();
+  for (const attempt of input.attempts ?? []) {
+    const list = attemptsById.get(attempt.learningUnitId) ?? [];
+    list.push(attempt);
+    attemptsById.set(attempt.learningUnitId, list);
+  }
   for (const card of input.scheduled) {
-    if (catalog.some((unit) => unit.id === card.learningUnitId)) continue;
+    if (knownIds.has(card.learningUnitId)) continue;
+    knownIds.add(card.learningUnitId);
     const discipline = disciplineForLearningUnitId(card.learningUnitId);
     if (!discipline) continue;
     catalog.push({
@@ -40,7 +48,7 @@ function expandedCatalog(input: SessionSelectionInput): LearningUnit[] {
     )
     .map((unit) => ({
       ...unit,
-      estimatedSeconds: estimatedSecondsForUnit(unit, input.attempts ?? []),
+      estimatedSeconds: estimatedSecondsForUnit(unit, attemptsById.get(unit.id) ?? []),
     }));
 }
 

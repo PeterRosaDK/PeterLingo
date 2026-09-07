@@ -9,18 +9,24 @@ export function recommendedUnit(
   snapshot: ReturnType<typeof useLearningData>['snapshot']
 ): LearningUnit | undefined {
   const now = Date.now();
-  return [...units].sort((a, b) => {
-    const score = (u: LearningUnit) => {
-      const card = snapshot.scheduledUnits.find((c) => c.learningUnitId === u.id);
-      const last = snapshot.attempts.filter((a) => a.learningUnitId === u.id).at(-1);
-      return (
-        (card && Date.parse(card.due) <= now ? 100 : !card ? 50 : 0) +
-        (1 - (snapshot.mastery.find((m) => m.learningUnitId === u.id)?.strength ?? 0)) * 10 -
-        (last && now - Date.parse(last.attemptedAt) < 60000 ? 200 : 0)
-      );
-    };
-    return score(b) - score(a);
-  })[0];
+  const scheduled = new Map(snapshot.scheduledUnits.map((c) => [c.learningUnitId, c]));
+  const mastery = new Map(snapshot.mastery.map((m) => [m.learningUnitId, m]));
+  const lastAttempts = new Map(snapshot.attempts.map((a) => [a.learningUnitId, a]));
+  let best: LearningUnit | undefined;
+  let bestScore = -Infinity;
+  for (const u of units) {
+    const card = scheduled.get(u.id);
+    const last = lastAttempts.get(u.id);
+    const score =
+      (card && Date.parse(card.due) <= now ? 100 : !card ? 50 : 0) +
+      (1 - (mastery.get(u.id)?.strength ?? 0)) * 10 -
+      (last && now - Date.parse(last.attemptedAt) < 60000 ? 200 : 0);
+    if (score > bestScore) {
+      best = u;
+      bestScore = score;
+    }
+  }
+  return best;
 }
 export function Practice({
   units,

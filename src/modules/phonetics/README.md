@@ -6,12 +6,14 @@ class, tier, cue, synthesis provenance, asset paths and SHA256 digests. WAV/PNG 
 
 Stable IDs distinguish IPA transcription, spectrogram class recognition, and vowel reading.
 The first tier produces a typed class (vokal/frikativ/plosiv). The second spectrogram tier asks
-for /i a u/ and uses shared LearningUnit prerequisites: all five class units must have strength
+for /i y a u/ and uses shared LearningUnit prerequisites: all eight class units must have strength
 at least 0.68. IPA uses normalized segments (including tie bars and combining diacritics), edit
 distance, substitutions, insertions/deletions and diagnostic partial credit. Only exact segment
 agreement is correct for the existing grading policy. Hints and revealed answers use normal policy.
 
-There are five **synthetic acoustic fixtures**, not a curated speech corpus. Three additive
+There are three **human isolated IPA vowel recordings** [i y u] by Denelson83 (CC BY-SA 3.0),
+plus five **synthetic acoustic fixtures**. This is not yet a native Danish word corpus.
+The human records use language=da for teaching context/keyboard, not recording nationality. Three additive
 formant vowel prototypes, high-passed noise and a stop burst demonstrate spectral structure.
 Only vowels have IPA transcription drills; the stop burst is not misrepresented as a natural /p/.
 The da/en inventories are separate editable keyboards, not claims of complete phoneme inventories.
@@ -37,4 +39,19 @@ No endpoint means synthetic fixture generation works and the app/build always us
 Real TTS labels require listening review: a TTS request is not proof of the waveform's IPA.
 Future tiers: voiced/unvoiced with measured VOT, natural syllables/words, annotated formants,
 and curated Danish/English recordings. Signal fixtures/images are original project assets,
-GPL-3.0; no IPA chart image or third-party recording is copied.
+GPL-3.0. Human WAV conversions and their derived spectrograms retain CC BY-SA 3.0; see
+THIRD_PARTY_NOTICES and manifest per-record source/license/hash metadata.
+
+## Human recordings and teaching
+
+Run `python tools/phonetics-dataset/import_commons.py` with ffmpeg available after generating
+fixtures; it downloads three explicitly licensed Commons recordings, converts to mono PCM and
+uses the same mel generator. `localAudio` also allows explicit local recording imports without
+an endpoint. Normal build never downloads or regenerates audio. Re-running the synthetic-only
+fixture command replaces the manifest, so follow it with the human importer before publishing.
+
+The four-step `Introduction.tsx` teaches before recall, with Danish word anchors clearly
+separated from isolated international IPA recordings. Reading a lesson does not fabricate a
+successful attempt or raise mastery. Practice remains on the shared hint/attempt/FSRS path.
+Background: Ruben Schachtenhaufen, <https://schwa.dk/lydskrift/>. Danish word-level transcription
+and stød diagnosis await curated native speech and a documented convention.

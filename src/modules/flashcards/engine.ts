@@ -110,42 +110,57 @@ const hskDirections = [
   { id: 'hanzi_to_meaning', label: 'Hanzi → betydning' },
   { id: 'meaning_to_hanzi', label: 'Betydning → Hanzi' },
   { id: 'hanzi_to_pinyin', label: 'Hanzi → pinyin' },
+  { id: 'pinyin_to_hanzi', label: 'Pinyin → Hanzi' },
+  { id: 'pinyin_to_meaning', label: 'Pinyin → betydning' },
+  { id: 'meaning_to_pinyin', label: 'Betydning → pinyin' },
 ];
+const hskById = new Map(hskWords.map((w) => [w.id, w]));
 export const hskDeck: FlashcardDeck = {
   id: 'hsk',
   title: '🇨🇳 HSK',
-  description: 'Versionsmærkede kinesiske ord · engelsk facit',
+  description: '11.000 ord · HSK 3.0 (2025) · dansk med engelsk fallback',
   directions: hskDirections,
   getSubsets: () => [...new Set(hskWords.map((w) => `${w.hskStandard}/${w.hskLevel}`))],
   getLearningUnits: () =>
     hskWords.flatMap((w) =>
-      hskDirections.map((d) =>
-        deckUnit(
-          'hsk',
-          w.id,
-          d.id,
-          `${w.hskStandard}/${w.hskLevel}`,
-          `${w.simplified} · ${d.label}`
+      hskDirections
+        .filter((d) => !d.id.includes('meaning') || w.meaningsDa.length + w.meaningsEn.length > 0)
+        .map((d) =>
+          deckUnit(
+            'hsk',
+            w.id,
+            d.id,
+            `${w.hskStandard}/${w.hskLevel}`,
+            `${w.simplified} · ${d.label}`
+          )
         )
-      )
     ),
   generateCard(u) {
-    const w = hskWords.find((w) => w.id === u.recordId)!;
+    const w = hskById.get(u.recordId)!;
     const meaning = (w.meaningsDa.length ? w.meaningsDa : w.meaningsEn).join('; ');
-    return {
-      front: {
-        text: u.direction === 'meaning_to_hanzi' ? meaning : w.simplified,
-        kind: u.direction === 'meaning_to_hanzi' ? 'text' : 'hanzi',
+    const fields: Record<string, CardContent> = {
+      hanzi: { text: w.simplified, kind: 'hanzi' },
+      pinyin: { text: w.pinyin },
+      meaning: {
+        text: meaning,
+        secondary: w.meaningsDa.length ? 'Dansk · redaktionelt udvalg' : 'Engelsk · CC-CEDICT',
       },
+    };
+    const [front, back] = u.direction.split('_to_');
+    return {
+      front: fields[front!]!,
       back: {
-        text:
-          u.direction === 'hanzi_to_pinyin'
+        ...fields[back!]!,
+        secondary: [
+          fields[back!]!.secondary,
+          back === 'hanzi'
             ? w.pinyin
-            : u.direction === 'meaning_to_hanzi'
-              ? w.simplified
-              : meaning,
-        secondary: u.direction === 'hanzi_to_pinyin' ? undefined : w.pinyin,
-        kind: u.direction === 'meaning_to_hanzi' ? 'hanzi' : 'text',
+            : back === 'meaning'
+              ? `${w.simplified} · ${w.pinyin}`
+              : w.simplified,
+        ]
+          .filter(Boolean)
+          .join(' · '),
       },
       direction: u.direction,
       metadata: {
@@ -238,18 +253,26 @@ export const conversionDeck: FlashcardDeck = {
   },
 };
 export const decks = [hskDeck, countryDeck, conversionDeck];
+// Stable, shared catalogs: do not allocate 66,000 units on every render.
+for (const deck of decks) {
+  const subsets = deck.getSubsets();
+  deck.getSubsets = () => subsets;
+  const units = deck.getLearningUnits();
+  deck.getLearningUnits = () => units;
+}
 export const flashcardUnits = decks.flatMap((d) => d.getLearningUnits());
+const flashcardById = new Map(flashcardUnits.map((u) => [u.id, u]));
 export function deckSelection(deck: FlashcardDeck, settings: Settings) {
   return (
     settings.deckSettings[deck.id] ?? {
       enabled: true,
-      subsets: deck.getSubsets(),
-      directions: deck.directions.map((d) => d.id),
+      subsets: deck.id === 'hsk' ? deck.getSubsets().slice(0, 1) : deck.getSubsets(),
+      directions: deck.id === 'hsk' ? ['hanzi_to_meaning'] : deck.directions.map((d) => d.id),
     }
   );
 }
 export function flashcardEnabled(id: string, settings: Settings) {
-  const u = flashcardUnits.find((u) => u.id === id);
+  const u = flashcardById.get(id);
   if (!u) return false;
   const d = decks.find((d) => d.id === u.deckId)!;
   const s = deckSelection(d, settings);

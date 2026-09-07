@@ -1,3 +1,4 @@
+import { Introduction } from './Introduction';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLearningData } from '../../app/DataProvider';
@@ -7,7 +8,11 @@ export function PhoneticsPage() {
   const { snapshot } = useLearningData();
   const [params] = useSearchParams();
   const [mode, setMode] = useState(
-    params.get('unit')?.includes(':ipa_transcribe:') ? 'ipa' : 'spectrogram'
+    params.get('unit')?.includes(':ipa_transcribe:')
+      ? 'ipa'
+      : params.has('unit')
+        ? 'spectrogram'
+        : 'intro'
   );
   const eligible = phoneticsUnits.filter((u) =>
     (u.prerequisites ?? []).every(
@@ -21,15 +26,14 @@ export function PhoneticsPage() {
         <h1>Fonetik</h1>
         <p>Lyt og skriv IPA, eller læs frekvensmønstret før lyden afsløres.</p>
       </header>
-      <section className="lesson-card">
-        <h2>Et lille akustisk laboratorium</h2>
-        <p>
-          De fem lokale signaler er syntetiske undervisningsfixtures. Vokalerne er IPA-prototyper,
-          ikke verificerede danske eller engelske ord. Sprogenes tastaturer holdes adskilt; en
-          konkret dansk transskriptionskonvention kræver kurateret tale.
-        </p>
-      </section>
       <div className="self-ratings">
+        <button
+          className="button secondary"
+          aria-pressed={mode === 'intro'}
+          onClick={() => setMode('intro')}
+        >
+          Start her · dansk introduktion
+        </button>
         <button
           className="button secondary"
           aria-pressed={mode === 'spectrogram'}
@@ -45,14 +49,18 @@ export function PhoneticsPage() {
           IPA-transskription
         </button>
       </div>
-      <Practice
-        key={mode}
-        hideUnitSelector
-        units={eligible.filter((u) =>
-          mode === 'ipa' ? u.id.includes(':ipa_transcribe:') : u.id.includes(':spectrogram')
-        )}
-        generate={phoneticsExercise}
-      />
+      {mode === 'intro' ? (
+        <Introduction start={setMode} />
+      ) : (
+        <Practice
+          key={mode}
+          hideUnitSelector
+          units={eligible.filter((u) =>
+            mode === 'ipa' ? u.id.includes(':ipa_transcribe:') : u.id.includes(':spectrogram')
+          )}
+          generate={phoneticsExercise}
+        />
+      )}
     </div>
   );
 }

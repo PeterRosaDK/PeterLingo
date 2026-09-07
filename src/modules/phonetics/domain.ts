@@ -123,13 +123,20 @@ export function compareIpa(actual: string, expected: string) {
 export const phoneticsUnits = manifest.flatMap((r) => [
   unit(`spectrogram_read:${r.id}`, 'phonetics', 'Spektrogram · lydklasse', 35),
   ...(r.class === 'vokal'
-    ? [unit(`ipa_transcribe:${r.id}`, 'phonetics', `IPA · ${r.language} · lydprototype`, 35)]
+    ? [
+        unit(
+          `ipa_transcribe:${r.id}`,
+          'phonetics',
+          `IPA · ${r.language} · ${r.synthetic ? 'lydprototype' : 'menneskelig vokal'}`,
+          35
+        ),
+      ]
     : []),
 ]);
 export const vowelSpectrogramUnits = manifest
   .filter((r) => r.class === 'vokal')
   .map((r) => ({
-    ...unit(`spectrogram_vowel:${r.id}`, 'phonetics', 'Spektrogram · /i a u/', 35),
+    ...unit(`spectrogram_vowel:${r.id}`, 'phonetics', 'Spektrogram · vokalsymbol', 35),
     prerequisites: manifest.map((p) => `phonetics:spectrogram_read:${p.id}`),
   }));
 phoneticsUnits.push(...vowelSpectrogramUnits);
@@ -142,9 +149,11 @@ export function phoneticsExercise(u: LearningUnit) {
     u,
     spec
       ? mode === 'spectrogram_vowel'
-        ? 'Læs spektrogrammet: skriv i, a eller u'
+        ? 'Læs spektrogrammet: skriv i, y, a eller u'
         : 'Læs spektrogrammet: skriv vokal, frikativ eller plosiv'
-      : 'Lyt til den syntetiske IPA-prototype',
+      : r.synthetic
+        ? 'Lyt til den syntetiske IPA-prototype'
+        : 'Lyt til vokalen, og skriv IPA-tegnet',
     spec ? target : r.ipa,
     r.cue,
     {

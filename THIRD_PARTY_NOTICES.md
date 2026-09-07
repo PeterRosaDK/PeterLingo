@@ -60,19 +60,38 @@ The current non-Roux recovery path calls cubing.js's packaged two-phase solver t
 library boundary; its bundled min2phase component is marked MIT in the cubing.js source.
 PeterLingo adds validation and user guidance but does not copy its solver code.
 
-## HSK dictionary seed (0.2.0)
+## HSK vocabulary (0.3.0)
 
-- CC-CEDICT, maintained by its community and published by MDBG.
-- Download: <https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz>
-- Release header: 2026-09-07T08:01:26Z; license in that release: **CC BY-SA 4.0**,
-  <https://creativecommons.org/licenses/by-sa/4.0/>.
-- Adaptation: selected 21 dictionary entries, converted to JSON with verified official HSK
-  membership/pinyin; English meanings retained, no generated Danish translations.
-- `src/modules/flashcards/decks/hsk.json` is CC BY-SA 4.0, including this adapted dataset.
-  Source hashes and reproduction are in the module README. Attribution must travel with export.
-- Official classification source: ChineseTest HSK Examination Syllabus, November 2025 / July 2026,
-  <https://www.chinesetest.cn/syllabus>. Full PDF and bulk vocabulary are not distributed: no
-  explicit redistribution grant was identified. GF0025-2021 is separately identified, not conflated.
+- Licensed HSK word transcription: Mani, [krmanik/HSK-3.0](https://github.com/krmanik/HSK-3.0),
+  commit `182692ce5a11bc30bdc771835d2f0f27491c25de`, **CC BY-SA 4.0**.
+  Pinned upstream notice: `tools/hsk/SOURCE_LICENSE.md`.
+- CC-CEDICT community, published by MDBG, release 2026-09-07T08:01:26Z,
+  <https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz>, **CC BY-SA 4.0**.
+- Adaptation: 11,000 licensed vocabulary records cross-checked against ChineseTest's November
+  2025 syllabus (effective July 2026); official record IDs/initial levels/pronunciation retained,
+  compatible English dictionary senses joined, 106 selected senses translated into Danish.
+- `src/modules/flashcards/decks/hsk.json` and `hsk-da.json`, including these adaptations, are
+  **CC BY-SA 4.0**, <https://creativecommons.org/licenses/by-sa/4.0/>. Preserve these credits and
+  the license when redistributing. Hashes, reproduction and unresolved meanings are documented
+  in `tools/hsk/README.md` and `hsk-provenance.json`.
+- Official verification source: <https://www.chinesetest.cn/syllabus>. No official PDF or its
+  creative instructional/exam text is distributed. GF0025-2021 is a separate standard.
+
+## Human IPA audio and derived spectrograms (0.3.0)
+
+Denelson83, Wikimedia Commons, **CC BY-SA 3.0**, chosen from the offered dual licenses:
+
+- <https://commons.wikimedia.org/wiki/File:Close_front_unrounded_vowel.ogg>
+- <https://commons.wikimedia.org/wiki/File:Close_front_rounded_vowel.ogg>
+- <https://commons.wikimedia.org/wiki/File:Close_back_rounded_vowel.ogg>
+
+License: <https://creativecommons.org/licenses/by-sa/3.0/>. Adaptations: mono 16-bit PCM WAV at
+16 kHz and generated mel-spectrogram PNGs, `public/assets/phonetics/human-*`. These adaptations
+retain CC BY-SA 3.0. Source URLs, original and output hashes are in the phonetics manifest;
+`tools/phonetics-dataset/import_commons.py` reproduces them with ffmpeg (development only).
+These are human isolated IPA demonstrations, not recordings of native Danish example words.
+PeterLingo's Danish teaching text is original; background reading: Ruben Schachtenhaufen,
+<https://schwa.dk/lydskrift/>. No proprietary IPA association recordings are distributed.
 
 ## Chemical facts and Lehrer sequence
 

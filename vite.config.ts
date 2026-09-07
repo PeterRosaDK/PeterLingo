@@ -41,6 +41,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,wav}'],
+        // The complete licensed HSK dictionary must be available on the first offline visit.
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/cdn-cgi\//, /^\/login(?:\/|$)/],
         cleanupOutdatedCaches: true,

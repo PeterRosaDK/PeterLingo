@@ -33,38 +33,19 @@ Official research checked 2026-09-07:
   here as `HSK-3.0-2025-11`, not mislabeled GF0025-2021.
 - Portal levels are 1, 2, 3, 4, 5, 6 and the combined **7–9** group. The importer preserves the
   group; it never invents independent membership in levels 7, 8 or 9.
-- `decks/hsk.json` ships **21 independently selected level-1 records**, 63 direction units.
-  It is a usable start deck, not the complete official list. Only level 1 is currently available.
-- Hanzi/pinyin and membership were cross-checked against official vocabulary table rows (printed
-  pages 77–83). English dictionary entries are CC-CEDICT, MDBG release 2026-09-07T08:01:26Z,
-  CC BY-SA 4.0; meaningsDa is empty. No Danish translations were generated.
+- `decks/hsk.json` ships all **11,000 numbered records**: levels 1/2/3/4/5/6/7–9
+  contain 300/200/500/1,000/1,600/1,800/5,600 newly introduced records respectively.
+- Six independent directions connect Hanzi, pinyin and meaning. Eight unresolved dictionary
+  readings are pinyin-only. 106 common level-1 words have editorial Danish meanings; the rest
+  use CC-CEDICT English where available. The UI identifies the language explicitly.
+- New settings default to level 1 and Hanzi→meaning. Persisted selections and existing seed
+  LearningUnit IDs survive unchanged. Level 7–9 remains one group, never three invented lists.
+- Shared immutable catalogs and indexed lookup avoid repeated 66,000-unit allocation/scans.
+  FSRS still stores only items actually studied. The complete dictionary is precached offline.
 
-The full official PDF carries no redistribution permission identified during this work; it and
-bulk official vocabulary are **not** committed. The small locally selected dictionary sample
-contains factual vocabulary annotations, not a copy of the full official table. CC-CEDICT-derived
-records retain their own CC BY-SA license (see THIRD_PARTY_NOTICES).
-
-## Reproducible explicit import
-
-Install `tools/requirements-data.txt` into a development venv. Download the official linked PDF
-and the [CC-CEDICT gzip](https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz)
-to a local path outside the repository. Then:
-
-```sh
-python tools/hsk/import.py --pdf /local/hsk.pdf --cedict /local/cedict.gz \
-  --seed --output src/modules/flashcards/decks/hsk.json
-```
-
-Without `--seed`, the tool extracts matching rows to the explicitly chosen output. Keep that
-bulk output private pending redistribution permission. Ambiguous dictionary heteronyms are
-omitted for review; the tool does not claim a complete 11,000-word translation/import.
-Official combined levels, parenthesized later senses and multiword pinyin need human validation
-before a larger content release. Existing output is a pinned seed; upstream “latest” is mutable.
-
-Input SHA256 for this seed:
-
-- PDF: `ec74ce0439e837bbb15154be13e747ae798903b2fd3a331629df6c3b45504941`
-- CC-CEDICT gzip: `cd81c0d253c82d4b1dc3ca2cfe4cd5fc46ca10b753743a80d783f3969ae11a23`
+See [the reproducible importer](../../../tools/hsk/README.md) for the licensed Mani transcription,
+official cross-check, pinned hashes, Danish editorial policy and unresolved readings. The dataset
+and adapted Danish layer use CC BY-SA 4.0; no official PDF is bundled.
 
 ## Geography and conversions
 

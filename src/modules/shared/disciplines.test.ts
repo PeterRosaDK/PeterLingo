@@ -83,7 +83,7 @@ it('compares normalized phonetic segments with diagnostic operations', () => {
 });
 it('gates vowel spectrograms on class mastery in the shared selector', () => {
   const units = phoneticsUnits.filter((u) => u.id.includes('spectrogram_vowel'));
-  expect(units).toHaveLength(3);
+  expect(units).toHaveLength(6);
   expect(
     selectDailySession({
       catalog: units,

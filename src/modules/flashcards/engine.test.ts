@@ -3,6 +3,8 @@ import {
   decks,
   flashcardUnits,
   hskWords,
+  hskDeck,
+  deckSelection,
   countryDeck,
   conversionDeck,
   conversions,
@@ -20,7 +22,7 @@ describe('generic flashcard contract', () => {
     expect(decks.map((d) => d.id)).toEqual(['hsk', 'countries', 'conversion']);
     expect(new Set(flashcardUnits.map((u) => u.id)).size).toBe(flashcardUnits.length);
     const ids = flashcardUnits.filter((u) => u.deckId === 'hsk' && u.recordId === hskWords[0]!.id);
-    expect(ids).toHaveLength(3);
+    expect(ids).toHaveLength(6);
     const scheduler = new FsrsScheduler();
     expect(scheduler.review(scheduler.create(ids[0]!.id), 'good').reps).toBe(1);
     expect(scheduler.create(ids[1]!.id).reps).toBe(0);
@@ -32,15 +34,13 @@ describe('generic flashcard contract', () => {
     expect(cards.map((c) => c.back.text)).toEqual(['Lissabon', 'Portugal', 'Portugal']);
   });
   it('validates HSK records, identifiers, explicit standard and NFC pinyin', () => {
-    expect(hskWords.length).toBeGreaterThanOrEqual(20);
+    expect(hskWords).toHaveLength(11000);
     expect(new Set(hskWords.map((w) => w.id)).size).toBe(hskWords.length);
     for (const w of hskWords) {
       expect(w.hskStandard).toBe('HSK-3.0-2025-11');
-      expect(w.hskLevel).toBe('1');
+      expect(['1', '2', '3', '4', '5', '6', '7-9']).toContain(w.hskLevel);
       expect(w.pinyin.normalize('NFC')).toBe(w.pinyin);
       expect(w.pinyin).not.toMatch(/[1-5]/);
-      expect(w.meaningsEn.length).toBeGreaterThan(0);
-      expect(w.meaningsDa).toEqual([]);
     }
     expect(hskWords.find((w) => w.simplified === '电脑')?.pinyin).toBe('diànnǎo');
   });
@@ -174,4 +174,37 @@ it('preserves non-empty version-one attempts, FSRS, mastery and sessions', () =>
   const migrated = parseSnapshot(JSON.parse(JSON.stringify(state)));
   for (const key of ['attempts', 'scheduledUnits', 'mastery', 'sessions'] as const)
     expect(migrated[key]).toEqual(state[key]);
+});
+
+it('supports six field directions with Danish and honest English fallback', () => {
+  const units = hskDeck.getLearningUnits().filter((u) => u.recordId === 'HSK-3.0-2025-11-1');
+  const cards = new Map(
+    units.map((u) => [u.direction, hskDeck.generateCard(u, { random: () => 0, difficulty: 0 })])
+  );
+  expect(cards.get('pinyin_to_meaning')?.front.text).toBe('ài');
+  expect(cards.get('pinyin_to_meaning')?.back.text).toContain('elske');
+  expect(cards.get('meaning_to_pinyin')?.back.text).toBe('ài');
+  expect(cards.get('pinyin_to_hanzi')?.back.text).toBe('爱');
+  const english = hskWords.find((w) => !w.meaningsDa.length && w.meaningsEn.length)!;
+  const u = hskDeck
+    .getLearningUnits()
+    .find((u) => u.recordId === english.id && u.direction === 'hanzi_to_meaning')!;
+  expect(hskDeck.generateCard(u, { random: () => 0, difficulty: 0 }).back.secondary).toContain(
+    'Engelsk'
+  );
+});
+it('excludes unresolved meanings from meaning directions and starts with only level one', () => {
+  const units = hskDeck.getLearningUnits();
+  const unresolved = new Set(
+    hskWords.filter((w) => !w.meaningsDa.length && !w.meaningsEn.length).map((w) => w.id)
+  );
+  expect(unresolved.size).toBe(8);
+  expect(
+    units.filter((u) => unresolved.has(u.recordId)).every((u) => !u.direction.includes('meaning'))
+  ).toBe(true);
+  expect(hskDeck.getLearningUnits()).toBe(units);
+  const selection = deckSelection(hskDeck, createEmptySnapshot().settings);
+  expect(selection.subsets).toEqual(['HSK-3.0-2025-11/1']);
+  expect(selection.directions).toEqual(['hanzi_to_meaning']);
+  expect(hskDeck.getSubsets()).toHaveLength(7);
 });

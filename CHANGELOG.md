@@ -4,6 +4,17 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+## 0.3.0 — 2026-09-07
+
+- Complete versioned HSK 2025 list: 11,000 records, all seven official level groups, six recall
+  directions, 106 editorial Danish meanings with explicit English fallback.
+- Three licensed human IPA vowels, derived offline spectrograms and a four-step Danish
+  introduction to sounds, articulation, length/stress and spectrogram reading.
+- Indexed shared catalog/attempt lookups and cached deck units for the larger vocabulary.
+- Persistent settings and existing FSRS identities preserved; first-use HSK defaults stay small.
+- Eight unresolved HSK dictionary readings train only Hanzi↔pinyin. Danish word transcription,
+  native Danish recordings, stød scoring and a complete Danish dictionary remain future work.
+
 ## 0.2.0 — 2026-09-07
 
 ### Added

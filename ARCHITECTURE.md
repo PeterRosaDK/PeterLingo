@@ -169,3 +169,14 @@ presentation lives under modules/shared; domain-specific grid, audio, IPA and co
 Offline fixtures are precached; dataset tools run only during explicit development. Runtime
 Python execution and arbitrary code uploads remain outside the product boundary. The reviewed
 42-snippet corpus is executed by isolated build-time subprocesses, with a checked-in answer key.
+
+## Large static decks (0.3.0)
+
+The complete HSK deck keeps stable official-record/direction IDs. Deck contracts return shared
+immutable unit catalogs and indexed ID lookups; free-practice ranking indexes history once and
+selects the highest score in one pass. Daily session expansion groups attempts by unit before
+estimating duration. These are general optimizations of the existing engine, not a new scheduler.
+No persistence migration is needed: only studied units acquire FSRS state, and existing deck
+settings remain authoritative. New users get only HSK level 1 / Hanzi→meaning enabled initially.
+The PWA precache limit is explicitly 8 MiB per asset to include the complete local dictionary;
+the production offline browser gate checks training after all network access is disabled.
