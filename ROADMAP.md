@@ -205,20 +205,41 @@ remain as operational hardening rather than blockers for ordinary Milestone 6 wo
 - optional MIDI input
 - carefully designed cloud sync
 
-## Milestone 8 — Subject expansion and module registry
+## Milestone 8 — Five new disciplines (0.2.0)
 
-Before scaling from five to ten subjects, make subject registration explicit without forcing very different exercises into one generic interface:
+Implemented vertical slices using the existing module/catalog/routes, FSRS and attempt model.
+No second scheduling engine or new top-level memory/PAO/geography discipline.
 
-- Introduce a typed subject-module registry for identity, title, route, visual metadata, learning-unit catalogue, and exercise entry points.
-- Replace hard-coded subject routing and focus-weight defaults while retaining stable learning-unit IDs and the shared FSRS, attempt, mastery, and session contracts.
-- Add a versioned persistence migration and backward-compatibility tests for existing IndexedDB data and JSON exports.
-- Keep interaction surfaces subject-specific: flashcards, maps, equations, chessboards, and code questions can share the learning engine without sharing one exercise UI.
-- Prove the extension boundary with one new subject end to end before adding the remaining four.
+- Grundstoffer: 118 records, original 102-name song ordering, four recall modes, exact-cell
+  periodic grid, full reference, local recording and editable/importable timestamp segments.
+- Morse: synthesized 20-WPM characters, Farnsworth spacing, Koch gate, receive, Space/touch send,
+  relative timing/gap diagnostics and binary reference tree. Real-device listening calibration
+  and continuous groups remain open.
+- Flashkort: generic static/generated deck contract, keyboard/touch reveal and self-rating,
+  persistent subset/direction selection, daily eligibility, HSK sample, 12-country geography,
+  four conversion skills. Only 21 HSK level-1 words are bundled; full official redistribution
+  permission, heteronym/sense review and a complete import remain content work.
+- Fonetik: explicit synthetic fixtures, local WAV/mel PNG, manifest/cache validation and optional
+  build-time endpoint adapter; IPA segment feedback and class→vowel spectrogram prerequisites.
+  Natural Danish/English corpora, documented dialect/transcription policy, VOT and word tiers
+  remain open. A synthetic stop burst is not a curated speech recording.
+- Python-hjernen: 42 reviewed 3–8-line snippets, metadata, isolated execution, timeouts,
+  hash-seed determinism checks and exact-output/exception drill. No runtime interpreter.
+- Snapshot v1→v2 migration preserves history; existing subjects use the same mastery policy.
+  Disabled scheduled deck units are excluded both from new and resumed session plans.
+- Home keeps Start dagens træning primary; the subject cards scroll horizontally instead of
+  growing into a ten-card static grid. Flashkort has one top-level place.
 
-Candidate subject tracks:
+### Next content and product work
 
-- Chinese flashcards: character, meaning, pronunciation, and recognition/production as distinct learning units.
-- Geography tests: countries, capitals, flags, regions, and map placement in both directions.
-- Mathematics problems: concept-based generated exercises with step diagnostics rather than one card per set of numbers.
-- Chess openings: position-to-move and move-to-plan units with legal-move validation and a board-specific interface.
-- Python programming questions: concepts, output prediction, code reading, and debugging; arbitrary code execution remains out of scope until separately sandboxed and designed.
+- HSK: full licensed official import, more recall directions, audio, example sentences and
+  writing mode; gradual reviewed Danish meanings, never invented bulk translations.
+- Flashkort: user-created decks, versioned deck import/export, other knowledge decks and
+  numeric-answer mode for conversions. Local SVG fallback for platforms without flag glyphs.
+- Phonetics: reviewed natural speech, Danish transcription convention, labelled VOT contrasts,
+  more complex syllables and words; keyboard cursor insertion and audio-interruption recovery.
+- Elements: align timestamps to Peter's actual recording and connect segments to hints.
+- Sessions: finish exact-unit routing for the pre-existing five subject UIs, richer retention and
+  long-term fluency statistics, longitudinal calibration of Koch/mastery thresholds.
+- BCS/MBCS: PAO/loci may be added as an optional card-stack learning strategy **inside** the cards
+  module. Memory palace/PAO is not a separate discipline. GeoGuessing and touch typing are excluded.

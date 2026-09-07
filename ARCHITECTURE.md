@@ -156,3 +156,16 @@ VexFlow renders short conventional notation fragments. PeterLingo is not a notat
 - BLE and cube data stay local. PeterLingo sends learning attempts, including generated exercise
   parameters, response time, hint use, result, and timestamp, to its private D1 store; no cube data
   is included.
+
+## Ten-subject extension (0.2.0)
+
+The existing typed subject metadata, catalog and route registries now include elements, morse,
+flashcards, phonetics and python_output. All use the original LearningUnit/GeneratedExercise,
+FSRS wrapper, repository and attempt log. [ADR 0003](docs/adr/0003-ten-subjects-and-self-recall.md)
+documents schema-2 migration, session eligibility after scheduled-item expansion, shared
+prerequisites, explicit self-reported recall and unified live/replay mastery. Shared typed recall
+presentation lives under modules/shared; domain-specific grid, audio, IPA and code remain distinct.
+
+Offline fixtures are precached; dataset tools run only during explicit development. Runtime
+Python execution and arbitrary code uploads remain outside the product boundary. The reviewed
+42-snippet corpus is executed by isolated build-time subprocesses, with a checked-in answer key.

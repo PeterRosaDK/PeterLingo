@@ -4,6 +4,33 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+## 0.2.0 — 2026-09-07
+
+### Added
+
+- Five integrated adaptive disciplines: Grundstoffer, Morse, Flashkort, Fonetik and Python-hjernen.
+- Generic static/generated flashcards with independent directions, persistent subsets and FSRS
+  self-ratings; 21 real HSK-3.0 level-1 words, 12 countries and four conversion skills.
+- 118-element periodic grid, original Lehrer chain and local audio/timestamp selection.
+- Synthesized Koch receive/send, relative timing scorer and reference tree.
+- Five offline acoustic fixtures, mel-spectrogram generator/validator and IPA segment diagnostics.
+- 42 executed Python snippets, source hashes, isolated timeout/determinism validation.
+
+### Changed
+
+- Snapshot schema 2 migrates v1 on normal IndexedDB load and JSON import without deleting history.
+- Shared session eligibility excludes disabled decks after expansion and gates prerequisite units.
+- Local and replayed mastery share one policy and can reach fluent; self-report is not timed grading.
+- Ten-subject home uses a horizontal card strip; statistics group directions/topics in one framework.
+
+### Limits
+
+- HSK is a source-verified seed plus explicit import, not a complete official vocabulary release.
+- Phonetics uses labelled synthetic fixtures, not verified Danish/English word recordings.
+- No Lehrer recording is distributed. See module READMEs and THIRD_PARTY_NOTICES.
+
+## Earlier unreleased work (included in 0.2.0)
+
 ### Added
 
 - Extended the First Block physical-cube/target-cube workspace through Second Block, CMLL, and Last

@@ -1,6 +1,6 @@
 # PeterLingo
 
-PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects share one session engine, progressive hints, attempt model, FSRS scheduler boundary, persistence layer, and visual language:
+PeterLingo is Peter's polished, local-first daily learning PWA. Ten subjects share one session engine, progressive hints, attempt model, FSRS scheduler boundary, persistence layer, and visual language:
 
 - Doomsday weekday calculation
 - Roux method and smart-cube plumbing
@@ -9,7 +9,10 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Five subjects sh
 - Hørelære with a four-step interval introduction, adaptive three-question daily test, and
   instrument geography
 
-Milestone 0 is version **0.1.0**. It is a functional foundation, not a claim that every curriculum is complete.
+Current repository version: **0.2.0**. Five additional vertical slices use the existing engine:
+Grundstoffer, Morse, Flashkort (HSK/Lande/Omregninger), Fonetik and Python-hjernen. HSK currently
+ships 21 level-1 words; phonetics uses five explicitly synthetic fixtures. These are not full curricula.
+See [the expansion report](docs/FIVE_DISCIPLINES_REPORT.md) and module READMEs for exact scope.
 
 Three daily effort stars per subject provide a deliberately small motivation loop. A completed
 attempt counts even when it is wrong or uses hints; the stars are not a mastery score.
@@ -42,6 +45,7 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm test
+npm run test:datasets
 npm run build
 npx playwright install chromium
 npm run test:e2e
@@ -51,7 +55,7 @@ npm run test:e2e
 
 ## PWA and offline behavior
 
-`vite-plugin-pwa` precaches the application shell and local assets. After one successful production visit, Doomsday, BCS/MBCS, Pi, virtual Hørelære instruments, and non-hardware Roux practice are designed to work offline. Bluetooth pairing still depends on browser/platform support and a secure context.
+`vite-plugin-pwa` precaches the application shell and local assets. After one successful production visit, Doomsday, BCS/MBCS, Pi, virtual Hørelære instruments, and non-hardware Roux practice are designed to work offline. The five new subjects also run offline, including local phonetics WAV/PNG and generated Morse. Bluetooth pairing still depends on browser/platform support and a secure context.
 
 The production build is served at `/` on the active, Access-protected custom domain
 `https://peterlingo.petergpt.dk`. Cloudflare Pages hosts the PWA and Function, while D1 stores the
@@ -59,8 +63,9 @@ shared attempt history. The app shell remains available offline; when the Access
 expired, the shell shows **Log ind** and sends a network navigation through `/login` before
 returning to the app.
 
-The current tested app artifact is revision `8cf63df`, deployed directly at
-`https://d33e7c1e.peterlingo.pages.dev` and promoted to the custom production domain.
+The current production artifact remains revision `8cf63df`, deployed directly at
+`https://d33e7c1e.peterlingo.pages.dev` and promoted to the custom production domain. Repository
+version 0.2.0 is locally built and browser-tested; this feature task does not change that deployment.
 
 ## GoCube and iOS
 
