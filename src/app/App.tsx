@@ -5,6 +5,22 @@ import { DataProvider } from './DataProvider';
 import { ThemeSync } from './ThemeSync';
 import { HomePage } from '../routes/HomePage';
 
+const ElementsPage = lazy(() =>
+  import('../modules/elements/ElementsPage').then((m) => ({ default: m.ElementsPage }))
+);
+const MorsePage = lazy(() =>
+  import('../modules/morse/MorsePage').then((m) => ({ default: m.MorsePage }))
+);
+const FlashcardsPage = lazy(() =>
+  import('../modules/flashcards/FlashcardsPage').then((m) => ({ default: m.FlashcardsPage }))
+);
+const PhoneticsPage = lazy(() =>
+  import('../modules/phonetics/PhoneticsPage').then((m) => ({ default: m.PhoneticsPage }))
+);
+const PythonPage = lazy(() =>
+  import('../modules/python_output/PythonPage').then((m) => ({ default: m.PythonPage }))
+);
+
 const SubjectsPage = lazy(() =>
   import('../routes/SubjectsPage').then((module) => ({ default: module.SubjectsPage }))
 );
@@ -81,6 +97,12 @@ export function App() {
               <Route index element={<HomePage />} />
               <Route path="session" element={<SessionPage />} />
               <Route path="fag" element={<SubjectsPage />} />
+              <Route path="fag/elements" element={<ElementsPage />} />
+              <Route path="fag/morse" element={<MorsePage />} />
+              <Route path="fag/flashcards" element={<FlashcardsPage />} />
+              <Route path="fag/phonetics" element={<PhoneticsPage />} />
+              <Route path="fag/python_output" element={<PythonPage />} />
+
               <Route path="fag/doomsday" element={<DoomsdayPage />} />
               <Route path="fag/kort" element={<CardsPage />} />
               <Route path="fag/pi" element={<PiPage />} />

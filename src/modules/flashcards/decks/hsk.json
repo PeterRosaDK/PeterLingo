@@ -1,0 +1,219 @@
+[
+  {
+    "id": "HSK-3.0-2025-11-1",
+    "simplified": "爱",
+    "traditional": "愛",
+    "pinyin": "ài",
+    "meaningsDa": [],
+    "meaningsEn": [
+      "to love; to be fond of; to like",
+      "affection",
+      "to be inclined (to do sth); to tend to (happen)"
+    ],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-2",
+    "simplified": "八",
+    "traditional": "八",
+    "pinyin": "bā",
+    "meaningsDa": [],
+    "meaningsEn": ["eight"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-3",
+    "simplified": "爸爸",
+    "traditional": "爸爸",
+    "pinyin": "bàba",
+    "meaningsDa": [],
+    "meaningsEn": ["(coll.) father; dad", "CL:位[wei4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-5",
+    "simplified": "白天",
+    "traditional": "白天",
+    "pinyin": "báitiān",
+    "meaningsDa": [],
+    "meaningsEn": ["daytime", "during the day", "day", "CL:個|个[ge4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-6",
+    "simplified": "百",
+    "traditional": "百",
+    "pinyin": "bǎi",
+    "meaningsDa": [],
+    "meaningsEn": ["hundred", "numerous", "all kinds of"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-8",
+    "simplified": "包子",
+    "traditional": "包子",
+    "pinyin": "bāozi",
+    "meaningsDa": [],
+    "meaningsEn": ["baozi; bao (steamed stuffed bun)"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-9",
+    "simplified": "杯子",
+    "traditional": "杯子",
+    "pinyin": "bēizi",
+    "meaningsDa": [],
+    "meaningsEn": ["cup", "glass", "CL:個|个[ge4],隻|只[zhi1]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-17",
+    "simplified": "茶",
+    "traditional": "茶",
+    "pinyin": "chá",
+    "meaningsDa": [],
+    "meaningsEn": ["tea", "tea plant", "CL:杯[bei1],壺|壶[hu2]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-19",
+    "simplified": "超市",
+    "traditional": "超市",
+    "pinyin": "chāoshì",
+    "meaningsDa": [],
+    "meaningsEn": [
+      "supermarket (abbr. for 超級市場|超级市场[chao1 ji2 shi4 chang3])",
+      "CL:家[jia1]"
+    ],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-22",
+    "simplified": "出租车",
+    "traditional": "出租車",
+    "pinyin": "chūzūchē",
+    "meaningsDa": [],
+    "meaningsEn": ["taxi", "(Tw) rental car"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-27",
+    "simplified": "大学",
+    "traditional": "大學",
+    "pinyin": "dàxué",
+    "meaningsDa": [],
+    "meaningsEn": ["university; college", "CL:所[suo3]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-32",
+    "simplified": "弟弟",
+    "traditional": "弟弟",
+    "pinyin": "dìdi",
+    "meaningsDa": [],
+    "meaningsEn": ["younger brother", "CL:個|个[ge4],位[wei4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-35",
+    "simplified": "电话",
+    "traditional": "電話",
+    "pinyin": "diànhuà",
+    "meaningsDa": [],
+    "meaningsEn": ["telephone", "CL:部[bu4]", "phone call", "CL:通[tong1]", "phone number"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-36",
+    "simplified": "电脑",
+    "traditional": "電腦",
+    "pinyin": "diànnǎo",
+    "meaningsDa": [],
+    "meaningsEn": ["computer", "CL:臺|台[tai2]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-37",
+    "simplified": "电视",
+    "traditional": "電視",
+    "pinyin": "diànshì",
+    "meaningsDa": [],
+    "meaningsEn": ["television; TV", "CL:臺|台[tai2],部[bu4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-38",
+    "simplified": "电影",
+    "traditional": "電影",
+    "pinyin": "diànyǐng",
+    "meaningsDa": [],
+    "meaningsEn": ["movie; film", "CL:部[bu4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-107",
+    "simplified": "老师",
+    "traditional": "老師",
+    "pinyin": "lǎoshī",
+    "meaningsDa": [],
+    "meaningsEn": ["teacher"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-156",
+    "simplified": "朋友",
+    "traditional": "朋友",
+    "pinyin": "péngyou",
+    "meaningsDa": [],
+    "meaningsEn": ["friend", "CL:個|个[ge4],位[wei4]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-248",
+    "simplified": "学生",
+    "traditional": "學生",
+    "pinyin": "xuéshēng",
+    "meaningsDa": [],
+    "meaningsEn": ["student", "schoolchild"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-250",
+    "simplified": "学校",
+    "traditional": "學校",
+    "pinyin": "xuéxiào",
+    "meaningsDa": [],
+    "meaningsEn": ["school", "CL:所[suo3]"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  },
+  {
+    "id": "HSK-3.0-2025-11-289",
+    "simplified": "中国",
+    "traditional": "中國",
+    "pinyin": "Zhōngguó",
+    "meaningsDa": [],
+    "meaningsEn": ["China"],
+    "hskStandard": "HSK-3.0-2025-11",
+    "hskLevel": "1"
+  }
+]

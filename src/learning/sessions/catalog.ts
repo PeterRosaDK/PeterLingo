@@ -1,3 +1,9 @@
+import { elementUnits } from '../../modules/elements/domain';
+import { morseUnits } from '../../modules/morse/domain';
+import { flashcardUnits } from '../../modules/flashcards/engine';
+import { phoneticsUnits } from '../../modules/phonetics/domain';
+import { pythonUnits } from '../../modules/python_output/domain';
+import { disciplineIds } from '../types';
 import type { LearningUnit } from '../types';
 import type { DisciplineId } from '../types';
 
@@ -322,12 +328,13 @@ export const learningCatalog: LearningUnit[] = [
     estimatedSeconds: 50,
     isNew: true,
   },
+  ...elementUnits,
+  ...morseUnits,
+  ...flashcardUnits,
+  ...phoneticsUnits,
+  ...pythonUnits,
 ];
 
 export function disciplineForLearningUnitId(id: string): DisciplineId | null {
-  const prefix = id.split(':')[0];
-  if (prefix === 'doomsday' || prefix === 'roux' || prefix === 'cards' || prefix === 'pi')
-    return prefix;
-  if (prefix === 'music-ear') return 'music-ear';
-  return null;
+  return disciplineIds.find((discipline) => id.startsWith(`${discipline}:`)) ?? null;
 }

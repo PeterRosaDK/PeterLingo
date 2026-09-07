@@ -1,3 +1,4 @@
+import { subjectMetrics } from '../learning/sessions/subjectMetrics';
 import { useLearningData } from '../app/DataProvider';
 import { subjects } from '../app/subjects';
 import { StarMeter } from '../components/StarMeter';
@@ -41,7 +42,14 @@ export function StatsPage() {
         <article>
           <span>Median</span>
           <strong>
-            {(median(attempts.map((attempt) => attempt.responseTimeMs)) / 1000).toFixed(1)}s
+            {(
+              median(
+                attempts
+                  .filter((a) => a.generatedParameters.recallMode !== 'self-report')
+                  .map((attempt) => attempt.responseTimeMs)
+              ) / 1000
+            ).toFixed(1)}
+            s
           </strong>
           <small>svartid</small>
         </article>
@@ -55,7 +63,9 @@ export function StatsPage() {
         <header>
           <div>
             <p className="eyebrow">Tre små skridt i hvert fag</p>
-            <h2 id="daily-star-title">Dagens stjerner · {dailyStarTotal(attempts)}/15</h2>
+            <h2 id="daily-star-title">
+              Dagens stjerner · {dailyStarTotal(attempts)}/{subjects.length * 3}
+            </h2>
           </div>
           <p>
             Et gennemført forsøg giver en stjerne. Fejl og brug af hints fjerner aldrig stjerner.
@@ -89,6 +99,28 @@ export function StatsPage() {
             </div>
           );
         })}
+      </section>
+      <section className="lesson-card">
+        <h2>Retninger og færdigheder</h2>
+        {subjects.map((subject) => (
+          <details key={subject.id}>
+            <summary>{subject.title}</summary>
+            {subjectMetrics(attempts.filter((a) => a.discipline === subject.id)).map((m) => (
+              <p key={m.label}>
+                <strong>{m.label}</strong> · {m.count} forsøg · {Math.round(m.accuracy * 100)}%
+                korrekt
+                {m.latencyMs !== null
+                  ? ` · median ${(m.latencyMs / 1000).toFixed(1)} s`
+                  : ' · selvvurderet recall'}
+                {m.effectiveWpm !== null ? ` · ${m.effectiveWpm} WPM spacing` : ''}
+                {m.timingError.length
+                  ? ` · rytmefejl ${Math.round((m.timingError.reduce((a, b) => a + b, 0) / m.timingError.length) * 100)}%`
+                  : ''}
+                {m.confusions.length ? ` · forvekslinger: ${m.confusions.join(', ')}` : ''}
+              </p>
+            ))}
+          </details>
+        ))}
       </section>
       <section className="weak-units">
         <h2>Svage læringsenheder</h2>

@@ -6168,3 +6168,285 @@ p {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Ten subjects share the existing surfaces and theme tokens. */
+.subject-grid.subject-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 8px 2px 24px;
+}
+.subject-carousel > .subject-card {
+  flex: 0 0 min(440px, 88vw);
+  scroll-snap-align: start;
+}
+.new-subject-symbol {
+  font:
+    700 3.5rem ui-monospace,
+    monospace;
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+}
+.practice-select,
+.recall-answer {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0;
+  color: var(--ink-soft);
+}
+.practice-select select,
+.recall-answer textarea {
+  width: 100%;
+  min-height: 48px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  color: var(--ink);
+  font: inherit;
+}
+.recall-answer textarea {
+  resize: vertical;
+  font-size: 1.3rem;
+}
+.periodic-scroll {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+.periodic-grid {
+  display: grid;
+  grid-template-columns: repeat(18, minmax(36px, 1fr));
+  grid-template-rows: repeat(7, 46px) 12px repeat(2, 46px);
+  gap: 3px;
+  min-width: 760px;
+}
+.periodic-grid button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 5px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.periodic-grid button:hover:not(:disabled) {
+  background: var(--cream);
+  border-color: var(--brand);
+}
+.periodic-grid button.correct-answer {
+  background: var(--mint);
+  color: #162521;
+}
+.periodic-grid.reference {
+  min-width: 1620px;
+  grid-template-rows: repeat(7, 112px) 12px repeat(2, 112px);
+}
+.periodic-grid.reference button {
+  display: grid;
+  padding: 6px;
+  text-align: left;
+}
+.periodic-grid.reference strong {
+  font-size: 1.5rem;
+}
+.periodic-grid.reference span,
+.periodic-grid.reference small {
+  font-size: 0.64rem;
+}
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+.deck-title {
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+.deck-title h2 {
+  font-size: 1.5rem;
+}
+.selected-deck {
+  outline: 2px solid var(--brand);
+}
+.lesson-card fieldset {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 14px 0;
+  display: flex;
+  gap: 10px 24px;
+  flex-wrap: wrap;
+}
+.lesson-card fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.lesson-card input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--brand);
+}
+.flip-card {
+  width: 100%;
+  min-height: 330px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(24px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  cursor: pointer;
+}
+.flip-card.flipped {
+  animation: card-reveal 160ms ease-out;
+  background: var(--cream);
+}
+.card-content {
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.card-content.hanzi {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: clamp(3.5rem, 12vw, 6rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+.card-content.flag {
+  font-size: 6rem;
+}
+.card-secondary {
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+.self-ratings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+.self-ratings .button {
+  min-height: 56px;
+}
+@keyframes card-reveal {
+  from {
+    opacity: 0.4;
+    transform: scaleX(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+.tap-button {
+  touch-action: none;
+  user-select: none;
+  width: 100%;
+  min-height: 140px;
+  background: var(--brand);
+  color: var(--bg);
+  border: 0;
+  border-radius: 24px;
+  font-size: 2rem;
+}
+.tap-button:active {
+  background: var(--brand-2);
+  transform: scale(0.99);
+}
+.morse-tree {
+  overflow: auto;
+  padding: 20px 0;
+}
+.morse-tree ul {
+  display: flex;
+  list-style: none;
+  padding: 10px 0 0;
+  gap: 8px;
+  justify-content: center;
+}
+.morse-tree > ul {
+  min-width: 1300px;
+}
+.morse-tree li {
+  text-align: center;
+  flex: 1;
+}
+.morse-tree li > span {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  display: inline-grid;
+  min-width: 36px;
+}
+.morse-tree small {
+  display: block;
+  font-family: monospace;
+}
+.spectrogram {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+.ipa-keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.ipa-keyboard button {
+  min-width: 48px;
+  min-height: 48px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 1.5rem;
+}
+.python-code {
+  padding: 24px;
+  border-radius: 20px;
+  background: #13231f;
+  color: #e8eee9;
+  overflow-x: auto;
+  font:
+    1.15rem/1.7 ui-monospace,
+    monospace;
+  tab-size: 4;
+}
+.code-keyword {
+  color: #98d4bf;
+}
+.code-number {
+  color: #eeb447;
+}
+.code-string {
+  color: #e7ada0;
+}
+.preserve-space {
+  white-space: pre-wrap;
+}
+.lesson-card summary {
+  cursor: pointer;
+  min-height: 44px;
+  font-weight: 700;
+}
+@media (max-width: 600px) {
+  .self-ratings {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .python-code {
+    padding: 16px;
+    font-size: 0.9rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-card.flipped {
+    animation: none;
+  }
+}

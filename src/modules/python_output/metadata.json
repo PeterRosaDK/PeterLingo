@@ -1,0 +1,380 @@
+[
+  {
+    "id": "mutable-default",
+    "topic": "mutable-default",
+    "difficulty": 2,
+    "explanation": "Standardlisten oprettes én gang; kopierne fastholder de to tilstande.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["mutable-default"]
+  },
+  {
+    "id": "default-time",
+    "topic": "default-time",
+    "difficulty": 2,
+    "explanation": "Standardargumentet evalueres ved def.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["default-time"]
+  },
+  {
+    "id": "late-binding",
+    "topic": "late-binding",
+    "difficulty": 2,
+    "explanation": "Alle funktioner slår samme i op ved kald.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["late-binding"]
+  },
+  {
+    "id": "bound-default",
+    "topic": "bound-default",
+    "difficulty": 2,
+    "explanation": "Et standardargument fastholder hver iterations værdi.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["bound-default"]
+  },
+  {
+    "id": "aliasing",
+    "topic": "aliasing",
+    "difficulty": 2,
+    "explanation": "Liste += muterer det delte objekt; efterfølgende + binder kun a til en ny liste.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["aliasing"]
+  },
+  {
+    "id": "repeated-list",
+    "topic": "repeated-list",
+    "difficulty": 2,
+    "explanation": "Gentagelse kopierer referencer til den indre liste.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["repeated-list"]
+  },
+  {
+    "id": "shallow-copy",
+    "topic": "shallow-copy",
+    "difficulty": 2,
+    "explanation": "Den ydre liste kopieres; de indre deles.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["shallow-copy"]
+  },
+  {
+    "id": "tuple-mutation",
+    "topic": "tuple-mutation",
+    "difficulty": 2,
+    "explanation": "Listen muteres før tuple-assignment fejler.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["tuple-mutation"]
+  },
+  {
+    "id": "iadd-list",
+    "topic": "iadd-list",
+    "difficulty": 2,
+    "explanation": "Liste += ændrer listen in-place.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["iadd-list"]
+  },
+  {
+    "id": "iadd-tuple",
+    "topic": "iadd-tuple",
+    "difficulty": 2,
+    "explanation": "Tuple += binder navnet til en ny tuple.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["iadd-tuple"]
+  },
+  {
+    "id": "generator-exhaustion",
+    "topic": "generator-exhaustion",
+    "difficulty": 2,
+    "explanation": "Generatoren er udtømt efter sum.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["generator-exhaustion"]
+  },
+  {
+    "id": "iterator-sharing",
+    "topic": "iterator-sharing",
+    "difficulty": 2,
+    "explanation": "Zip henter to gange fra samme iterator.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["iterator-sharing"]
+  },
+  {
+    "id": "comparison-chain",
+    "topic": "comparison-chain",
+    "difficulty": 2,
+    "explanation": "Kædede sammenligninger og parentesversionen bruger forskellige operander.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["comparison-chain"]
+  },
+  {
+    "id": "short-circuit",
+    "topic": "short-circuit",
+    "difficulty": 2,
+    "explanation": "Begge højre operander springes over.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["short-circuit"]
+  },
+  {
+    "id": "stable-sort",
+    "topic": "stable-sort",
+    "difficulty": 2,
+    "explanation": "Sortering er stabil for ens nøgler.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["stable-sort"]
+  },
+  {
+    "id": "local-scope",
+    "topic": "local-scope",
+    "difficulty": 2,
+    "explanation": "Assignment gør x lokalt i hele funktionen.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["local-scope"]
+  },
+  {
+    "id": "nonlocal",
+    "topic": "nonlocal",
+    "difficulty": 2,
+    "explanation": "Nonlocal ændrer cellen i den omsluttende funktion.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["nonlocal"]
+  },
+  {
+    "id": "global",
+    "topic": "global",
+    "difficulty": 2,
+    "explanation": "Global binder til modulnavnet.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["global"]
+  },
+  {
+    "id": "comprehension-scope",
+    "topic": "comprehension-scope",
+    "difficulty": 2,
+    "explanation": "Comprehensionens iterationsnavn lækker ikke.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["comprehension-scope"]
+  },
+  {
+    "id": "exception-scope",
+    "topic": "exception-scope",
+    "difficulty": 2,
+    "explanation": "Except-målets navn ryddes efter handleren.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["exception-scope"]
+  },
+  {
+    "id": "floor-negative",
+    "topic": "floor-negative",
+    "difficulty": 2,
+    "explanation": "Floor division runder mod minus uendelig.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["floor-negative"]
+  },
+  {
+    "id": "modulo-negative",
+    "topic": "modulo-negative",
+    "difficulty": 2,
+    "explanation": "Resten har divisorens fortegn.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["modulo-negative"]
+  },
+  {
+    "id": "float-rounding",
+    "topic": "float-rounding",
+    "difficulty": 2,
+    "explanation": "På den validerede Pythons IEEE-754 binary64-floats er 0.1 + 0.2 ikke præcis 0.3; afrunding til én decimal giver 0.3.",
+    "classification": "documented version behavior",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["float-rounding"]
+  },
+  {
+    "id": "dict-order",
+    "topic": "dict-order",
+    "difficulty": 2,
+    "explanation": "Opdatering flytter ikke en eksisterende nøgle.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["dict-order"]
+  },
+  {
+    "id": "dict-reinsert",
+    "topic": "dict-reinsert",
+    "difficulty": 2,
+    "explanation": "Genindsættelse placerer nøglen sidst.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["dict-reinsert"]
+  },
+  {
+    "id": "unpacking",
+    "topic": "unpacking",
+    "difficulty": 2,
+    "explanation": "Det stjernemarkerede mål bliver en liste.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["unpacking"]
+  },
+  {
+    "id": "starred-literal",
+    "topic": "starred-literal",
+    "difficulty": 2,
+    "explanation": "Udvidelsen kopierer elementerne på konstruktionstidspunktet.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["starred-literal"]
+  },
+  {
+    "id": "slice-negative",
+    "topic": "slice-negative",
+    "difficulty": 2,
+    "explanation": "Slutindekset er eksklusivt også ved negative skridt.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["slice-negative"]
+  },
+  {
+    "id": "slice-assignment",
+    "topic": "slice-assignment",
+    "difficulty": 2,
+    "explanation": "Slice-assignment kan ændre listens længde.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["slice-assignment"]
+  },
+  {
+    "id": "truthiness",
+    "topic": "truthiness",
+    "difficulty": 2,
+    "explanation": "Uden __bool__ bruges __len__ til sandhedsværdien.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["truthiness"]
+  },
+  {
+    "id": "operand-and-or",
+    "topic": "operand-and-or",
+    "difficulty": 2,
+    "explanation": "and/or returnerer operander, ikke nødvendigvis bool.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["operand-and-or"]
+  },
+  {
+    "id": "evaluation-order",
+    "topic": "evaluation-order",
+    "difficulty": 2,
+    "explanation": "Operander evalueres fra venstre; præcedens styrer kombinationen.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["evaluation-order"]
+  },
+  {
+    "id": "class-instance",
+    "topic": "class-instance",
+    "difficulty": 2,
+    "explanation": "Mutation af klasseattribut og overskygning på instansen er forskellige.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["class-instance"]
+  },
+  {
+    "id": "finally-return",
+    "topic": "finally-return",
+    "difficulty": 2,
+    "explanation": "Return i finally erstatter det ventende return.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["finally-return"]
+  },
+  {
+    "id": "finally-mutation",
+    "topic": "finally-mutation",
+    "difficulty": 2,
+    "explanation": "Return fastholder objektet; finally muterer det før udgangen.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["finally-mutation"]
+  },
+  {
+    "id": "yield-return",
+    "topic": "yield-return",
+    "difficulty": 2,
+    "explanation": "Generator-return bliver StopIteration.value.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["yield-return"]
+  },
+  {
+    "id": "generator-lazy",
+    "topic": "generator-lazy",
+    "difficulty": 2,
+    "explanation": "Generatoren læser listens elementer under iteration.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["generator-lazy"]
+  },
+  {
+    "id": "closure-cell",
+    "topic": "closure-cell",
+    "difficulty": 2,
+    "explanation": "Closuren læser cellens aktuelle indhold.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["closure-cell"]
+  },
+  {
+    "id": "identity-explicit",
+    "topic": "identity-explicit",
+    "difficulty": 2,
+    "explanation": "Lig værdi er forskellig fra eksplicit objektidentitet.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["identity-explicit"]
+  },
+  {
+    "id": "zip-truncation",
+    "topic": "zip-truncation",
+    "difficulty": 2,
+    "explanation": "Zip evaluerer iteratorerne fra venstre. Når den første stopper, hentes der ikke endnu et element fra it.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["zip-truncation"]
+  },
+  {
+    "id": "dict-key-equality",
+    "topic": "dict-key-equality",
+    "difficulty": 2,
+    "explanation": "True, 1 og 1.0 sammenlignes ens og har kompatible hashes.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["dict-key-equality"]
+  },
+  {
+    "id": "augmented-evaluation",
+    "topic": "augmented-evaluation",
+    "difficulty": 2,
+    "explanation": "Højresiden evalueres først; venstresidens mål tildeles fra venstre.",
+    "classification": "language semantics",
+    "pythonVersionConstraints": ">=3.10",
+    "misconceptionTags": ["augmented-evaluation"]
+  }
+]

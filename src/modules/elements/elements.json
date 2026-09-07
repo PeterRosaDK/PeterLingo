@@ -1,0 +1,1064 @@
+[
+  {
+    "atomicNumber": 1,
+    "symbol": "H",
+    "englishName": "hydrogen",
+    "danishName": "hydrogen",
+    "period": 1,
+    "group": 1,
+    "songIndex": 5
+  },
+  {
+    "atomicNumber": 2,
+    "symbol": "He",
+    "englishName": "helium",
+    "danishName": "helium",
+    "period": 1,
+    "group": 18,
+    "songIndex": 51
+  },
+  {
+    "atomicNumber": 3,
+    "symbol": "Li",
+    "englishName": "lithium",
+    "danishName": "lithium",
+    "period": 2,
+    "group": 1,
+    "songIndex": 47
+  },
+  {
+    "atomicNumber": 4,
+    "symbol": "Be",
+    "englishName": "beryllium",
+    "danishName": "beryllium",
+    "period": 2,
+    "group": 2,
+    "songIndex": 48
+  },
+  {
+    "atomicNumber": 5,
+    "symbol": "B",
+    "englishName": "boron",
+    "danishName": "bor",
+    "period": 2,
+    "group": 13,
+    "songIndex": 37
+  },
+  {
+    "atomicNumber": 6,
+    "symbol": "C",
+    "englishName": "carbon",
+    "danishName": "carbon",
+    "period": 2,
+    "group": 14,
+    "songIndex": 97
+  },
+  {
+    "atomicNumber": 7,
+    "symbol": "N",
+    "englishName": "nitrogen",
+    "danishName": "nitrogen",
+    "period": 2,
+    "group": 15,
+    "songIndex": 7
+  },
+  {
+    "atomicNumber": 8,
+    "symbol": "O",
+    "englishName": "oxygen",
+    "danishName": "oxygen",
+    "period": 2,
+    "group": 16,
+    "songIndex": 6
+  },
+  {
+    "atomicNumber": 9,
+    "symbol": "F",
+    "englishName": "fluorine",
+    "danishName": "fluor",
+    "period": 2,
+    "group": 17,
+    "songIndex": 56
+  },
+  {
+    "atomicNumber": 10,
+    "symbol": "Ne",
+    "englishName": "neon",
+    "danishName": "neon",
+    "period": 2,
+    "group": 18,
+    "songIndex": 91
+  },
+  {
+    "atomicNumber": 11,
+    "symbol": "Na",
+    "englishName": "sodium",
+    "danishName": "natrium",
+    "period": 3,
+    "group": 1,
+    "songIndex": 102
+  },
+  {
+    "atomicNumber": 12,
+    "symbol": "Mg",
+    "englishName": "magnesium",
+    "danishName": "magnesium",
+    "period": 3,
+    "group": 2,
+    "songIndex": 61
+  },
+  {
+    "atomicNumber": 13,
+    "symbol": "Al",
+    "englishName": "aluminium",
+    "danishName": "aluminium",
+    "period": 3,
+    "group": 13,
+    "songIndex": 3
+  },
+  {
+    "atomicNumber": 14,
+    "symbol": "Si",
+    "englishName": "silicon",
+    "danishName": "silicium",
+    "period": 3,
+    "group": 14,
+    "songIndex": 42
+  },
+  {
+    "atomicNumber": 15,
+    "symbol": "P",
+    "englishName": "phosphorus",
+    "danishName": "phosphor",
+    "period": 3,
+    "group": 15,
+    "songIndex": 54
+  },
+  {
+    "atomicNumber": 16,
+    "symbol": "S",
+    "englishName": "sulfur",
+    "danishName": "svovl",
+    "period": 3,
+    "group": 16,
+    "songIndex": 82
+  },
+  {
+    "atomicNumber": 17,
+    "symbol": "Cl",
+    "englishName": "chlorine",
+    "danishName": "chlor",
+    "period": 3,
+    "group": 17,
+    "songIndex": 96
+  },
+  {
+    "atomicNumber": 18,
+    "symbol": "Ar",
+    "englishName": "argon",
+    "danishName": "argon",
+    "period": 3,
+    "group": 18,
+    "songIndex": 89
+  },
+  {
+    "atomicNumber": 19,
+    "symbol": "K",
+    "englishName": "potassium",
+    "danishName": "kalium",
+    "period": 4,
+    "group": 1,
+    "songIndex": 72
+  },
+  {
+    "atomicNumber": 20,
+    "symbol": "Ca",
+    "englishName": "calcium",
+    "danishName": "calcium",
+    "period": 4,
+    "group": 2,
+    "songIndex": 79
+  },
+  {
+    "atomicNumber": 21,
+    "symbol": "Sc",
+    "englishName": "scandium",
+    "danishName": "scandium",
+    "period": 4,
+    "group": 3,
+    "songIndex": 63
+  },
+  {
+    "atomicNumber": 22,
+    "symbol": "Ti",
+    "englishName": "titanium",
+    "danishName": "titan",
+    "period": 4,
+    "group": 4,
+    "songIndex": 76
+  },
+  {
+    "atomicNumber": 23,
+    "symbol": "V",
+    "englishName": "vanadium",
+    "danishName": "vanadium",
+    "period": 4,
+    "group": 5,
+    "songIndex": 20
+  },
+  {
+    "atomicNumber": 24,
+    "symbol": "Cr",
+    "englishName": "chromium",
+    "danishName": "chrom",
+    "period": 4,
+    "group": 6,
+    "songIndex": 80
+  },
+  {
+    "atomicNumber": 25,
+    "symbol": "Mn",
+    "englishName": "manganese",
+    "danishName": "mangan",
+    "period": 4,
+    "group": 7,
+    "songIndex": 58
+  },
+  {
+    "atomicNumber": 26,
+    "symbol": "Fe",
+    "englishName": "iron",
+    "danishName": "jern",
+    "period": 4,
+    "group": 8,
+    "songIndex": 13
+  },
+  {
+    "atomicNumber": 27,
+    "symbol": "Co",
+    "englishName": "cobalt",
+    "danishName": "cobalt",
+    "period": 4,
+    "group": 9,
+    "songIndex": 98
+  },
+  {
+    "atomicNumber": 28,
+    "symbol": "Ni",
+    "englishName": "nickel",
+    "danishName": "nikkel",
+    "period": 4,
+    "group": 10,
+    "songIndex": 9
+  },
+  {
+    "atomicNumber": 29,
+    "symbol": "Cu",
+    "englishName": "copper",
+    "danishName": "kobber",
+    "period": 4,
+    "group": 11,
+    "songIndex": 99
+  },
+  {
+    "atomicNumber": 30,
+    "symbol": "Zn",
+    "englishName": "zinc",
+    "danishName": "zink",
+    "period": 4,
+    "group": 12,
+    "songIndex": 94
+  },
+  {
+    "atomicNumber": 31,
+    "symbol": "Ga",
+    "englishName": "gallium",
+    "danishName": "gallium",
+    "period": 4,
+    "group": 13,
+    "songIndex": 28
+  },
+  {
+    "atomicNumber": 32,
+    "symbol": "Ge",
+    "englishName": "germanium",
+    "danishName": "germanium",
+    "period": 4,
+    "group": 14,
+    "songIndex": 12
+  },
+  {
+    "atomicNumber": 33,
+    "symbol": "As",
+    "englishName": "arsenic",
+    "danishName": "arsen",
+    "period": 4,
+    "group": 15,
+    "songIndex": 2
+  },
+  {
+    "atomicNumber": 34,
+    "symbol": "Se",
+    "englishName": "selenium",
+    "danishName": "selen",
+    "period": 4,
+    "group": 16,
+    "songIndex": 4
+  },
+  {
+    "atomicNumber": 35,
+    "symbol": "Br",
+    "englishName": "bromine",
+    "danishName": "brom",
+    "period": 4,
+    "group": 17,
+    "songIndex": 46
+  },
+  {
+    "atomicNumber": 36,
+    "symbol": "Kr",
+    "englishName": "krypton",
+    "danishName": "krypton",
+    "period": 4,
+    "group": 18,
+    "songIndex": 90
+  },
+  {
+    "atomicNumber": 37,
+    "symbol": "Rb",
+    "englishName": "rubidium",
+    "danishName": "rubidium",
+    "period": 5,
+    "group": 1,
+    "songIndex": 36
+  },
+  {
+    "atomicNumber": 38,
+    "symbol": "Sr",
+    "englishName": "strontium",
+    "danishName": "strontium",
+    "period": 5,
+    "group": 2,
+    "songIndex": 41
+  },
+  {
+    "atomicNumber": 39,
+    "symbol": "Y",
+    "englishName": "yttrium",
+    "danishName": "yttrium",
+    "period": 5,
+    "group": 3,
+    "songIndex": 33
+  },
+  {
+    "atomicNumber": 40,
+    "symbol": "Zr",
+    "englishName": "zirconium",
+    "danishName": "zirconium",
+    "period": 5,
+    "group": 4,
+    "songIndex": 18
+  },
+  {
+    "atomicNumber": 41,
+    "symbol": "Nb",
+    "englishName": "niobium",
+    "danishName": "niobium",
+    "period": 5,
+    "group": 5,
+    "songIndex": 39
+  },
+  {
+    "atomicNumber": 42,
+    "symbol": "Mo",
+    "englishName": "molybdenum",
+    "danishName": "molybden",
+    "period": 5,
+    "group": 6,
+    "songIndex": 60
+  },
+  {
+    "atomicNumber": 43,
+    "symbol": "Tc",
+    "englishName": "technetium",
+    "danishName": "technetium",
+    "period": 5,
+    "group": 7,
+    "songIndex": 75
+  },
+  {
+    "atomicNumber": 44,
+    "symbol": "Ru",
+    "englishName": "ruthenium",
+    "danishName": "ruthenium",
+    "period": 5,
+    "group": 8,
+    "songIndex": 15
+  },
+  {
+    "atomicNumber": 45,
+    "symbol": "Rh",
+    "englishName": "rhodium",
+    "danishName": "rhodium",
+    "period": 5,
+    "group": 9,
+    "songIndex": 95
+  },
+  {
+    "atomicNumber": 46,
+    "symbol": "Pd",
+    "englishName": "palladium",
+    "danishName": "palladium",
+    "period": 5,
+    "group": 10,
+    "songIndex": 70
+  },
+  {
+    "atomicNumber": 47,
+    "symbol": "Ag",
+    "englishName": "silver",
+    "danishName": "sølv",
+    "period": 5,
+    "group": 11,
+    "songIndex": 43
+  },
+  {
+    "atomicNumber": 48,
+    "symbol": "Cd",
+    "englishName": "cadmium",
+    "danishName": "cadmium",
+    "period": 5,
+    "group": 12,
+    "songIndex": 78
+  },
+  {
+    "atomicNumber": 49,
+    "symbol": "In",
+    "englishName": "indium",
+    "danishName": "indium",
+    "period": 5,
+    "group": 13,
+    "songIndex": 27
+  },
+  {
+    "atomicNumber": 50,
+    "symbol": "Sn",
+    "englishName": "tin",
+    "danishName": "tin",
+    "period": 5,
+    "group": 14,
+    "songIndex": 101
+  },
+  {
+    "atomicNumber": 51,
+    "symbol": "Sb",
+    "englishName": "antimony",
+    "danishName": "antimon",
+    "period": 5,
+    "group": 15,
+    "songIndex": 1
+  },
+  {
+    "atomicNumber": 52,
+    "symbol": "Te",
+    "englishName": "tellurium",
+    "danishName": "tellur",
+    "period": 5,
+    "group": 16,
+    "songIndex": 77
+  },
+  {
+    "atomicNumber": 53,
+    "symbol": "I",
+    "englishName": "iodine",
+    "danishName": "iod",
+    "period": 5,
+    "group": 17,
+    "songIndex": 29
+  },
+  {
+    "atomicNumber": 54,
+    "symbol": "Xe",
+    "englishName": "xenon",
+    "danishName": "xenon",
+    "period": 5,
+    "group": 18,
+    "songIndex": 93
+  },
+  {
+    "atomicNumber": 55,
+    "symbol": "Cs",
+    "englishName": "cesium",
+    "danishName": "caesium",
+    "period": 6,
+    "group": 1,
+    "songIndex": 65
+  },
+  {
+    "atomicNumber": 56,
+    "symbol": "Ba",
+    "englishName": "barium",
+    "danishName": "barium",
+    "period": 6,
+    "group": 2,
+    "songIndex": 49
+  },
+  {
+    "atomicNumber": 57,
+    "symbol": "La",
+    "englishName": "lanthanum",
+    "danishName": "lanthan",
+    "period": 6,
+    "group": null,
+    "songIndex": 21
+  },
+  {
+    "atomicNumber": 58,
+    "symbol": "Ce",
+    "englishName": "cerium",
+    "danishName": "cerium",
+    "period": 6,
+    "group": null,
+    "songIndex": 64
+  },
+  {
+    "atomicNumber": 59,
+    "symbol": "Pr",
+    "englishName": "praseodymium",
+    "danishName": "praseodym",
+    "period": 6,
+    "group": null,
+    "songIndex": 67
+  },
+  {
+    "atomicNumber": 60,
+    "symbol": "Nd",
+    "englishName": "neodymium",
+    "danishName": "neodym",
+    "period": 6,
+    "group": null,
+    "songIndex": 10
+  },
+  {
+    "atomicNumber": 61,
+    "symbol": "Pm",
+    "englishName": "promethium",
+    "danishName": "promethium",
+    "period": 6,
+    "group": null,
+    "songIndex": 71
+  },
+  {
+    "atomicNumber": 62,
+    "symbol": "Sm",
+    "englishName": "samarium",
+    "danishName": "samarium",
+    "period": 6,
+    "group": null,
+    "songIndex": 44
+  },
+  {
+    "atomicNumber": 63,
+    "symbol": "Eu",
+    "englishName": "europium",
+    "danishName": "europium",
+    "period": 6,
+    "group": null,
+    "songIndex": 17
+  },
+  {
+    "atomicNumber": 64,
+    "symbol": "Gd",
+    "englishName": "gadolinium",
+    "danishName": "gadolinium",
+    "period": 6,
+    "group": null,
+    "songIndex": 38
+  },
+  {
+    "atomicNumber": 65,
+    "symbol": "Tb",
+    "englishName": "terbium",
+    "danishName": "terbium",
+    "period": 6,
+    "group": null,
+    "songIndex": 57
+  },
+  {
+    "atomicNumber": 66,
+    "symbol": "Dy",
+    "englishName": "dysprosium",
+    "danishName": "dysprosium",
+    "period": 6,
+    "group": null,
+    "songIndex": 62
+  },
+  {
+    "atomicNumber": 67,
+    "symbol": "Ho",
+    "englishName": "holmium",
+    "danishName": "holmium",
+    "period": 6,
+    "group": null,
+    "songIndex": 50
+  },
+  {
+    "atomicNumber": 68,
+    "symbol": "Er",
+    "englishName": "erbium",
+    "danishName": "erbium",
+    "period": 6,
+    "group": null,
+    "songIndex": 53
+  },
+  {
+    "atomicNumber": 69,
+    "symbol": "Tm",
+    "englishName": "thulium",
+    "danishName": "thulium",
+    "period": 6,
+    "group": null,
+    "songIndex": 31
+  },
+  {
+    "atomicNumber": 70,
+    "symbol": "Yb",
+    "englishName": "ytterbium",
+    "danishName": "ytterbium",
+    "period": 6,
+    "group": null,
+    "songIndex": 34
+  },
+  {
+    "atomicNumber": 71,
+    "symbol": "Lu",
+    "englishName": "lutetium",
+    "danishName": "lutetium",
+    "period": 6,
+    "group": null,
+    "songIndex": 19
+  },
+  {
+    "atomicNumber": 72,
+    "symbol": "Hf",
+    "englishName": "hafnium",
+    "danishName": "hafnium",
+    "period": 6,
+    "group": 4,
+    "songIndex": 52
+  },
+  {
+    "atomicNumber": 73,
+    "symbol": "Ta",
+    "englishName": "tantalum",
+    "danishName": "tantal",
+    "period": 6,
+    "group": 5,
+    "songIndex": 74
+  },
+  {
+    "atomicNumber": 74,
+    "symbol": "W",
+    "englishName": "tungsten",
+    "danishName": "wolfram",
+    "period": 6,
+    "group": 6,
+    "songIndex": 100
+  },
+  {
+    "atomicNumber": 75,
+    "symbol": "Re",
+    "englishName": "rhenium",
+    "danishName": "rhenium",
+    "period": 6,
+    "group": 7,
+    "songIndex": 8
+  },
+  {
+    "atomicNumber": 76,
+    "symbol": "Os",
+    "englishName": "osmium",
+    "danishName": "osmium",
+    "period": 6,
+    "group": 8,
+    "songIndex": 22
+  },
+  {
+    "atomicNumber": 77,
+    "symbol": "Ir",
+    "englishName": "iridium",
+    "danishName": "iridium",
+    "period": 6,
+    "group": 9,
+    "songIndex": 40
+  },
+  {
+    "atomicNumber": 78,
+    "symbol": "Pt",
+    "englishName": "platinum",
+    "danishName": "platin",
+    "period": 6,
+    "group": 10,
+    "songIndex": 68
+  },
+  {
+    "atomicNumber": 79,
+    "symbol": "Au",
+    "englishName": "gold",
+    "danishName": "guld",
+    "period": 6,
+    "group": 11,
+    "songIndex": 25
+  },
+  {
+    "atomicNumber": 80,
+    "symbol": "Hg",
+    "englishName": "mercury",
+    "danishName": "kviksølv",
+    "period": 6,
+    "group": 12,
+    "songIndex": 59
+  },
+  {
+    "atomicNumber": 81,
+    "symbol": "Tl",
+    "englishName": "thallium",
+    "danishName": "thallium",
+    "period": 6,
+    "group": 13,
+    "songIndex": 32
+  },
+  {
+    "atomicNumber": 82,
+    "symbol": "Pb",
+    "englishName": "lead",
+    "danishName": "bly",
+    "period": 6,
+    "group": 14,
+    "songIndex": 66
+  },
+  {
+    "atomicNumber": 83,
+    "symbol": "Bi",
+    "englishName": "bismuth",
+    "danishName": "bismuth",
+    "period": 6,
+    "group": 15,
+    "songIndex": 45
+  },
+  {
+    "atomicNumber": 84,
+    "symbol": "Po",
+    "englishName": "polonium",
+    "danishName": "polonium",
+    "period": 6,
+    "group": 16,
+    "songIndex": 73
+  },
+  {
+    "atomicNumber": 85,
+    "symbol": "At",
+    "englishName": "astatine",
+    "danishName": "astat",
+    "period": 6,
+    "group": 17,
+    "songIndex": 23
+  },
+  {
+    "atomicNumber": 86,
+    "symbol": "Rn",
+    "englishName": "radon",
+    "danishName": "radon",
+    "period": 6,
+    "group": 18,
+    "songIndex": 92
+  },
+  {
+    "atomicNumber": 87,
+    "symbol": "Fr",
+    "englishName": "francium",
+    "danishName": "francium",
+    "period": 7,
+    "group": 1,
+    "songIndex": 55
+  },
+  {
+    "atomicNumber": 88,
+    "symbol": "Ra",
+    "englishName": "radium",
+    "danishName": "radium",
+    "period": 7,
+    "group": 2,
+    "songIndex": 24
+  },
+  {
+    "atomicNumber": 89,
+    "symbol": "Ac",
+    "englishName": "actinium",
+    "danishName": "actinium",
+    "period": 7,
+    "group": null,
+    "songIndex": 35
+  },
+  {
+    "atomicNumber": 90,
+    "symbol": "Th",
+    "englishName": "thorium",
+    "danishName": "thorium",
+    "period": 7,
+    "group": null,
+    "songIndex": 30
+  },
+  {
+    "atomicNumber": 91,
+    "symbol": "Pa",
+    "englishName": "protactinium",
+    "danishName": "protactinium",
+    "period": 7,
+    "group": null,
+    "songIndex": 26
+  },
+  {
+    "atomicNumber": 92,
+    "symbol": "U",
+    "englishName": "uranium",
+    "danishName": "uran",
+    "period": 7,
+    "group": null,
+    "songIndex": 16
+  },
+  {
+    "atomicNumber": 93,
+    "symbol": "Np",
+    "englishName": "neptunium",
+    "danishName": "neptunium",
+    "period": 7,
+    "group": null,
+    "songIndex": 11
+  },
+  {
+    "atomicNumber": 94,
+    "symbol": "Pu",
+    "englishName": "plutonium",
+    "danishName": "plutonium",
+    "period": 7,
+    "group": null,
+    "songIndex": 69
+  },
+  {
+    "atomicNumber": 95,
+    "symbol": "Am",
+    "englishName": "americium",
+    "danishName": "americium",
+    "period": 7,
+    "group": null,
+    "songIndex": 14
+  },
+  {
+    "atomicNumber": 96,
+    "symbol": "Cm",
+    "englishName": "curium",
+    "danishName": "curium",
+    "period": 7,
+    "group": null,
+    "songIndex": 81
+  },
+  {
+    "atomicNumber": 97,
+    "symbol": "Bk",
+    "englishName": "berkelium",
+    "danishName": "berkelium",
+    "period": 7,
+    "group": null,
+    "songIndex": 85
+  },
+  {
+    "atomicNumber": 98,
+    "symbol": "Cf",
+    "englishName": "californium",
+    "danishName": "californium",
+    "period": 7,
+    "group": null,
+    "songIndex": 83
+  },
+  {
+    "atomicNumber": 99,
+    "symbol": "Es",
+    "englishName": "einsteinium",
+    "danishName": "einsteinium",
+    "period": 7,
+    "group": null,
+    "songIndex": 87
+  },
+  {
+    "atomicNumber": 100,
+    "symbol": "Fm",
+    "englishName": "fermium",
+    "danishName": "fermium",
+    "period": 7,
+    "group": null,
+    "songIndex": 84
+  },
+  {
+    "atomicNumber": 101,
+    "symbol": "Md",
+    "englishName": "mendelevium",
+    "danishName": "mendelevium",
+    "period": 7,
+    "group": null,
+    "songIndex": 86
+  },
+  {
+    "atomicNumber": 102,
+    "symbol": "No",
+    "englishName": "nobelium",
+    "danishName": "nobelium",
+    "period": 7,
+    "group": null,
+    "songIndex": 88
+  },
+  {
+    "atomicNumber": 103,
+    "symbol": "Lr",
+    "englishName": "lawrencium",
+    "danishName": "lawrencium",
+    "period": 7,
+    "group": null,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 104,
+    "symbol": "Rf",
+    "englishName": "rutherfordium",
+    "danishName": "rutherfordium",
+    "period": 7,
+    "group": 4,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 105,
+    "symbol": "Db",
+    "englishName": "dubnium",
+    "danishName": "dubnium",
+    "period": 7,
+    "group": 5,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 106,
+    "symbol": "Sg",
+    "englishName": "seaborgium",
+    "danishName": "seaborgium",
+    "period": 7,
+    "group": 6,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 107,
+    "symbol": "Bh",
+    "englishName": "bohrium",
+    "danishName": "bohrium",
+    "period": 7,
+    "group": 7,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 108,
+    "symbol": "Hs",
+    "englishName": "hassium",
+    "danishName": "hassium",
+    "period": 7,
+    "group": 8,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 109,
+    "symbol": "Mt",
+    "englishName": "meitnerium",
+    "danishName": "meitnerium",
+    "period": 7,
+    "group": 9,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 110,
+    "symbol": "Ds",
+    "englishName": "darmstadtium",
+    "danishName": "darmstadtium",
+    "period": 7,
+    "group": 10,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 111,
+    "symbol": "Rg",
+    "englishName": "roentgenium",
+    "danishName": "roentgenium",
+    "period": 7,
+    "group": 11,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 112,
+    "symbol": "Cn",
+    "englishName": "copernicium",
+    "danishName": "copernicium",
+    "period": 7,
+    "group": 12,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 113,
+    "symbol": "Nh",
+    "englishName": "nihonium",
+    "danishName": "nihonium",
+    "period": 7,
+    "group": 13,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 114,
+    "symbol": "Fl",
+    "englishName": "flerovium",
+    "danishName": "flerovium",
+    "period": 7,
+    "group": 14,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 115,
+    "symbol": "Mc",
+    "englishName": "moscovium",
+    "danishName": "moscovium",
+    "period": 7,
+    "group": 15,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 116,
+    "symbol": "Lv",
+    "englishName": "livermorium",
+    "danishName": "livermorium",
+    "period": 7,
+    "group": 16,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 117,
+    "symbol": "Ts",
+    "englishName": "tennessine",
+    "danishName": "tennessin",
+    "period": 7,
+    "group": 17,
+    "songIndex": null
+  },
+  {
+    "atomicNumber": 118,
+    "symbol": "Og",
+    "englishName": "oganesson",
+    "danishName": "oganesson",
+    "period": 7,
+    "group": 18,
+    "songIndex": null
+  }
+]

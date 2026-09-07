@@ -1,3 +1,4 @@
+import { sessionEligibility } from '../learning/sessions/eligibility';
 import { Link } from 'react-router-dom';
 import { useLearningData } from '../app/DataProvider';
 import { greetingForDate } from '../app/greeting';
@@ -50,6 +51,12 @@ function SubjectVisual({ id }: { id: DisciplineId }) {
         <small>89793…</small>
       </div>
     );
+  if (id !== 'music-ear')
+    return (
+      <div className="subject-visual new-subject-symbol">
+        {{ elements: 'Fe', morse: '⌁', flashcards: '字', phonetics: 'ə', python_output: '>>>' }[id]}
+      </div>
+    );
   return (
     <div className="subject-visual keys-mini" aria-hidden="true">
       {[0, 1, 2, 3, 4, 5, 6].map((key) => (
@@ -78,6 +85,7 @@ export function HomePage() {
   const due = snapshot.scheduledUnits.filter((card) => scheduler.isDue(card, today));
   const selectionInput: SessionSelectionInput = {
     catalog: learningCatalog,
+    eligible: sessionEligibility(snapshot),
     scheduled: snapshot.scheduledUnits,
     mastery: snapshot.mastery,
     recentSessions: snapshot.sessions,
@@ -150,7 +158,9 @@ export function HomePage() {
             </div>
             <div>
               <dt>Dagens stjerner</dt>
-              <dd>{starsToday}/15</dd>
+              <dd>
+                {starsToday}/{subjects.length * 3}
+              </dd>
             </div>
             <div>
               <dt>Ny læring i planen</dt>
@@ -168,14 +178,14 @@ export function HomePage() {
       </section>
       <section className="section-heading">
         <div>
-          <p className="eyebrow">Fem spor · én læringsmotor</p>
+          <p className="eyebrow">Ti spor · én læringsmotor</p>
           <h2>Vælg et fag direkte</h2>
         </div>
         <Link to="/fag">
           Se alle fag <span>→</span>
         </Link>
       </section>
-      <section className="subject-grid">
+      <section className="subject-grid subject-carousel">
         {subjects.map((subject) => {
           const progress = masteredByDiscipline(subject.id);
           const subjectDue = due.filter(

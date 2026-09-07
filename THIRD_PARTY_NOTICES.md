@@ -59,3 +59,39 @@ None in Milestone 0. No code from `wodzik/cube` or another Roux solver has been 
 The current non-Roux recovery path calls cubing.js's packaged two-phase solver through the existing
 library boundary; its bundled min2phase component is marked MIT in the cubing.js source.
 PeterLingo adds validation and user guidance but does not copy its solver code.
+
+## HSK dictionary seed (0.2.0)
+
+- CC-CEDICT, maintained by its community and published by MDBG.
+- Download: <https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz>
+- Release header: 2026-09-07T08:01:26Z; license in that release: **CC BY-SA 4.0**,
+  <https://creativecommons.org/licenses/by-sa/4.0/>.
+- Adaptation: selected 21 dictionary entries, converted to JSON with verified official HSK
+  membership/pinyin; English meanings retained, no generated Danish translations.
+- `src/modules/flashcards/decks/hsk.json` is CC BY-SA 4.0, including this adapted dataset.
+  Source hashes and reproduction are in the module README. Attribution must travel with export.
+- Official classification source: ChineseTest HSK Examination Syllabus, November 2025 / July 2026,
+  <https://www.chinesetest.cn/syllabus>. Full PDF and bulk vocabulary are not distributed: no
+  explicit redistribution grant was identified. GF0025-2021 is separately identified, not conflated.
+
+## Chemical facts and Lehrer sequence
+
+118 symbols, atomic numbers and names checked against IUPAC and Kemisk Forenings
+Nomenklaturudvalg (table 1 and Ture Damhus, Dansk Kemi 100/2, 2019). Initial English/position facts
+were extracted from <https://github.com/Bowserinator/Periodic-Table-JSON>; no Wikipedia prose,
+images, atomic-mass tables or upstream software are included. Module README links primary sources.
+
+The 102-name original song order follows Tom Lehrer's own lyric sheet. Lehrer permanently
+relinquished his song copyrights: <https://tomlehrersongs.org/>. No audio recording or full lyric
+sheet is included in PeterLingo; local user-selected recordings remain on the device.
+
+## Morse, geography and phonetics
+
+Morse character facts and timing ratios follow ITU-R M.1677. No ITU document or audio is copied.
+Country/capital pairs are factual records; Unicode flag pairs use platform glyphs, not vendored art.
+The five synthetic phonetics signals and spectrograms are original project assets (GPL-3.0).
+Python snippets/explanations are original project content (GPL-3.0).
+
+Optional development tools: pypdf (BSD-3-Clause), NumPy (BSD-3-Clause), Matplotlib (PSF-based
+Matplotlib license). Pinned in `tools/requirements-data.txt`; they are not runtime dependencies.
+There are no new npm dependencies.

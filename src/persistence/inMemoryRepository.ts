@@ -1,3 +1,4 @@
+import { parseSnapshot } from './validation';
 import type { ScheduledLearningUnit } from '../learning/fsrs/scheduler';
 import type { Attempt, MasteryRecord, SessionRecord } from '../learning/types';
 import type { LearningRepository } from './repository';
@@ -12,7 +13,7 @@ export class InMemoryLearningRepository implements LearningRepository {
   private state: PeterLingoSnapshot;
 
   constructor(initial = createEmptySnapshot()) {
-    this.state = structuredClone(initial);
+    this.state = parseSnapshot(structuredClone(initial));
   }
 
   async load() {
@@ -43,7 +44,7 @@ export class InMemoryLearningRepository implements LearningRepository {
     this.state.settings = structuredClone(value);
   }
   async replace(value: PeterLingoSnapshot) {
-    this.state = structuredClone(value);
+    this.state = parseSnapshot(structuredClone(value));
   }
   async reset() {
     this.state = createEmptySnapshot();

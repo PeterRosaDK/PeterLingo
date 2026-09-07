@@ -1,3 +1,4 @@
+import { sessionEligibility } from '../learning/sessions/eligibility';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLearningData } from '../app/DataProvider';
@@ -37,6 +38,7 @@ function ReadySessionPage() {
   const sessionId = `daily:${localDateKey(now)}`;
   const selectionInput: SessionSelectionInput = {
     catalog: learningCatalog,
+    eligible: sessionEligibility(snapshot),
     scheduled: snapshot.scheduledUnits,
     mastery: snapshot.mastery,
     recentSessions: snapshot.sessions,
@@ -145,7 +147,10 @@ function ReadySessionPage() {
           </Link>
         </section>
       ) : nextUnit ? (
-        <Link className="button start-button compact-start" to={unitRoute(nextUnit)}>
+        <Link
+          className="button start-button compact-start"
+          to={`${unitRoute(nextUnit)}?unit=${encodeURIComponent(nextUnit.id)}`}
+        >
           <span>
             {progress.completedCount ? 'Fortsæt med næste øvelse' : 'Begynd første øvelse'}
           </span>

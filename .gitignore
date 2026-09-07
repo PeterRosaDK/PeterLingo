@@ -16,3 +16,5 @@ coverage/
 .idea/
 .vscode/settings.json
 public/assets/cards/.upstream/
+__pycache__/
+*.pyc

@@ -8,7 +8,7 @@ describe('JSON portability', () => {
     const json = await exportLearningData(source);
     const target = new InMemoryLearningRepository();
     await importLearningData(target, json);
-    expect((await target.load()).schemaVersion).toBe(1);
+    expect((await target.load()).schemaVersion).toBe(2);
   });
 
   it('rejects unknown schemas', async () => {

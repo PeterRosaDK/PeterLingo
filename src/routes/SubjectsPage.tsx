@@ -6,7 +6,7 @@ export function SubjectsPage() {
     <div className="page">
       <header className="page-heading">
         <p className="eyebrow">Direkte træning</p>
-        <h1>Fem fag, samme rytme</h1>
+        <h1>Ti fag, samme rytme</h1>
         <p>Gå direkte til et spor uden at ændre dagens adaptive plan.</p>
       </header>
       <div className="subject-list">
@@ -16,7 +16,7 @@ export function SubjectsPage() {
             to={subject.route}
             key={subject.id}
           >
-            <b>0{index + 1}</b>
+            <b>{String(index + 1).padStart(2, '0')}</b>
             <div>
               <p className="eyebrow">{subject.eyebrow}</p>
               <h2>{subject.title}</h2>

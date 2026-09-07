@@ -50,6 +50,46 @@ export const subjects: SubjectDefinition[] = [
     route: '/fag/hoerelaere',
     accent: 'mint',
   },
+  {
+    id: 'elements',
+    title: 'Grundstoffer',
+    eyebrow: 'Symbol · placering · sang',
+    description: 'Forbind alle 118 grundstoffer.',
+    route: '/fag/elements',
+    accent: 'citrine',
+  },
+  {
+    id: 'morse',
+    title: 'Morse',
+    eyebrow: 'Lyd → tegn',
+    description: 'Lær rytmen med Koch og aktiv afsendelse.',
+    route: '/fag/morse',
+    accent: 'ice',
+  },
+  {
+    id: 'flashcards',
+    title: 'Flashkort',
+    eyebrow: 'Genkald · vend · vurder',
+    description: 'HSK, lande og mentale omregninger.',
+    route: '/fag/flashcards',
+    accent: 'coral',
+  },
+  {
+    id: 'phonetics',
+    title: 'Fonetik',
+    eyebrow: 'IPA · spektrogram',
+    description: 'Se og skriv lydens struktur.',
+    route: '/fag/phonetics',
+    accent: 'violet',
+  },
+  {
+    id: 'python_output',
+    title: 'Python-hjernen',
+    eyebrow: 'Mental execution',
+    description: 'Hvad printer programmet — præcis?',
+    route: '/fag/python_output',
+    accent: 'mint',
+  },
 ];
 
 export function subjectById(id: DisciplineId): SubjectDefinition {

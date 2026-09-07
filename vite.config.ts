@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'PeterLingo',
         short_name: 'PeterLingo',
-        description: 'Fem færdigheder. Én daglig læringsrytme.',
+        description: 'Ti fag. Én daglig læringsrytme.',
         lang: 'da',
         start_url: '/',
         scope: '/',
@@ -40,7 +40,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,wav}'],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/cdn-cgi\//, /^\/login(?:\/|$)/],
         cleanupOutdatedCaches: true,

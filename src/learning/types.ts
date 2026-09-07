@@ -1,4 +1,16 @@
-export type DisciplineId = 'doomsday' | 'roux' | 'cards' | 'pi' | 'music-ear';
+export const disciplineIds = [
+  'doomsday',
+  'roux',
+  'cards',
+  'pi',
+  'music-ear',
+  'elements',
+  'morse',
+  'flashcards',
+  'phonetics',
+  'python_output',
+] as const;
+export type DisciplineId = (typeof disciplineIds)[number];
 
 export type LearningStage = 'teaching' | 'assisted' | 'unassisted' | 'fluent';
 
@@ -9,6 +21,7 @@ export interface LearningUnit {
   stage: LearningStage;
   estimatedSeconds: number;
   isNew?: boolean;
+  prerequisites?: string[];
 }
 
 export interface ProgressiveHint {

@@ -10,6 +10,7 @@ export interface SessionSelectionInput {
   recentSessions: SessionRecord[];
   focusWeights: Record<string, number>;
   attempts?: Attempt[];
+  eligible?: (unit: LearningUnit) => boolean;
   now?: Date;
   targetMinutes?: number;
   maxNewItems?: number;
@@ -30,10 +31,17 @@ function expandedCatalog(input: SessionSelectionInput): LearningUnit[] {
       estimatedSeconds: 60,
     });
   }
-  return catalog.map((unit) => ({
-    ...unit,
-    estimatedSeconds: estimatedSecondsForUnit(unit, input.attempts ?? []),
-  }));
+  return catalog
+    .filter(
+      (unit) =>
+        (input.focusWeights[unit.discipline] ?? 1) > 0 &&
+        (input.eligible?.(unit) ?? true) &&
+        (unit.prerequisites ?? []).every((id) => (masteryById.get(id)?.strength ?? 0) >= 0.68)
+    )
+    .map((unit) => ({
+      ...unit,
+      estimatedSeconds: estimatedSecondsForUnit(unit, input.attempts ?? []),
+    }));
 }
 
 export function resolveLearningUnits(

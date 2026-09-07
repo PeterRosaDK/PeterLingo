@@ -1,6 +1,7 @@
+import { disciplineIds } from '../learning/types';
 import type { Attempt, DisciplineId, LearningStage, SchedulerGrade } from '../learning/types';
 
-const disciplines = new Set<DisciplineId>(['doomsday', 'roux', 'cards', 'pi', 'music-ear']);
+const disciplines = new Set<DisciplineId>(disciplineIds);
 const grades = new Set<SchedulerGrade>(['again', 'hard', 'good', 'easy']);
 const stages = new Set<LearningStage>(['teaching', 'assisted', 'unassisted', 'fluent']);
 

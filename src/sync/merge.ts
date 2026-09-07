@@ -1,25 +1,13 @@
+import { masteryForAttempt } from '../learning/mastery';
 import { FsrsScheduler } from '../learning/fsrs/scheduler';
-import type { Attempt, LearningStage, MasteryRecord } from '../learning/types';
+import type { Attempt, MasteryRecord } from '../learning/types';
 import type { PeterLingoSnapshot } from '../persistence/types';
-import { isLearningStage, parseAttempt } from './attemptValidation';
+import { parseAttempt } from './attemptValidation';
 
 const scheduler = new FsrsScheduler();
 
 function compareAttempts(left: Attempt, right: Attempt): number {
   return left.attemptedAt.localeCompare(right.attemptedAt) || left.id.localeCompare(right.id);
-}
-
-function stageFor(attempt: Attempt): LearningStage {
-  const recorded = attempt.generatedParameters.learningStage;
-  if (attempt.correct && attempt.hintsUsed === 0 && !attempt.answerRevealed) return 'unassisted';
-  return isLearningStage(recorded) ? recorded : 'assisted';
-}
-
-function strengthFor(attempt: Attempt): number {
-  if (attempt.grade === 'easy') return 0.9;
-  if (attempt.grade === 'good') return 0.68;
-  if (attempt.grade === 'hard') return 0.42;
-  return 0.18;
 }
 
 export function mergeAttempts(local: Attempt[], remote: unknown[]): Attempt[] {
@@ -43,13 +31,7 @@ export function rebuildLearningState(
     const current =
       scheduled.get(attempt.learningUnitId) ?? scheduler.create(attempt.learningUnitId, reviewedAt);
     scheduled.set(attempt.learningUnitId, scheduler.review(current, attempt.grade, reviewedAt));
-    mastery.set(attempt.learningUnitId, {
-      learningUnitId: attempt.learningUnitId,
-      discipline: attempt.discipline,
-      stage: stageFor(attempt),
-      strength: strengthFor(attempt),
-      updatedAt: attempt.attemptedAt,
-    });
+    mastery.set(attempt.learningUnitId, masteryForAttempt(attempt));
   }
 
   return {

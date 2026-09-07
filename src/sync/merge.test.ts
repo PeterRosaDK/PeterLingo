@@ -53,7 +53,7 @@ describe('cloud attempt merge', () => {
     expect(rebuildLearningState(history)).toEqual(rebuildLearningState([...history].reverse()));
     const rebuilt = rebuildLearningState(history);
     expect(rebuilt.scheduledUnits[0]?.reps).toBe(2);
-    expect(rebuilt.mastery[0]).toMatchObject({ stage: 'unassisted', strength: 0.9 });
+    expect(rebuilt.mastery[0]).toMatchObject({ stage: 'fluent', strength: 0.9 });
   });
 
   it('keeps a local attempt recorded while the request is in flight', async () => {

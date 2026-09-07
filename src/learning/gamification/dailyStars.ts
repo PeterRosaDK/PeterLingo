@@ -1,3 +1,4 @@
+import { disciplineIds } from '../types';
 import type { Attempt, DisciplineId } from '../types';
 
 export const DAILY_STAR_TARGET = 3;
@@ -23,6 +24,6 @@ export function dailyStars(
 }
 
 export function dailyStarTotal(attempts: Attempt[], day = new Date()): number {
-  const disciplines: DisciplineId[] = ['doomsday', 'roux', 'cards', 'pi', 'music-ear'];
+  const disciplines = disciplineIds;
   return disciplines.reduce((sum, discipline) => sum + dailyStars(attempts, discipline, day), 0);
 }

@@ -1,12 +1,13 @@
 import type { ScheduledLearningUnit } from '../learning/fsrs/scheduler';
 import type { Attempt, DisciplineId, MasteryRecord, SessionRecord } from '../learning/types';
 
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type NoteNaming = 'danish' | 'international';
 
 export interface Settings {
+  deckSettings: Record<string, { enabled: boolean; subsets: string[]; directions: string[] }>;
   theme: ThemePreference;
   feedbackSounds: boolean;
   noteNaming: NoteNaming;
@@ -41,12 +42,24 @@ export interface PeterLingoSnapshot {
 }
 
 export const defaultSettings: Settings = {
+  deckSettings: {},
   theme: 'system',
   feedbackSounds: true,
   noteNaming: 'danish',
   showPianoNoteNames: true,
   targetMinutes: 7,
-  focusWeights: { doomsday: 1, roux: 1, cards: 1, pi: 1, 'music-ear': 1 },
+  focusWeights: {
+    doomsday: 1,
+    roux: 1,
+    cards: 1,
+    pi: 1,
+    'music-ear': 1,
+    elements: 1,
+    morse: 1,
+    flashcards: 1,
+    phonetics: 1,
+    python_output: 1,
+  },
 };
 
 export function createEmptySnapshot(): PeterLingoSnapshot {

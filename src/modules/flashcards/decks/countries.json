@@ -1,0 +1,14 @@
+[
+  { "id": "PT", "country": "Portugal", "capital": "Lissabon", "region": "Europa", "flag": "🇵🇹" },
+  { "id": "DK", "country": "Danmark", "capital": "København", "region": "Europa", "flag": "🇩🇰" },
+  { "id": "SE", "country": "Sverige", "capital": "Stockholm", "region": "Europa", "flag": "🇸🇪" },
+  { "id": "NO", "country": "Norge", "capital": "Oslo", "region": "Europa", "flag": "🇳🇴" },
+  { "id": "FI", "country": "Finland", "capital": "Helsinki", "region": "Europa", "flag": "🇫🇮" },
+  { "id": "IS", "country": "Island", "capital": "Reykjavík", "region": "Europa", "flag": "🇮🇸" },
+  { "id": "DE", "country": "Tyskland", "capital": "Berlin", "region": "Europa", "flag": "🇩🇪" },
+  { "id": "FR", "country": "Frankrig", "capital": "Paris", "region": "Europa", "flag": "🇫🇷" },
+  { "id": "ES", "country": "Spanien", "capital": "Madrid", "region": "Europa", "flag": "🇪🇸" },
+  { "id": "IT", "country": "Italien", "capital": "Rom", "region": "Europa", "flag": "🇮🇹" },
+  { "id": "JP", "country": "Japan", "capital": "Tokyo", "region": "Asien", "flag": "🇯🇵" },
+  { "id": "KR", "country": "Sydkorea", "capital": "Seoul", "region": "Asien", "flag": "🇰🇷" }
+]

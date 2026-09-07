@@ -1,0 +1,55 @@
+[
+  {
+    "id": "vowel-i",
+    "language": "en",
+    "ipa": "i",
+    "text": "i",
+    "class": "vokal",
+    "tier": 2,
+    "synthetic": true,
+    "formants": [300, 2300, 3000],
+    "cue": "Lav F1 og høj F2: lukket fortungevokal."
+  },
+  {
+    "id": "vowel-a",
+    "language": "da",
+    "ipa": "a",
+    "text": "a",
+    "class": "vokal",
+    "tier": 2,
+    "synthetic": true,
+    "formants": [800, 1400, 2800],
+    "cue": "Høj F1: åben vokal. Syntetisk IPA-prototype, ikke et dansk ord."
+  },
+  {
+    "id": "vowel-u",
+    "language": "en",
+    "ipa": "u",
+    "text": "u",
+    "class": "vokal",
+    "tier": 2,
+    "synthetic": true,
+    "formants": [300, 800, 2500],
+    "cue": "Lav F1 og lav F2: lukket bagtungevokal."
+  },
+  {
+    "id": "fricative-s",
+    "language": "da",
+    "ipa": "s",
+    "text": "s",
+    "class": "frikativ",
+    "tier": 1,
+    "synthetic": true,
+    "cue": "Vedvarende højfrekvent støj uden periodiske harmoniske."
+  },
+  {
+    "id": "stop-burst",
+    "language": "en",
+    "ipa": "p",
+    "text": "p",
+    "class": "plosiv",
+    "tier": 1,
+    "synthetic": true,
+    "cue": "Lukke og kort støjburst. Dette er en klassefixture, ikke en naturtro /p/."
+  }
+]

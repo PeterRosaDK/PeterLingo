@@ -32,13 +32,15 @@ export class IndexedDbLearningRepository implements LearningRepository {
 
   async load(): Promise<PeterLingoSnapshot> {
     const db = await this.dbPromise;
-    return (await db.get('state', 'current')) ?? createEmptySnapshot();
+    return parseSnapshot((await db.get('state', 'current')) ?? createEmptySnapshot());
   }
 
   private async mutate(mutator: Mutator): Promise<void> {
     const db = await this.dbPromise;
     const transaction = db.transaction('state', 'readwrite');
-    const current = (await transaction.store.get('current')) ?? createEmptySnapshot();
+    const current = parseSnapshot(
+      (await transaction.store.get('current')) ?? createEmptySnapshot()
+    );
     mutator(current);
     await transaction.store.put(current, 'current');
     await transaction.done;
