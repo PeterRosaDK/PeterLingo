@@ -253,10 +253,11 @@
     "flag": "🇦🇫",
     "flagSvg": "/assets/flags/af.svg",
     "status": "un-member",
-    "note": "",
+    "note": "Dette kort bruger republikkens sort-rød-grønne flag. Talibanmyndighederne bruger et hvidt flag med sort skrift.",
     "sources": [
       "https://github.com/mledoze/countries/tree/c8015eebdd94c533358406b0d709f441389e1f2e",
-      "https://data.un.org/en/iso/af.html"
+      "https://data.un.org/en/iso/af.html",
+      "https://www.awm.gov.au/collection/C2905605"
     ]
   },
   {

@@ -9,7 +9,7 @@ PeterLingo is Peter's polished, local-first daily learning PWA. Ten subjects sha
 - Hørelære with a four-step interval introduction, adaptive three-question daily test, and
   instrument geography
 
-Current repository version: **0.5.0**. Five additional vertical slices use the existing engine:
+Current repository version: **0.5.1**. Five additional vertical slices use the existing engine:
 Grundstoffer, Morse, Flashkort (HSK/Lande/Omregninger), Fonetik and Python-hjernen. HSK now
 ships all 11,000 official 2025 records with six directions and Danish/English meanings. Phonetics
 adds a Danish beginner introduction and three licensed human vowels alongside five synthetic fixtures.

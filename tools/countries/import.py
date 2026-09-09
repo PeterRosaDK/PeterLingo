@@ -47,6 +47,7 @@ PS=Østjerusalem
 KI=South Tarawa
 PW=Ngerulmud'''.splitlines())
 notes={
+'AF':'Dette kort bruger republikkens sort-rød-grønne flag. Talibanmyndighederne bruger et hvidt flag med sort skrift.',
 'ZA':'Pretoria er administrativ hovedstad, Cape Town lovgivende og Bloemfontein traditionelt retslig hovedstad. Forfatningsdomstolen ligger i Johannesburg.',
 'SZ':'Mbabane er administrativ hovedstad; Lobamba er kongelig og lovgivende hovedstad.',
 'BO':'Sucre er den forfatningsmæssige hovedstad; regering og parlament har sæde i La Paz.',
@@ -69,6 +70,7 @@ notes={
 'GB':'Landet omfatter Storbritannien og Nordirland.',
 }
 extra_sources={
+'AF':'https://www.awm.gov.au/collection/C2905605',
 'GQ':'https://www.guineaecuatorialpress.com/index.php/noticias/el_presidente_de_la_republica_proclama_la_ciudad_de_la_paz_como_capital_de_la_republica_de_guinea_ecuatorial_con_la_firma_de_un_decreto_ley',
 'ZA':'https://www.gov.za/south-africa-glance',
 'LK':'https://www.uda.gov.lk/attachments/dev-plans-2021-2030/kotte_development_plan_Eng.pdf.pdf',

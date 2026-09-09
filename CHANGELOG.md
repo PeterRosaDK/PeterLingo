@@ -4,6 +4,11 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+## 0.5.1 — 2026-09-09
+
+- Clarified that Afghanistan's recognition card uses the republic tricolour, while the Taliban
+  authorities use a white flag. The source, exported dataset and reproducible import agree.
+
 ## 0.5.0 — 2026-09-09
 
 - Expanded Lande from 12 to 197 countries: 193 UN members, two observers, Kosovo and Taiwan;

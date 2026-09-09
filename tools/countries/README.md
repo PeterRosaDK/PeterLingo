@@ -27,6 +27,10 @@ The adapted `countries.json` database is **ODbL 1.0**, including the project's f
 annotations. It is downloadable in the app from `/assets/data/countries.json`, together with
 its license. The engine source remains under the repository's own license.
 
+The flag set follows the pinned supplier. Afghanistan's card uses the republic tricolour;
+its answer explicitly distinguishes this from the Taliban authorities' white flag, documented
+by the [Australian War Memorial](https://www.awm.gov.au/collection/C2905605).
+
 ## Reviewed capital exceptions
 
 - Equatorial Guinea: **Ciudad de la Paz**, declared capital on 2026-01-02:
