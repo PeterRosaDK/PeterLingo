@@ -4,6 +4,16 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+## 0.5.0 — 2026-09-09
+
+- Expanded Lande from 12 to 197 countries: 193 UN members, two observers, Kosovo and Taiwan;
+  six continent filters, multiple-capital notes, reviewed exceptions and 197 local flag SVGs.
+- Moved active flashcard practice above settings, compacted deck navigation and aligned Next
+  to the right. Space/Enter reveal, 1–4 rate, Enter/right arrow advance after saving.
+- Shortcuts ignore editable controls, modifiers, held repeats and in-flight saves; original
+  direction/ISO IDs and user settings persist. No new npm dependency or runtime data call.
+- Country data (ODbL) and its license are downloadable offline; flag artwork is MIT.
+
 ## 0.4.0 — 2026-09-09
 
 - Replaced horizontal home subject scrolling with a responsive three-column grid, nine original

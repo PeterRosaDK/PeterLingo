@@ -6619,3 +6619,141 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+/* Flashcards: one compact deck row, then the active card and a stable action bar. */
+.flashcards-page .page-heading {
+  margin-bottom: 24px;
+}
+.flashcards-page .deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.flashcards-page .deck-grid .lesson-card {
+  padding: 18px;
+  min-width: 0;
+  margin: 0;
+}
+.flashcards-page .deck-title h2 {
+  font-size: 1.15rem;
+}
+.flashcards-page .deck-grid p,
+.flashcards-page .deck-grid label {
+  font-size: 0.8rem;
+}
+.flashcard-practice-area {
+  max-width: 850px;
+  margin: 0 auto 28px;
+}
+.flashcard-exercise {
+  padding: clamp(18px, 3vw, 36px);
+}
+.flashcard-exercise .flip-card {
+  min-height: 300px;
+  margin-top: 16px;
+}
+.flashcard-image {
+  width: min(300px, 80%);
+  max-height: 230px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+.flashcard-ratings {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 20px;
+}
+.flashcard-ratings .button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 6px;
+}
+.flashcard-ratings kbd,
+.keyboard-guide kbd {
+  font: inherit;
+  font-size: 0.8em;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+.flashcard-ratings .rating-good,
+.flashcard-ratings .rating-easy {
+  border-color: color-mix(in srgb, var(--mint) 65%, var(--line));
+}
+.flashcard-completion {
+  margin-top: 22px;
+}
+.flashcard-completion > p {
+  color: var(--brand-2);
+}
+.flashcard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.flashcard-actions .flashcard-next {
+  margin-left: auto;
+}
+.keyboard-guide {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 20px 0 0;
+  text-align: center;
+}
+.flashcard-settings {
+  margin-top: 24px;
+}
+.country-reference-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin-block: 20px;
+}
+.country-reference-list article {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.country-reference-list img {
+  width: 42px;
+  height: 32px;
+  object-fit: contain;
+}
+.country-reference-list p {
+  margin-block: 5px;
+}
+@media (max-width: 650px) {
+  .flashcards-page .deck-grid {
+    gap: 7px;
+  }
+  .flashcards-page .deck-grid .lesson-card {
+    padding: 10px 8px;
+    border-radius: 16px;
+  }
+  .flashcards-page .deck-title h2 {
+    font-size: 0.86rem;
+    overflow-wrap: anywhere;
+  }
+  .flashcards-page .deck-grid p,
+  .flashcards-page .deck-grid label {
+    font-size: 0.7rem;
+  }
+  .flashcards-page .deck-description,
+  .flashcards-page .deck-subsets {
+    display: none;
+  }
+  .flashcard-actions .button {
+    padding: 12px 10px;
+    font-size: 0.82rem;
+  }
+  .flashcard-ratings .button {
+    font-size: 0.85rem;
+  }
+  .keyboard-guide {
+    font-size: 0.68rem;
+  }
+}

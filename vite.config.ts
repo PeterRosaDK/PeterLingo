@@ -7,7 +7,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['peterlingo-icon.svg', 'peterlingo-192.png', 'peterlingo-512.png'],
+      includeAssets: [
+        'peterlingo-icon.svg',
+        'peterlingo-192.png',
+        'peterlingo-512.png',
+        'assets/data/countries.json',
+        'assets/data/countries-LICENSE.txt',
+        'assets/data/LICENSE-Unicode.txt',
+        'assets/flags/LICENSE',
+      ],
       manifest: {
         name: 'PeterLingo',
         short_name: 'PeterLingo',

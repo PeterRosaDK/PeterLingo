@@ -1,6 +1,7 @@
 import provenance from './decks/hsk-provenance.json';
 import { createHintProgress, revealNextHint } from '../../learning/hints/hintProgress';
-import { useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import countries from './decks/countries.json';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useLearningData } from '../../app/DataProvider';
 import { useAttemptRecorder } from '../../learning/useAttemptRecorder';
@@ -20,8 +21,15 @@ import {
 function Content({ content }: { content: CardContent }) {
   return (
     <>
-      <strong className={`card-content ${content.kind ?? 'text'}`}>{content.text}</strong>
-      {content.image && <img src={content.image} alt="" />}
+      {content.image ? (
+        <img
+          className="flashcard-image"
+          src={content.image}
+          alt={content.kind === 'flag' ? 'Flag · genkald landet' : ''}
+        />
+      ) : (
+        <strong className={`card-content ${content.kind ?? 'text'}`}>{content.text}</strong>
+      )}
       {content.secondary && <span className="card-secondary">{content.secondary}</span>}
     </>
   );
@@ -58,6 +66,7 @@ function FlipCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const lock = useRef(false);
+  const advancing = useRef(false);
   const { record } = useAttemptRecorder(exercise);
   async function rate(grade: SchedulerGrade) {
     if (lock.current || saved || !flipped) return;
@@ -82,20 +91,61 @@ function FlipCard({
       lock.current = false;
     }
   }
+  function advance() {
+    if (!saved || advancing.current) return;
+    advancing.current = true;
+    next();
+  }
+  const onShortcut = useEffectEvent((event: KeyboardEvent) => {
+    if (
+      event.defaultPrevented ||
+      event.repeat ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      busy
+    )
+      return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (
+      target?.closest(
+        'input, textarea, select, [contenteditable]:not([contenteditable="false"]), details'
+      )
+    )
+      return;
+    const interactive = target?.closest('button, a, summary');
+    if ((event.key === ' ' || event.key === 'Enter') && interactive) return;
+    if (!flipped && (event.key === ' ' || event.key === 'Enter')) {
+      event.preventDefault();
+      setFlipped(true);
+    } else if (flipped && !saved && /^[1-4]$/.test(event.key)) {
+      event.preventDefault();
+      void rate(selfRatings[Number(event.key) - 1]!.grade);
+    } else if (saved && (event.key === 'Enter' || event.key === 'ArrowRight')) {
+      event.preventDefault();
+      advance();
+    }
+  });
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => onShortcut(event);
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
+  }, []);
   return (
     <section className="exercise-shell flashcard-exercise">
       <p className="eyebrow">
         {deck.title} · {deck.directions.find((d) => d.id === unit.direction)?.label}
       </p>
-      <p>Genkald svaret mentalt. Vend derefter kortet med tap, Enter eller mellemrum.</p>
+      <p className="flashcard-instruction">Tænk svaret, vend kortet, og vurder din hukommelse.</p>
       <button
         type="button"
         aria-label={flipped ? 'Kortets bagside' : 'Vend kortet'}
+        aria-keyshortcuts="Space Enter"
         className={`flip-card ${flipped ? 'flipped' : ''}`}
         onClick={() => setFlipped(true)}
       >
         <Content content={flipped ? card.back : card.front} />
-        <small>{flipped ? 'Sådan lyder facit' : 'Tap for at vende'}</small>
+        <small>{flipped ? 'Facit' : 'Tap eller mellemrum for at vende'}</small>
       </button>
       {!flipped && hintProgress.hasMore && (
         <button
@@ -116,30 +166,43 @@ function FlipCard({
         </ol>
       )}
       {flipped && !saved && (
-        <div className="self-ratings">
-          {selfRatings.map((r) => (
+        <div className="self-ratings flashcard-ratings">
+          {selfRatings.map((r, index) => (
             <button
               key={r.grade}
-              className="button secondary"
+              aria-label={r.label}
+              aria-keyshortcuts={String(index + 1)}
+              className={`button secondary rating-${r.grade}`}
               disabled={busy}
               onClick={() => void rate(r.grade)}
             >
+              <kbd aria-hidden="true">{index + 1}</kbd>
               {r.label}
             </button>
           ))}
         </div>
       )}
       {saved && (
-        <div role="status" className="feedback">
-          <p>Gemt. Næste repetition følger din FSRS-vurdering.</p>
-          <button className="button primary" onClick={next}>
-            Næste kort
-          </button>
-          <Link className="button secondary" to="/session">
-            Til dagens træning
-          </Link>
+        <div className="flashcard-completion">
+          <p role="status">Gemt. Din næste repetition er planlagt.</p>
+          <div className="flashcard-actions">
+            <Link className="button secondary" to="/session">
+              Til dagens træning
+            </Link>
+            <button
+              className="button primary flashcard-next"
+              aria-label="Næste kort"
+              aria-keyshortcuts="Enter ArrowRight"
+              onClick={advance}
+            >
+              Næste kort <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
       )}
+      <p className="keyboard-guide">
+        <kbd>Mellemrum</kbd> vend · <kbd>1–4</kbd> vurder · <kbd>Enter / →</kbd> næste efter gemning
+      </p>
       {error && <p role="alert">{error}</p>}
     </section>
   );
@@ -160,6 +223,7 @@ function ReadyFlashcardsPage() {
       null
   );
   const [counter, setCounter] = useState(0);
+  const practice = useRef<HTMLDivElement>(null);
   const [error, setError] = useState('');
   const [localDeckSettings, setLocalDeckSettings] = useState(snapshot.settings.deckSettings);
   const [settingsBusy, setSettingsBusy] = useState(false);
@@ -191,11 +255,11 @@ function ReadyFlashcardsPage() {
   }
   if (!ready) return <div className="page">Åbner Flashkort …</div>;
   return (
-    <div className="page">
+    <div className="page flashcards-page">
       <header className="page-heading">
         <p className="eyebrow">Genkald · vend · vurder</p>
         <h1>Flashkort</h1>
-        <p>Tre decks, samme læringsmotor. Dine retninger har hver sin hukommelse.</p>
+        <p>Vælg et deck, og genkald ét kort ad gangen.</p>
       </header>
       <div className="deck-grid">
         {decks.map((d) => {
@@ -230,8 +294,8 @@ function ReadyFlashcardsPage() {
               >
                 <h2>{d.title}</h2>
               </button>
-              <p>{d.description}</p>
-              <p>
+              <p className="deck-description">{d.description}</p>
+              <p className="deck-subsets">
                 {settings.subsets.length} aktive udvalg · {due} klar nu
               </p>
               <p>
@@ -255,10 +319,37 @@ function ReadyFlashcardsPage() {
           );
         })}
       </div>
-      <section className="lesson-card">
-        <h2>{deck.title} · dit udvalg</h2>
+      <div ref={practice} className="flashcard-practice-area">
+        {active ? (
+          <FlipCard
+            key={`${active.id}:${counter}`}
+            unit={active as DeckUnit}
+            deck={deck}
+            select={() => setSelectedUnit(active.id)}
+            next={() => {
+              setSelectedUnit(recommendedUnit(units, snapshot)?.id ?? null);
+              setCounter((n) => n + 1);
+              requestAnimationFrame(() =>
+                practice.current
+                  ?.querySelector<HTMLButtonElement>('.flip-card')
+                  ?.focus({ preventScroll: true })
+              );
+            }}
+          />
+        ) : (
+          <p>Vælg mindst ét subset og én retning.</p>
+        )}
+      </div>
+      <section className="lesson-card flashcard-settings">
+        <h2>Udvalg og retninger · {deck.title}</h2>
         <fieldset>
-          <legend>{deck.id === 'hsk' ? 'HSK-niveauer' : 'Subsets'}</legend>
+          <legend>
+            {deck.id === 'hsk'
+              ? 'HSK-niveauer'
+              : deck.id === 'countries'
+                ? 'Verdensdele'
+                : 'Subsets'}
+          </legend>
           {deck.getSubsets().map((s) => (
             <label key={s}>
               <input
@@ -299,6 +390,48 @@ function ReadyFlashcardsPage() {
             </label>
           ))}
         </fieldset>
+        {deck.id === 'countries' && (
+          <div className="country-reference">
+            <p>
+              197 lande: 193 FN-medlemmer, Vatikanstaten og Palæstina samt Kosovo og Taiwan.
+              Selvstyrende territorier som Grønland er ikke selvstændige kort i dette udvalg.
+              Mellemamerika og Caribien ligger under Nordamerika.
+            </p>
+            <details>
+              <summary>
+                Se lande og hovedstæder i dit udvalg (
+                {countries.filter((c) => selection.subsets.includes(c.region)).length})
+              </summary>
+              <div className="country-reference-list">
+                {countries
+                  .filter((c) => selection.subsets.includes(c.region))
+                  .map((c) => (
+                    <article key={c.id}>
+                      <img src={c.flagSvg} alt="" loading="lazy" />
+                      <div>
+                        <strong>{c.country}</strong>
+                        <p>
+                          {c.capital} · {c.region}
+                        </p>
+                        {c.note && <small>{c.note}</small>}
+                      </div>
+                    </article>
+                  ))}
+              </div>
+            </details>
+            <p className="source-note">
+              Landefakta: <a href="https://github.com/mledoze/countries">mledoze/countries</a>,
+              tilpasset under <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0</a>,
+              kontrolleret mod FN-profiler og nationale kilder. Flag:{' '}
+              <a href="https://github.com/lipis/flag-icons">flag-icons</a>, MIT. Revideret 9.
+              september 2026.{' '}
+              <a href="/assets/data/countries.json" download>
+                Hent landedata (JSON)
+              </a>{' '}
+              · <a href="/assets/data/countries-LICENSE.txt">Datalicens</a>
+            </p>
+          </div>
+        )}
         {deck.id === 'hsk' && (
           <p>
             Hele ordlisten: 11.000 records fra HSK 3.0, pensum udgivet november 2025. Vælg frit
@@ -315,20 +448,6 @@ function ReadyFlashcardsPage() {
         )}
       </section>
       {settingsBusy && <p aria-live="polite">Gemmer dit udvalg …</p>}
-      {active ? (
-        <FlipCard
-          key={`${active.id}:${counter}`}
-          unit={active as DeckUnit}
-          deck={deck}
-          select={() => setSelectedUnit(active.id)}
-          next={() => {
-            setSelectedUnit(recommendedUnit(units, snapshot)?.id ?? null);
-            setCounter((n) => n + 1);
-          }}
-        />
-      ) : (
-        <p>Vælg mindst ét subset og én retning.</p>
-      )}
       {error && <p role="alert">{error}</p>}
     </div>
   );

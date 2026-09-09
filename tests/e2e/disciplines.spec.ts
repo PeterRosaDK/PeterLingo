@@ -275,3 +275,105 @@ test('vowel workshop compares local media and opens the chosen recall unit', asy
   await page.getByRole('button', { name: 'Tjek svar' }).click();
   await expect(page.getByRole('status')).toContainText('Korrekt');
 });
+
+test('flashcard shortcuts require reveal, save one rating and put Next on the right', async ({
+  page,
+}) => {
+  await page.goto('/fag/flashcards?unit=flashcards:countries:PT:country_to_capital');
+  await page.getByRole('button', { name: 'Vend kortet', exact: true }).waitFor();
+  await page.keyboard.press('3');
+  await expect(page.getByRole('status')).toHaveCount(0);
+  await page.keyboard.press('Space');
+  await expect(page.getByRole('button', { name: 'Kortets bagside' })).toContainText('Lissabon');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('button', { name: 'Kortets bagside' })).toBeVisible();
+  await page.keyboard.press('3');
+  await expect(page.getByRole('status')).toContainText('Gemt');
+  await page.keyboard.press('3');
+  const next = page.getByRole('button', { name: 'Næste kort', exact: true });
+  const back = page.getByRole('link', { name: 'Til dagens træning', exact: true });
+  const nextBox = await next.boundingBox(),
+    backBox = await back.boundingBox();
+  expect(nextBox!.x).toBeGreaterThan(backBox!.x + backBox!.width);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('button', { name: 'Vend kortet', exact: true })).toBeVisible();
+  await expect(page.getByRole('status')).toHaveCount(0);
+  await expect(page.getByText(/1 øvet i dag/)).toBeVisible();
+});
+
+test('country continent controls are persistent and SVG flags work offline', async ({
+  page,
+  context,
+  browserName,
+}) => {
+  await page.goto('/fag/flashcards');
+  await page.getByRole('button', { name: '🌍 Lande', exact: true }).click();
+  await expect(page.getByRole('group', { name: 'Verdensdele' }).getByRole('checkbox')).toHaveCount(
+    6
+  );
+  for (const region of ['Europa', 'Asien', 'Nordamerika', 'Sydamerika', 'Oceanien'])
+    await page.getByLabel(region, { exact: true }).uncheck();
+  await page.getByLabel('Land → hovedstad', { exact: true }).uncheck();
+  await page.getByLabel('Hovedstad → land', { exact: true }).uncheck();
+  await expect(page.getByLabel('Hovedstad → land', { exact: true })).toBeEnabled();
+  await page.reload();
+  await page.getByRole('button', { name: '🌍 Lande', exact: true }).click();
+  await expect(page.getByLabel('Afrika', { exact: true })).toBeChecked();
+  await expect(page.getByLabel('Europa', { exact: true })).not.toBeChecked();
+  const image = page.locator('.flip-card img');
+  await expect(image).toBeVisible();
+  await expect
+    .poll(() => image.evaluate((e) => (e as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
+  if (browserName === 'chromium') {
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.reload();
+    await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+    await context.setOffline(true);
+    await page.goto('/fag/flashcards');
+    await page.getByRole('button', { name: '🌍 Lande', exact: true }).click();
+    await expect
+      .poll(() => image.evaluate((e) => (e as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+  }
+  await page.getByRole('button', { name: 'Vend kortet', exact: true }).click();
+  await page.getByRole('button', { name: 'Kunne', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Gemt');
+  await context.setOffline(false);
+});
+
+test('all four rating shortcuts map exactly to FSRS and ignore held keys and settings', async ({
+  page,
+}) => {
+  await page.goto('/fag/flashcards?unit=flashcards:countries:PT:country_to_capital');
+  for (const key of ['1', '2', '3', '4']) {
+    await page.getByRole('button', { name: 'Vend kortet', exact: true }).click();
+    const setting = page.getByLabel('Europa', { exact: true });
+    await setting.focus();
+    await page.keyboard.press(key);
+    await expect(page.getByRole('status')).toHaveCount(0);
+    await page.evaluate(() => {
+      (document.activeElement as HTMLElement)?.blur();
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: '3', repeat: true }));
+    });
+    await expect(page.getByRole('status')).toHaveCount(0);
+    await page.keyboard.press(key);
+    await expect(page.getByRole('status')).toContainText('Gemt');
+    if (key !== '4') await page.keyboard.press('ArrowRight');
+  }
+  const grades = await page.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const r = indexedDB.open('peterlingo', 1);
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => reject(r.error);
+    });
+    const grades = await new Promise<string[]>((resolve, reject) => {
+      const r = db.transaction('state').objectStore('state').get('current');
+      r.onsuccess = () => resolve(r.result.attempts.map((a: { grade: string }) => a.grade));
+      r.onerror = () => reject(r.error);
+    });
+    db.close();
+    return grades;
+  });
+  expect(grades).toEqual(['again', 'hard', 'good', 'easy']);
+});

@@ -114,3 +114,19 @@ Python snippets/explanations are original project content (GPL-3.0).
 Optional development tools: pypdf (BSD-3-Clause), NumPy (BSD-3-Clause), Matplotlib (PSF-based
 Matplotlib license). Pinned in `tools/requirements-data.txt`; they are not runtime dependencies.
 There are no new npm dependencies.
+
+## Complete country deck and flags (0.5.0)
+
+- mledoze/countries, commit `c8015eebdd94c533358406b0d709f441389e1f2e`,
+  <https://github.com/mledoze/countries>, **ODbL 1.0**. The 197-record adapted database,
+  Danish exonyms and capital/status annotations retain ODbL. The database and full license
+  are offered inside the app under `/assets/data/countries.json` and `countries-LICENSE.txt`.
+- UNData and national/authoritative sources cross-check factual memberships and capitals;
+  sources, corrections and pinned hashes are in `tools/countries/README.md` and `provenance.json`.
+- Unicode CLDR 48 Danish territory names through Node Intl.DisplayNames,
+  <https://cldr.unicode.org/>, Unicode License v3, <https://www.unicode.org/license.txt>.
+- flag-icons, copyright (c) 2013 Panayiotis Lipiridis, **MIT**, commit
+  `086f7e97d657358203916dbe84f61c2bccaa81eb`, <https://github.com/lipis/flag-icons>.
+  197 original 4:3 SVGs and the complete license are in `public/assets/flags/`.
+
+No additional npm dependencies or runtime data services are used.

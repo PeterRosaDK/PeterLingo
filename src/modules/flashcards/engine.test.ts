@@ -208,3 +208,43 @@ it('excludes unresolved meanings from meaning directions and starts with only le
   expect(selection.directions).toEqual(['hanzi_to_meaning']);
   expect(hskDeck.getSubsets()).toHaveLength(7);
 });
+
+it('provides 197 countries in six regions with independent direction IDs and local flags', () => {
+  expect(countryDeck.getLearningUnits()).toHaveLength(197 * 3);
+  expect(countryDeck.getSubsets()).toEqual([
+    'Europa',
+    'Asien',
+    'Afrika',
+    'Nordamerika',
+    'Sydamerika',
+    'Oceanien',
+  ]);
+  const units = countryDeck.getLearningUnits();
+  const flag = units.find((u) => u.recordId === 'PT' && u.direction === 'flag_to_country')!;
+  expect(flag.id).toBe('flashcards:countries:PT:flag_to_country');
+  const card = countryDeck.generateCard(flag, { random: () => 0, difficulty: 0 });
+  expect(card.front.image).toBe('/assets/flags/pt.svg');
+  expect(card.back.text).toBe('Portugal');
+  const southAfrica = units.find(
+    (u) => u.recordId === 'ZA' && u.direction === 'country_to_capital'
+  )!;
+  const answer = countryDeck.generateCard(southAfrica, { random: () => 0, difficulty: 0 }).back;
+  expect(answer.text).toContain('Pretoria');
+  expect(answer.text).toContain('Cape Town');
+  expect(answer.text).toContain('Bloemfontein');
+  expect(answer.secondary).toContain('administrativ');
+});
+it('keeps an existing Europe/Asia selection unchanged when adding continents', () => {
+  const state = createEmptySnapshot();
+  state.settings.deckSettings.countries = {
+    enabled: true,
+    subsets: ['Europa', 'Asien'],
+    directions: ['country_to_capital'],
+  };
+  expect(flashcardEnabled('flashcards:countries:DK:country_to_capital', state.settings)).toBe(true);
+  expect(flashcardEnabled('flashcards:countries:KE:country_to_capital', state.settings)).toBe(
+    false
+  );
+  state.settings.deckSettings.countries.subsets.push('Afrika');
+  expect(flashcardEnabled('flashcards:countries:KE:country_to_capital', state.settings)).toBe(true);
+});

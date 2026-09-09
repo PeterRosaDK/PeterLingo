@@ -71,9 +71,9 @@ const countryDirections = [
 export const countryDeck: FlashcardDeck = {
   id: 'countries',
   title: '🌍 Lande',
-  description: '12 lande · Europa og Asien',
+  description: '197 lande · seks verdensdele',
   directions: countryDirections,
-  getSubsets: () => [...new Set(countries.map((c) => c.region))],
+  getSubsets: () => ['Europa', 'Asien', 'Afrika', 'Nordamerika', 'Sydamerika', 'Oceanien'],
   getLearningUnits: () =>
     countries.flatMap((c) =>
       countryDirections.map((d) =>
@@ -91,8 +91,14 @@ export const countryDeck: FlashcardDeck = {
               ? c.capital
               : c.flag,
         kind: u.direction === 'flag_to_country' ? 'flag' : 'text',
+        image: u.direction === 'flag_to_country' ? c.flagSvg : undefined,
       },
-      back: { text: u.direction === 'country_to_capital' ? c.capital : c.country },
+      back: {
+        text: u.direction === 'country_to_capital' ? c.capital : c.country,
+        secondary: [u.direction === 'country_to_capital' ? '' : `Hovedstad: ${c.capital}`, c.note]
+          .filter(Boolean)
+          .join(' · '),
+      },
       direction: u.direction,
       metadata: { deckId: u.deckId, subset: u.subset, countryId: c.id },
       hints: [

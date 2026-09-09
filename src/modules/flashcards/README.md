@@ -49,11 +49,16 @@ and adapted Danish layer use CC BY-SA 4.0; no official PDF is bundled.
 
 ## Geography and conversions
 
-12 small country/capital records, 36 direction items, Europe/Asia filters. Flags use Unicode
-regional indicator pairs rendered by the platform, no downloaded flag artwork or runtime CDN.
-Some Windows font stacks show regional letters instead of flag glyphs; a local SVG fallback is
-future work. Country/capital facts use Danish display names. Sources: Nordic Statistics capital
-areas, EU country profiles, and standard national country profiles; no article text is copied.
+197 countries / 591 direction units, grouped into Europe, Asia, Africa, North America,
+South America and Oceania. Scope and exceptions are documented in
+[the geography importer](../../../tools/countries/README.md). Multiple capitals and government
+seats have explicit notes. All 197 licensed flag SVGs are local and precached; Unicode pairs
+remain in the data for exports. Existing ISO/direction IDs and saved selections survive.
+
+The active card appears before settings, beneath a compact three-deck overview. Space/Enter
+reveals a card; 1/2/3/4 map to Again/Hard/Good/Easy only after reveal. Enter/right arrow advances
+only after a successful save; the button is right-aligned. Editable controls, modifier keys,
+held-key repeats and in-flight saves are guarded. Hints retain the shared grading policy.
 
 Conversions use exact 1 mi = 1.609344 km and exact Celsius/Fahrenheit formulas. Beginners receive
 whole Celsius anchors and distance multiples of five. Later values use unit steps. Answers are

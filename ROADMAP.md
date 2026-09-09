@@ -234,7 +234,7 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
 - HSK: resolve eight dictionary readings, review syllabus-specific senses, audio, example sentences and
   writing mode; gradual reviewed Danish meanings, never invented bulk translations.
 - Flashkort: user-created decks, versioned deck import/export, other knowledge decks and
-  numeric-answer mode for conversions. Local SVG fallback for platforms without flag glyphs.
+  numeric-answer mode for conversions. Local SVG flags are implemented for all 197 countries in 0.5.0.
 - Phonetics: reviewed natural speech, Danish transcription convention, labelled VOT contrasts,
   more complex syllables and words. Keyboard cursor insertion and local audio-interruption recovery
   are implemented in 0.4.0.
@@ -269,3 +269,15 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
   audio releases the drill for retry; timing starts only after successful listening.
 - Native Danish word recordings, pronunciation conventions, measured VOT and stød assessment
   remain future curriculum work; these isolated human vowels are not Danish word recordings.
+
+## Milestone 11 — World geography and focused flashcards (0.5.0)
+
+- 197-country deck, 591 independent country/capital/flag units, six continent subsets. Full UN
+  state/observer coverage plus clearly noted Kosovo/Taiwan; dependent territories remain future.
+- All 195 available UN profiles cross-checked; current national sources correct outdated capitals
+  including Equatorial Guinea. Multiple-capital/government-seat exceptions are explained.
+- Licensed local SVG flags and an offline downloadable adapted database/license.
+- Card-first layout, compact deck overview, 1–4 self-rating shortcuts and right-aligned Next.
+  Existing settings and FSRS IDs survive unchanged; new continents are not forced into saved choices.
+- Next: add territories as an explicit optional set, improve map/location recall, and maintain
+  capital changes (especially the Indonesia relocation) through source-reviewed data updates.
