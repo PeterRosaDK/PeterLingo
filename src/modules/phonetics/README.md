@@ -55,3 +55,12 @@ separated from isolated international IPA recordings. Reading a lesson does not 
 successful attempt or raise mastery. Practice remains on the shared hint/attempt/FSRS path.
 Background: Ruben Schachtenhaufen, <https://schwa.dk/lydskrift/>. Danish word-level transcription
 and stød diagnosis await curated native speech and a documented convention.
+
+## Vowel workshop (0.4.0)
+
+`VowelWorkshop.tsx` compares the existing human i/y and i/u recordings with a schematic
+articulation map and optional paired spectrograms. It is teaching/reference, so seeing examples
+does not create successful attempts or mastery. Exact-unit links enter the standard IPA drill;
+the page remounts when its unit query changes. The map is not a measured/full IPA vowel chart.
+The shared keyboard preserves the caret/selection, and local clip playback rejects interrupted,
+denied or stalled audio so the learner can retry. Audio success alone never records an attempt.

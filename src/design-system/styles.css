@@ -6169,25 +6169,6 @@ p {
   }
 }
 
-/* Ten subjects share the existing surfaces and theme tokens. */
-.subject-grid.subject-carousel {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  padding: 8px 2px 24px;
-}
-.subject-carousel > .subject-card {
-  flex: 0 0 min(440px, 88vw);
-  scroll-snap-align: start;
-}
-.new-subject-symbol {
-  font:
-    700 3.5rem ui-monospace,
-    monospace;
-  display: grid;
-  place-items: center;
-  color: var(--brand);
-}
 .practice-select,
 .recall-answer {
   display: grid;
@@ -6480,4 +6461,161 @@ p {
 .flip-card .card-content.text {
   font-size: clamp(1.4rem, 3vw, 2.4rem);
   overflow-wrap: anywhere;
+}
+
+/* A compact, three-column gallery replaces the horizontal subject carousel. */
+.subject-grid.subject-gallery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.subject-gallery > .subject-card:nth-child(n) {
+  grid-column: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px 20px 22px;
+  min-width: 0;
+  min-height: 0;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--accent) 9%, var(--surface)),
+    var(--surface) 75%
+  );
+}
+.subject-gallery .subject-card-copy {
+  order: 2;
+}
+.subject-gallery .subject-card-link {
+  order: 2;
+}
+.subject-gallery .subject-gallery-art {
+  position: relative;
+  inset: auto;
+  order: 1;
+  width: 100%;
+  height: 156px;
+  margin-bottom: 12px;
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+.subject-artwork {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.subject-artwork .art-ink {
+  color: var(--brand-2);
+}
+.subject-artwork .art-paper {
+  fill: var(--surface);
+}
+.subject-gallery .subject-card-copy h3 {
+  font-size: 1.4rem;
+  margin-block: 6px 10px;
+}
+.subject-gallery .subject-card-copy > p:not(.eyebrow) {
+  min-height: 3em;
+}
+.subject-gallery .subject-card footer {
+  margin-top: 14px;
+}
+.subject-gallery .live-cube-art {
+  border-radius: 26px;
+  background: color-mix(in srgb, var(--ice) 15%, transparent);
+}
+.subject-gallery .cube-viewer.compact {
+  width: 100%;
+  height: 156px;
+  min-height: 0;
+}
+.subject-gallery .cube-viewer twisty-player {
+  width: 100%;
+  height: 100%;
+}
+.subject-gallery > .subject-card:focus-visible {
+  outline: 3px solid var(--brand-2);
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .subject-grid.subject-gallery {
+    gap: 9px;
+  }
+  .subject-gallery > .subject-card:nth-child(n) {
+    padding: 8px 7px 12px;
+    border-radius: 17px;
+  }
+  .subject-gallery .subject-gallery-art {
+    height: 80px;
+    margin-bottom: 6px;
+  }
+  .subject-gallery .cube-viewer.compact {
+    height: 80px;
+  }
+  .subject-gallery .subject-card-copy h3 {
+    font-size: clamp(0.72rem, 2.9vw, 1.1rem);
+    min-height: 2.5em;
+    margin-block: 4px;
+  }
+  .subject-gallery .subject-card-copy > p {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .subject-gallery .subject-card footer {
+    margin-top: 5px;
+    gap: 0;
+  }
+  .subject-gallery .subject-card footer > span:not(.star-meter) {
+    display: none;
+  }
+  .subject-gallery .subject-card footer .star-meter {
+    padding: 2px 0;
+  }
+}
+
+.vowel-map {
+  margin-block: 24px;
+  color: var(--brand-2);
+}
+.vowel-map svg {
+  width: 100%;
+  height: auto;
+}
+.vowel-map text {
+  fill: currentColor;
+  font-family: inherit;
+}
+.vowel-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-block: 24px;
+}
+.vowel-comparison article {
+  min-width: 0;
+}
+.vowel-comparison h3 {
+  font-size: 2.5rem;
+}
+.vowel-comparison audio,
+.vowel-comparison img {
+  width: 100%;
+}
+.vowel-comparison figure {
+  margin: 16px 0;
+}
+.vowel-comparison figcaption {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+@media (max-width: 650px) {
+  .vowel-comparison {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,3 +1,4 @@
+import { VowelWorkshop } from './VowelWorkshop';
 import { Introduction } from './Introduction';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -5,6 +6,10 @@ import { useLearningData } from '../../app/DataProvider';
 import { Practice } from '../shared/Practice';
 import { phoneticsExercise, phoneticsUnits } from './domain';
 export function PhoneticsPage() {
+  const [params] = useSearchParams();
+  return <PhoneticsContent key={params.get('unit') ?? 'free'} />;
+}
+function PhoneticsContent() {
   const { snapshot } = useLearningData();
   const [params] = useSearchParams();
   const [mode, setMode] = useState(
@@ -48,9 +53,18 @@ export function PhoneticsPage() {
         >
           IPA-transskription
         </button>
+        <button
+          className="button secondary"
+          aria-pressed={mode === 'workshop'}
+          onClick={() => setMode('workshop')}
+        >
+          Vokalværksted
+        </button>
       </div>
       {mode === 'intro' ? (
         <Introduction start={setMode} />
+      ) : mode === 'workshop' ? (
+        <VowelWorkshop />
       ) : (
         <Practice
           key={mode}

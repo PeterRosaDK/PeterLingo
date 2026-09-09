@@ -7,6 +7,7 @@ import type { LearningStage } from '../../learning/types';
 import { PeriodicGrid } from '../elements/PeriodicGrid';
 import { elements } from '../elements/domain';
 import { codes, scoreTaps, type Tap } from '../morse/domain';
+import { playLocalAudio } from '../../audio/playLocalAudio';
 import { playMorse } from '../../audio/morseAudio';
 import { compareIpa, ipaInventories } from '../phonetics/domain';
 import { outputMatches } from '../python_output/domain';
@@ -51,6 +52,7 @@ export function RecallPanel({
   effectiveWpm?: number;
 }) {
   const [input, setInput] = useState('');
+  const answerInput = useRef<HTMLTextAreaElement>(null);
   const [hints, setHints] = useState(() => createHintProgress(exercise.hints));
   const [feedback, setFeedback] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -77,11 +79,7 @@ export function RecallPanel({
       else {
         const audio = new Audio(String(exercise.parameters.audio ?? exercise.media));
         player.current = audio;
-        await audio.play();
-        await new Promise<void>((resolve, reject) => {
-          audio.onended = () => resolve();
-          audio.onerror = () => reject(new Error('audio'));
-        });
+        await playLocalAudio(audio);
       }
       if (!played) restartTimer();
       setPlayed(true);
@@ -234,6 +232,7 @@ export function RecallPanel({
         <label className="recall-answer">
           {exercise.kind === 'python' ? 'Stdout / exception' : 'Dit svar'}
           <textarea
+            ref={answerInput}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={busy || !!feedback}
@@ -249,9 +248,19 @@ export function RecallPanel({
           {ipaInventories[exercise.parameters.language === 'da' ? 'da' : 'en'].map((c) => (
             <button
               type="button"
-              disabled={!!feedback}
+              disabled={busy || !!feedback}
               key={c}
-              onClick={() => setInput((i) => i + c)}
+              onPointerDown={(event) => event.preventDefault()}
+              onClick={() => {
+                const field = answerInput.current;
+                const start = field?.selectionStart ?? input.length;
+                const end = field?.selectionEnd ?? start;
+                setInput(input.slice(0, start) + c + input.slice(end));
+                requestAnimationFrame(() => {
+                  field?.focus();
+                  field?.setSelectionRange(start + c.length, start + c.length);
+                });
+              }}
             >
               {c}
             </button>

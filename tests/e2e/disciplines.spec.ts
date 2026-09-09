@@ -235,3 +235,43 @@ test('Danish IPA teaching leads into human-vowel recall', async ({ page }) => {
   await page.getByRole('button', { name: 'Tjek svar' }).click();
   await expect(page.getByRole('status')).toContainText('Korrekt');
 });
+
+test('home has three columns without horizontal subject scrolling', async ({ page }) => {
+  await page.goto('/');
+  const gallery = page.locator('.subject-gallery');
+  await expect(gallery.locator('.subject-card')).toHaveCount(10);
+  expect(
+    await gallery.evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+  ).toBe(3);
+  expect(await gallery.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  await expect(gallery.locator('svg.subject-artwork')).toHaveCount(9);
+  const boxes = await gallery
+    .locator('.subject-card')
+    .evaluateAll((nodes) =>
+      nodes
+        .slice(0, 4)
+        .map((node) => ({ x: node.getBoundingClientRect().x, y: node.getBoundingClientRect().y }))
+    );
+  expect(boxes[0]!.y).toBe(boxes[2]!.y);
+  expect(boxes[3]!.y).toBeGreaterThan(boxes[0]!.y);
+});
+
+test('vowel workshop compares local media and opens the chosen recall unit', async ({ page }) => {
+  await page.goto('/fag/phonetics');
+  await page.getByRole('button', { name: 'Vokalværksted', exact: true }).click();
+  await expect(page.locator('.vowel-comparison img')).toHaveCount(2);
+  await page.getByRole('button', { name: 'i → u · flyt tungen tilbage' }).click();
+  await expect(page.getByRole('heading', { name: '[u]', exact: true })).toBeVisible();
+  await page.getByLabel('Vis spektrogrammer til sammenligning').uncheck();
+  await expect(page.locator('.vowel-comparison img')).toHaveCount(0);
+  await page.getByRole('link', { name: 'Øv [u] uden facit →' }).click();
+  await page.getByRole('button', { name: 'Afspil lyd', exact: true }).click();
+  const field = page.getByRole('textbox', { name: 'Dit svar' });
+  await field.fill('iu');
+  await field.evaluate((el: HTMLTextAreaElement) => el.setSelectionRange(0, 1));
+  await page.locator('.ipa-keyboard').getByRole('button', { name: 'y', exact: true }).click();
+  await expect(field).toHaveValue('yu');
+  await field.fill('u');
+  await page.getByRole('button', { name: 'Tjek svar' }).click();
+  await expect(page.getByRole('status')).toContainText('Korrekt');
+});

@@ -4,6 +4,16 @@ All notable changes follow Keep a Changelog style. PeterLingo uses semantic vers
 
 ## Unreleased
 
+## 0.4.0 — 2026-09-09
+
+- Replaced horizontal home subject scrolling with a responsive three-column grid, nine original
+  SVG illustrations and the existing live GoCube view. All ten subjects remain accessible.
+- Added a Danish vowel workshop: paired human audio, spectrogram comparisons, schematic tongue/
+  lip diagram, teaching cues and direct links to the selected shared IPA recall unit.
+- IPA keyboard now inserts at the caret/replaces selections; local audio interruptions, denial
+  and timeout release the exercise for retry. Same-route unit links reset phonetics practice.
+- No new dependencies, training downloads, scheduler or persistence migration.
+
 ## 0.3.0 — 2026-09-07
 
 - Complete versioned HSK 2025 list: 11,000 records, all seven official level groups, six recall

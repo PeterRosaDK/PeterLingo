@@ -226,8 +226,8 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
   hash-seed determinism checks and exact-output/exception drill. No runtime interpreter.
 - Snapshot v1→v2 migration preserves history; existing subjects use the same mastery policy.
   Disabled scheduled deck units are excluded both from new and resumed session plans.
-- Home keeps Start dagens træning primary; the subject cards scroll horizontally instead of
-  growing into a ten-card static grid. Flashkort has one top-level place.
+- Home keeps Start dagens træning primary. The initial horizontal subject strip is superseded
+  by the three-column grid in 0.4.0. Flashkort has one top-level place.
 
 ### Next content and product work
 
@@ -236,7 +236,8 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
 - Flashkort: user-created decks, versioned deck import/export, other knowledge decks and
   numeric-answer mode for conversions. Local SVG fallback for platforms without flag glyphs.
 - Phonetics: reviewed natural speech, Danish transcription convention, labelled VOT contrasts,
-  more complex syllables and words; keyboard cursor insertion and audio-interruption recovery.
+  more complex syllables and words. Keyboard cursor insertion and local audio-interruption recovery
+  are implemented in 0.4.0.
 - Elements: align timestamps to Peter's actual recording and connect segments to hints.
 - Sessions: finish exact-unit routing for the pre-existing five subject UIs, richer retention and
   long-term fluency statistics, longitudinal calibration of Koch/mastery thresholds.
@@ -255,3 +256,16 @@ No second scheduling engine or new top-level memory/PAO/geography discipline.
 - Still open: native Danish words and accent/transcription review, full Danish vocabulary,
   physical device listening/tap calibration, Lehrer recording alignment and the older subjects'
   exact-unit routing. A beginner introduction is not yet a complete Danish phonetics curriculum.
+
+## Milestone 10 — Visual home and vowel workshop (0.4.0)
+
+- Three-column subject grid replaces horizontal scrolling, including on mobile. All ten subjects
+  remain directly available (three full rows plus one card); no new persistence or favorites system.
+- Nine original, local SVG illustrations and the existing live Roux cube share theme-aware cards.
+  Compact mobile text preserves descriptions for assistive technology. Daily training stays primary.
+- Vowel workshop compares human [i]/[y] and [i]/[u], with a schematic articulation map, paired
+  local audio/spectrograms, optional image hiding and exact-unit links into the shared recall flow.
+- IPA keyboard inserts at the cursor and replaces selections. Interrupted/failed/stalled local
+  audio releases the drill for retry; timing starts only after successful listening.
+- Native Danish word recordings, pronunciation conventions, measured VOT and stød assessment
+  remain future curriculum work; these isolated human vowels are not Danish word recordings.

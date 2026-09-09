@@ -15,56 +15,15 @@ import {
   type SessionSelectionInput,
 } from '../learning/sessions/sessionSelector';
 import type { DisciplineId } from '../learning/types';
-import { PlayingCard } from '../modules/cards/PlayingCard';
+import { SubjectArtwork } from '../components/SubjectArtwork';
 import { LivePhysicalCubeViewer } from '../modules/roux/LivePhysicalCubeViewer';
 
 const scheduler = new FsrsScheduler();
 
 function SubjectVisual({ id }: { id: DisciplineId }) {
-  if (id === 'doomsday')
-    return (
-      <div className="subject-visual calendar-mini">
-        <span>AUG</span>
-        <strong>23</strong>
-        <small>SØNDAG</small>
-      </div>
-    );
-  if (id === 'roux')
-    return (
-      <div className="subject-visual cube-mini">
-        <LivePhysicalCubeViewer compact />
-      </div>
-    );
-  if (id === 'cards')
-    return (
-      <div className="subject-visual cards-mini">
-        <PlayingCard card="7D" size="small" stacked />
-        <PlayingCard card="5H" size="small" stacked />
-      </div>
-    );
-  if (id === 'pi')
-    return (
-      <div className="subject-visual pi-mini">
-        <span>3.</span>
-        <strong>14159</strong>
-        <i>26535</i>
-        <small>89793…</small>
-      </div>
-    );
-  if (id !== 'music-ear')
-    return (
-      <div className="subject-visual new-subject-symbol">
-        {{ elements: 'Fe', morse: '⌁', flashcards: '字', phonetics: 'ə', python_output: '>>>' }[id]}
-      </div>
-    );
   return (
-    <div className="subject-visual keys-mini" aria-hidden="true">
-      {[0, 1, 2, 3, 4, 5, 6].map((key) => (
-        <i key={key} />
-      ))}
-      <b />
-      <b />
-      <b />
+    <div className={`subject-visual subject-gallery-art ${id === 'roux' ? 'live-cube-art' : ''}`}>
+      {id === 'roux' ? <LivePhysicalCubeViewer compact /> : <SubjectArtwork id={id} />}
     </div>
   );
 }
@@ -185,7 +144,7 @@ export function HomePage() {
           Se alle fag <span>→</span>
         </Link>
       </section>
-      <section className="subject-grid subject-carousel">
+      <section className="subject-grid subject-gallery">
         {subjects.map((subject) => {
           const progress = masteredByDiscipline(subject.id);
           const subjectDue = due.filter(
