@@ -6,15 +6,16 @@ project at `peterlingo.petergpt.dk`.
 
 ## Current state
 
-The Direct Upload project `peterlingo` was created on 2026-08-23. Tested app revision `68adf12` (version 0.3.0) is
-deployed with its Pages Function and D1 binding. The production alias rejects unauthenticated
-requests, and the unique deployment is `https://1a461914.peterlingo.pages.dev`.
+The Direct Upload project `peterlingo` was created on 2026-08-23. Tested app revision `a07f8b8`
+(version 0.4.0) is deployed with its Pages Function and D1 binding. The unique deployment is
+`https://37a9ce9b.peterlingo.pages.dev`.
 
-On 2026-09-07 the deployed index, service worker and manifest matched the tested local artifact
-by SHA256. Live Chromium verified Danish HSK reveal/rating, human IPA playback, all five new
-discipline routes offline, another offline rating, zero page errors and no 390px horizontal
-overflow. Production root, HSK/phonetics deep routes, service worker and `/api/sync` all redirect
-unauthenticated clients to Access. No signed-in physical-device test was claimed for this release.
+On 2026-09-09 the deployed index, service worker and manifest matched the tested local artifact
+by SHA256. Live Chromium verified three grid columns/all ten subjects/no horizontal overflow at
+390px, then offline vowel-workshop images, human audio, exact-unit IPA recall and returning home.
+There were zero JavaScript page errors. Production root, phonetics and `/api/sync` redirect
+unauthenticated requests to Access. Signed-in physical-device verification was not claimed.
+Previous release: 0.3.0, `68adf12`, `https://1a461914.peterlingo.pages.dev`.
 
 `https://peterlingo.petergpt.dk` is active and is the canonical production origin. Cloudflare
 Access redirects unauthenticated requests and permits only Peter's approved identity through the
