@@ -6,16 +6,17 @@ project at `peterlingo.petergpt.dk`.
 
 ## Current state
 
-The Direct Upload project `peterlingo` was created on 2026-08-23. Tested app revision `a07f8b8`
-(version 0.4.0) is deployed with its Pages Function and D1 binding. The unique deployment is
-`https://37a9ce9b.peterlingo.pages.dev`.
+The Direct Upload project `peterlingo` was created on 2026-08-23. Tested app revision `521668b`
+(version 0.5.1) is deployed with its Pages Function and D1 binding. The unique deployment is
+`https://50c27287.peterlingo.pages.dev`.
 
-On 2026-09-09 the deployed index, service worker and manifest matched the tested local artifact
-by SHA256. Live Chromium verified three grid columns/all ten subjects/no horizontal overflow at
-390px, then offline vowel-workshop images, human audio, exact-unit IPA recall and returning home.
-There were zero JavaScript page errors. Production root, phonetics and `/api/sync` redirect
-unauthenticated requests to Access. Signed-in physical-device verification was not claimed.
-Previous release: 0.3.0, `68adf12`, `https://1a461914.peterlingo.pages.dev`.
+On 2026-09-09 the deployed index, service worker, manifest and downloadable country database
+matched the tested local artifact by SHA256. Live Chromium at 390px verified an offline SVG flag,
+Space reveal, keyboard 3 rating, right-aligned Next/right-arrow progression, all 197 exported
+country records, no horizontal overflow and zero JavaScript page errors. Production root,
+Flashkort and `/api/sync` redirect unauthenticated requests to Access. No signed-in physical-device
+verification was claimed. Initial 0.5.0 feature revision: `c12620f`; 0.5.1 clarifies Afghanistan's
+flag context. Previous release: 0.4.0, `a07f8b8`, `https://37a9ce9b.peterlingo.pages.dev`.
 
 `https://peterlingo.petergpt.dk` is active and is the canonical production origin. Cloudflare
 Access redirects unauthenticated requests and permits only Peter's approved identity through the
